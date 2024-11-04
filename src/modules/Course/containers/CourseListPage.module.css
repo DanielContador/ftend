@@ -1,0 +1,9 @@
+.courseListPage {
+    width: 100%;
+}
+
+.loadingCoursesArea {
+    text-align: center; /* Center the text */
+    margin-top: 3em; /* Add some margin top the error message */
+    width: 100%; /* Set the width to 100% */
+}

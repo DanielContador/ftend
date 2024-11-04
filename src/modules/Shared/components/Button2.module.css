@@ -1,0 +1,14 @@
+.button2 {
+    background: none;
+    color: #012230; /* Primary color */
+    border: none;
+    cursor: pointer;
+    font-size: 1em; /* Changed from px to em */
+    padding: 0; /* No padding */
+    border-radius: 0.25em; /* Changed from px to em */
+}
+
+.button2:hover {
+    background-color: rgba(1, 34, 48, 0.1); /* Light background on hover */
+    color: #0056b3; /* Darker shade on hover */
+}

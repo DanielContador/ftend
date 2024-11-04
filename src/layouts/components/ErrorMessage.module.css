@@ -1,0 +1,10 @@
+.errorMessage {
+    color: red; /* Set the text color to red */
+    background-color: #f8d7da; /* Light red background */
+    border: 1px solid #f5c6cb; /* Border color */
+    padding: 10px; /* Padding around the message */
+    border-radius: 5px; /* Rounded corners */
+    margin: 10px 0; /* Margin above and below the message */
+    font-size: 16px; /* Font size */
+    width: 100%;
+}

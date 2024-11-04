@@ -1,0 +1,46 @@
+.container {
+    padding: 20px;
+}
+
+.modules {
+    margin-top: 20px;
+}
+
+.module {
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.moduleHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.moduleTitle {
+    display: flex;
+    align-items: center;
+}
+
+.moduleTitle h4 {
+    margin-left: 1em; /* Adding left margin to the module title */
+}
+
+.moduleDuration {
+    font-weight: bold;
+    color: #333;
+}
+
+.activities {
+    margin-top: 10px;
+    padding-left: 20px;
+}
+
+.activity {
+    margin-bottom: 5px;
+    padding: 5px;
+    border-left: 2px solid #007bff;
+}
