@@ -3,8 +3,10 @@ import { useAuth } from '../../../provider/authProvider';
 import authService from '../services/authService';
 import Button1 from '../../Shared/components/Button1';
 import LoadingSpinner from '../../Shared/components/LoadingSpinner'; // Importing the LoadingSpinner component
+import { useTranslation } from 'react-i18next'; // Importing useTranslation
 
 const LoginForm = ({ onLoginSuccess }) => {
+    const { t } = useTranslation(); // Using the translation hook
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -15,11 +17,11 @@ const LoginForm = ({ onLoginSuccess }) => {
         e.preventDefault();
         setLoading(true);
         try {
-            const token = await authService.login({ username, password });
+            const token = await authService.login({ username, password }, t); // Pass t to login function
             initSession(token);
             onLoginSuccess();
         } catch (err) {
-            setError('Invalid credentials');
+            setError(err.message); // Using translation key
         } finally {
             setLoading(false);
         }
@@ -29,7 +31,7 @@ const LoginForm = ({ onLoginSuccess }) => {
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
             <form onSubmit={handleSubmit} style={{ width: '18.75em', padding: '2em', border: '0.0625em solid #ccc', borderRadius: '0.5em', boxShadow: '0 0 0.625em rgba(0, 0, 0, 0.1)' }}>
                 <div style={{ marginBottom: '1em' }}>
-                    <label style={{ display: 'block', marginBottom: '0.5em' }}>Username:</label>
+                    <label style={{ display: 'block', marginBottom: '0.5em' }}>{t('username')}</label> {/* Using translation key */}
                     <input
                         type="text"
                         value={username}
@@ -39,7 +41,7 @@ const LoginForm = ({ onLoginSuccess }) => {
                     />
                 </div>
                 <div style={{ marginBottom: '1em' }}>
-                    <label style={{ display: 'block', marginBottom: '0.5em' }}>Password:</label>
+                    <label style={{ display: 'block', marginBottom: '0.5em' }}>{t('password')}</label> {/* Using translation key */}
                     <input
                         type="password"
                         value={password}
@@ -53,7 +55,7 @@ const LoginForm = ({ onLoginSuccess }) => {
                     {loading ? ( // Show loading indicator
                         <LoadingSpinner />
                     ) : (
-                        <Button1 type="submit">Login</Button1> // Using Button1 component
+                        <Button1 type="submit">{t('login')}</Button1> // Using translation key
                     )}
                 </div>
             </form>

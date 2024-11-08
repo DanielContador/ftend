@@ -4,8 +4,10 @@ import { useAuth } from '../provider/authProvider';
 import MainLayout from '../layouts/MainLayout';
 import CourseListPage from '../modules/Course/containers/CourseListPage';
 import ErrorMessage from '../layouts/components/ErrorMessage';
+import { useTranslation } from 'react-i18next'; // Importing useTranslation
 
 const HomePage = () => {
+    const { t } = useTranslation(); // Using the translation hook
     const router = useRouter();
     const { isLoggedIn, isLoading } = useAuth();
     const [error, setError] = useState(null); // State to hold error messages
@@ -17,7 +19,7 @@ const HomePage = () => {
     }, [isLoggedIn, isLoading, router]);
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <div>{t('loading')}</div>; // Using translation key for loading message
     }
 
     const handleError = (errorMessage) => {

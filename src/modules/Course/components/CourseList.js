@@ -4,8 +4,10 @@ import { faEdit, faTrash, faCheckCircle, faTimesSquare } from '@fortawesome/free
 import Button2 from '../../Shared/components/Button2'; // Importing Button2 for actions
 import styles from './CourseList.module.css'; // Using CSS modules for styles
 import DeleteConfirmationPopup from '../../Shared/components/DeleteConfirmationPopup'; // Updated import path
+import { useTranslation } from 'react-i18next'; // Importing useTranslation
 
 const CourseList = ({ courses, onEdit, onDelete }) => {
+    const { t } = useTranslation(); // Using the translation hook
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [courseToDelete, setCourseToDelete] = useState(null);
 
@@ -37,10 +39,10 @@ const CourseList = ({ courses, onEdit, onDelete }) => {
                             <div className={styles.courseInfo}>
                                 <span className={styles.courseName}>{course.name}</span>
                                 <div className={styles.courseStatus}>
-                                    {course.status === 'Borrador' && (
+                                    {course.status === t('draft') && (
                                         <FontAwesomeIcon icon={faCheckCircle} className={`${styles.statusIcon} ${styles.draft}`} />
                                     )}
-                                    {course.status !== 'Borrador' && (
+                                    {course.status !== t('draft') && (
                                         <FontAwesomeIcon icon={faTimesSquare} className={`${styles.statusIcon} ${styles.completed}`} />
                                     )}
                                     <span>{course.status}</span>
@@ -49,10 +51,10 @@ const CourseList = ({ courses, onEdit, onDelete }) => {
                             <span className={styles.courseDuration}>{duration}</span>
                             <div className={styles.courseActions}>
                                 <Button2 onClick={() => onEdit(course.id)} className={styles.editButton}>
-                                    <FontAwesomeIcon icon={faEdit} /> Editar
+                                    <FontAwesomeIcon icon={faEdit} /> {t('edit')}
                                 </Button2>
                                 <Button2 onClick={() => handleDeleteClick(course.id)} className={styles.deleteButton}>
-                                    <FontAwesomeIcon icon={faTrash} /> Eliminar
+                                    <FontAwesomeIcon icon={faTrash} /> {t('delete')}
                                 </Button2>
                             </div>
                         </li>
@@ -63,8 +65,8 @@ const CourseList = ({ courses, onEdit, onDelete }) => {
                 isOpen={isPopupOpen} 
                 onClose={handleCancelDelete} 
                 onConfirm={handleConfirmDelete} 
-                title="Confirmar Eliminación" 
-                message="¿Estás seguro de que deseas eliminar este curso?" 
+                title={t('confirmDeletion')} 
+                message={t('confirmDeletionMessage')} 
             />
         </>
     );

@@ -1,15 +1,18 @@
-import axios from 'axios';
+import { rPost } from '../../Shared/services/apiService';
 
-const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/user/`;
+const LOGIN_ENDPOINT = 'user/login';
 
-const login = async (credentials) => {
-    const response = await axios.post(`${API_URL}login`, credentials);
-    if (response.status !== 200) {
-        throw new Error('Invalid credentials');
+const login = async (credentials, t) => {
+    try {
+        const data = await rPost(LOGIN_ENDPOINT, credentials);
+        return data.token;
+    } catch (error) {
+        if (error && error.status === 401) {
+            throw new Error(t('invalidCredentials')); // Using translation key for invalid credentials
+        } else {
+            throw new Error(t('internalError')); // Using translation key for internal API errors or connection issues
+        }
     }
-
-    const data = response.data;
-    return data.token;
 };
 
 export default {

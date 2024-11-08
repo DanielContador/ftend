@@ -5,8 +5,10 @@ import CourseList from '../components/CourseList'; // Importing the new CourseLi
 import LoadingSpinner from '../../Shared/components/LoadingSpinner'; // Importing the loading spinner
 import styles from './CourseListPage.module.css'; // Assuming we will create a CSS file for styles
 import { useRouter } from 'next/router'; // Importing useRouter for navigation
+import { useTranslation } from 'react-i18next'; // Importing useTranslation
 
 const CourseListPage = ({ handleError }) => {
+    const { t } = useTranslation(); // Using the translation hook
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
     const router = useRouter(); // Initialize router for navigation
@@ -19,11 +21,11 @@ const CourseListPage = ({ handleError }) => {
             if (Array.isArray(data)) {
                 setCourses(data); // Set the courses state with the fetched data
             } else {
-                throw new Error('Invalid data format');
+                throw new Error(t('invalidDataFormat')); // Using translation key for error message
             }
         } catch (error) {
             console.error('Error fetching courses:', error);
-            handleError('Failed to fetch courses. Please try again later.'); // Set error message
+            handleError(t('fetchCoursesError')); // Set error message
         } finally {
             setLoading(false);
         }
@@ -39,7 +41,7 @@ const CourseListPage = ({ handleError }) => {
             fetchCourses(); // Reload courses after deletion
         } catch (error) {
             console.error('Error deleting course:', error);
-            handleError('Failed to delete course. Please try again later.'); // Set error message
+            handleError(t('deleteCourseError')); // Set error message
         }
     };
 
@@ -60,14 +62,10 @@ const CourseListPage = ({ handleError }) => {
                 </div>);
     }
 
-    // if (error) { 
-    //     return <div className={styles.errorMessage}>{error}</div>;
-    // }
-
     return (
         <div className={styles.courseListPage}>
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1em' }}>
-                <Button1 onClick={handleCreate}>Nuevo Curso +</Button1>
+                <Button1 onClick={handleCreate}>{t('newCourse')}</Button1>
             </div>
             <CourseList courses={courses} onEdit={handleEdit} onDelete={handleDelete} />
         </div>
