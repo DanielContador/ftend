@@ -1,28 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Sidebar from './components/Sidebar'; // Importing the new Sidebar component
 import BackButton from './components/BackButton'; // Importing the BackButton component
 import styles from './CourseLayout.module.css'; // Assuming we will create a CSS file for styles
+import { faCog, faSitemap, faBook, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import { useTranslation } from 'react-i18next'; // Importing useTranslation
 
 const CourseLayout = ({ children, courseId, currentPage }) => { // Added currentPage as a parameter
+    const { t } = useTranslation(); // Using the translation hook
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
+    useEffect(() => {
+        const savedSidebarState = localStorage.getItem('isSidebarOpen');
+        if (savedSidebarState !== null) {
+            setIsSidebarOpen(JSON.parse(savedSidebarState));
+        }
+        // Add a class to body to prevent transition effect initially
+        document.body.classList.add('no-transition');
+        setTimeout(() => {
+            document.body.classList.remove('no-transition');
+        }, 100);
+    }, []);
+
     const toggleSidebar = () => {
-        setIsSidebarOpen(!isSidebarOpen);
+        const newSidebarState = !isSidebarOpen;
+        setIsSidebarOpen(newSidebarState);
+        localStorage.setItem('isSidebarOpen', JSON.stringify(newSidebarState));
     };
 
     // Define sidebar items based on the current page
     const menuItems = courseId ? [
-        { page: 'EditCoursePage', label: 'Configuración', link: `/course/${courseId}/edit`, blocked: false },
-        { page: 'CourseStructurePage', label: 'Estructura', link: `/course/${courseId}/edit/course-structure`, blocked: false },
-        { page: 'Content', label: 'Contenido', link: `/course/${courseId}/edit/content`, blocked: false },
-        { page: 'Quizzes', label: 'Evaluación', link: `/course/${courseId}/edit/quizzes`, blocked: false },
+        { page: 'EditCoursePage', label: t('settings'), link: `/course/${courseId}/edit`, blocked: false, icon: faCog },
+        { page: 'CourseStructurePage', label: t('structure'), link: `/course/${courseId}/edit/course-structure`, blocked: false, icon: faSitemap },
+        { page: 'Content', label: t('content'), link: `/course/${courseId}/edit/content`, blocked: false, icon: faBook },
+        { page: 'Quizzes', label: t('evaluation'), link: `/course/${courseId}/edit/quizzes`, blocked: false, icon: faQuestionCircle },
     ] : [
-        { page: 'NewCoursePage', label: 'Configuración', link: '/course/new', blocked: false },
-        { page: 'CourseStructurePage', label: 'Estructura', link: '#', blocked: true },
-        { page: 'Content', label: 'Contenido', link: '#', blocked: true },
-        { page: 'Quizzes', label: 'Evaluación', link: '#', blocked: true },
+        { page: 'NewCoursePage', label: t('settings'), link: '/course/new', blocked: false, icon: faCog },
+        { page: 'CourseStructurePage', label: t('structure'), link: '#', blocked: true, icon: faSitemap },
+        { page: 'Content', label: t('content'), link: '#', blocked: true, icon: faBook },
+        { page: 'Quizzes', label: t('evaluation'), link: '#', blocked: true, icon: faQuestionCircle },
     ];
 
     return (
