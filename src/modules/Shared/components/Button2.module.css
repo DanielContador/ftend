@@ -6,6 +6,7 @@
     font-size: 1em; /* Changed from px to em */
     padding: 0; /* No padding */
     border-radius: 0.25em; /* Changed from px to em */
+    height: fit-content;
 }
 
 .button2:hover {
