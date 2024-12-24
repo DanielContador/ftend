@@ -1,0 +1,15 @@
+.editActivityPage {
+    display: flex;
+    height: 100%;
+    margin-top: 1.5em;
+}
+
+.navigation {
+    width: 28%;
+    padding: 1em;
+}
+
+.editor {
+    width: 70%;
+    padding: 1em;
+}

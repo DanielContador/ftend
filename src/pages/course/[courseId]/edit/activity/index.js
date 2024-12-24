@@ -1,0 +1,28 @@
+import CourseLayout from '../../../../../layouts/CourseLayout'; // Importing CourseLayout
+import { useRouter } from 'next/router';
+import ErrorMessage from '../../../../../layouts/components/ErrorMessage'; // Importing ErrorMessage
+import { useState } from 'react';
+import EditActivityPage from '../../../../../modules/Activity/containers/EditActivityPage'; // Importing EditActivityPage
+
+const ActivityEditorPage = () => {
+    const router = useRouter();
+    const { courseId } = router.query;
+    const { id, format } = router.query; // Destructure id and type from query parameters
+    const [error, setError] = useState(null); // State to hold error messages
+
+    console.log('type', format);
+    console.log('id', id);
+    // Example error handling logic
+    const handleError = (errorMessage) => {
+        setError(errorMessage);
+    };
+
+    return (
+        <CourseLayout courseId={courseId} currentPage="ActivityEditorPage" backButtonEndpoint={`/course/${courseId}/edit/course-structure`}>
+            {error && <ErrorMessage error={error} />} {/* Display error message if exists */}
+            <EditActivityPage courseId={courseId} id={id} format={format} handleError={handleError} /> {/* Render EditActivityPage */}
+        </CourseLayout>
+    );
+};
+
+export default ActivityEditorPage;
