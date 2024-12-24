@@ -7,7 +7,11 @@ import { useRouter } from 'next/router'; // Importing useRouter for navigation
 const BackButton = ({ endpoint }) => {
     const router = useRouter();
     const handleBack = () => {
-        router.push(endpoint); // Navigate to the specified endpoint
+        if (endpoint) {
+            router.push(endpoint); // Navigate to the specified endpoint
+        } else {
+            router.back(); // Navigate to the previous URL
+        }
     };
 
     return (
