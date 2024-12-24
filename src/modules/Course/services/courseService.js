@@ -31,7 +31,17 @@ export const generateCourseStructure = async (endpoint, courseData) => {
     return await rPost(endpoint, courseData, jwt); // Using apiService to make the POST request
 };
 
+export const reGenerateCourseStructure = async (endpoint, promptInstructionsData) => {
+    const jwt = getCookie('authToken'); // Retrieve the authToken
+    return await rPost(endpoint, promptInstructionsData, jwt); // Using apiService to make the POST request
+};
+
 export const getCourseStructure = async (endpoint, courseId) => {
     const jwt = getCookie('authToken'); // Retrieve the authToken
     return await rGet(`${endpoint}/${courseId}`, jwt);
+};
+
+export const updateCourseTitle = async (endpoint, id, courseData) => {
+    const jwt = getCookie('authToken'); // Retrieve the authToken
+    return await rPut(`${endpoint}/${id}`, courseData, jwt);
 };
