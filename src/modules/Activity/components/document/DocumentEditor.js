@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import apiService from '../../../Shared/services/apiService'; // Adjust the import path as necessary
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router'; // Import useRouter
 import styles from './DocumentEditor.module.css'; // Importing styles
 import { useTranslation } from 'react-i18next'; // Importing useTranslation
@@ -7,7 +6,9 @@ import Button2 from '../../../Shared/components/Button2';
 import LoadingSpinner from '../../../Shared/components/LoadingSpinner';
 import { getActivityDocument, generateActivityDocument, regenerateActivityDocument, updateDocumentContent } from '../../services/activityService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDownload } from '@fortawesome/free-solid-svg-icons';
+import { faDownload, faUpload } from '@fortawesome/free-solid-svg-icons';
+import Switch from 'react-switch'; // Importing Switch component
+import UploadDocumentPopup from '../../../Shared/components/UploadDocumentPopup'; // Importing UploadDocumentPopup
 
 const DocumentEditor = ({ courseId, activityId, handleError }) => {
     const router = useRouter();
@@ -19,25 +20,30 @@ const DocumentEditor = ({ courseId, activityId, handleError }) => {
     const [activeTab, setActiveTab] = useState('settings'); // State to manage active tab
     const [instructions, setInstructions] = useState(''); // State for instructions
     const [editableContent, setEditableContent] = useState('');
+    const [includeImages, setIncludeImages] = useState(true); // State for IncludeImages
+    const [showImagePopup, setShowImagePopup] = useState(false); // State for image popup
+    const [selectedImage, setSelectedImage] = useState(null); // State for selected image
+    const contentRef = useRef(null);
 
-    useEffect(() => {
-        const fetchActivity = async () => {
-            setLoading(true);
-            try {
-                const response = await getActivityDocument(activityId);
-                setActivityData(response.data.activity);
-                setActivityDocument(response.data.document);
-                if (response.data.document) {
-                    setEditableContent(response.data.document.content);
-                }
-                setActiveTab('settings')
-            } catch (error) {
-                console.error('Error fetching activity:', error);
-                handleError(t('errorFetchingActivity'));
-            } finally {
-                setLoading(false);
+    const fetchActivity = async () => {
+        setLoading(true);
+        try {
+            const response = await getActivityDocument(activityId);
+            setActivityData(response.data.activity);
+            setActivityDocument(response.data.document);
+            if (response.data.document) {
+                setEditableContent(response.data.document.content);
             }
-        };
+            setActiveTab('settings')
+        } catch (error) {
+            console.error('Error fetching activity:', error);
+            handleError(t('errorFetchingActivity'));
+        } finally {
+            setLoading(false);
+        }
+    };
+    
+    useEffect(() => {
         fetchActivity();
     }, [activityId]);
 
@@ -49,10 +55,10 @@ const DocumentEditor = ({ courseId, activityId, handleError }) => {
                 Duration: activityData.duration,
                 DocumentType: activityData.contentType,
                 ActivityId: activityId,
+                IncludeImages: includeImages,
             };
             const response = await generateActivityDocument(data);
-            setActivityDocument(response.data);
-            setEditableContent(response.data.content);
+            fetchActivity();
             console.log('Activity generated');
             setActiveTab('preview');
         } catch (error) {
@@ -87,7 +93,7 @@ const DocumentEditor = ({ courseId, activityId, handleError }) => {
         setLoading(true);
         try {
             const data = {
-                content: editableContent,
+                content: `${editableContent}`,
             };
             await updateDocumentContent(activityDocument.id, data);
             console.log('Document content updated');
@@ -100,10 +106,26 @@ const DocumentEditor = ({ courseId, activityId, handleError }) => {
         }
     };
 
+    const handleImageClick = (e) => {
+        if (e.target.tagName === 'IMG') {
+            setSelectedImage(e.target);
+            setShowImagePopup(true);
+        }
+    };
+
+    const handleImageUpload = (file) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            selectedImage.src = event.target.result;
+            setEditableContent(contentRef.current.innerHTML); // Update editableContent with the new image
+            setShowImagePopup(false);
+        };
+        reader.readAsDataURL(file);
+    };
+
     if (loading) return <LoadingSpinner />; // Render loading spinner while loading
 
     const contentOverview = activityData ? JSON.parse(activityData.contentOverview) : [];
-    // console.log(activity.contentOverview)
 
     return (
         <div className={styles.documentEditor}>
@@ -131,9 +153,25 @@ const DocumentEditor = ({ courseId, activityId, handleError }) => {
                                     ))}
                                 </ul>
                             </div>
-                            </>
-                        ) : null}
-                    {/* Add form fields for editing activity here */}
+                            <div className={styles.switchContainer}>
+                                <label>{t('includeImages')}</label>
+                                <Switch
+                                    onChange={setIncludeImages}
+                                    checked={includeImages}
+                                    onColor="#86d3ff"
+                                    onHandleColor="#2693e6"
+                                    handleDiameter={20}
+                                    uncheckedIcon={false}
+                                    checkedIcon={false}
+                                    boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
+                                    activeBoxShadow="0px 0px 1px 10px rgba(0, 0, 0, 0.2)"
+                                    height={15}
+                                    width={35}
+                                    className="react-switch"
+                                />
+                            </div>
+                        </>
+                    ) : null}
                     <div className={styles.instructionsContainer}>
                         <textarea
                             value={instructions}
@@ -154,13 +192,16 @@ const DocumentEditor = ({ courseId, activityId, handleError }) => {
             )}
             {activeTab === 'preview' && (
                 <div className={styles.previewContainer}>
-                    {/* Render preview of the activity here */}
                     {activityDocument ? (
                         <>
-                            <textarea
+                            <div
                                 className={styles.documentViewer}
-                                value={editableContent}
-                                onChange={(e) => setEditableContent(e.target.value)}
+                                onBlur={t => setEditableContent(t.currentTarget.innerHTML)}
+                                contentEditable
+                                ref={contentRef}
+                                onClick={handleImageClick}
+                                dangerouslySetInnerHTML={{ __html: editableContent }}
+                                style={{ whiteSpace: 'pre-wrap' }}
                             />
                             <div className={styles.buttonRow}>
                                 <a href={activityDocument.filePath} className={styles.downloadLink} download>
@@ -176,6 +217,13 @@ const DocumentEditor = ({ courseId, activityId, handleError }) => {
                     )}
                 </div>
             )}
+            <UploadDocumentPopup
+                isOpen={showImagePopup}
+                onClose={() => setShowImagePopup(false)}
+                onUpload={handleImageUpload}
+                title={t('uploadImage')}
+                message={t('selectImageToUpload')}
+            />
         </div>
     );
 };
