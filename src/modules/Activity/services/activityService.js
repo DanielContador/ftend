@@ -31,6 +31,21 @@ export const getVoiceOptions = async () => {
     return await rGet('audio/voices', jwt);
 };
 
+export const getElaiVideoVoiceOptions = async () => {
+    const jwt = getCookie('authToken'); // Retrieve the authToken
+    return await rGet('video/voices', jwt);
+};
+
+export const getVideogenVideoVoiceOptions = async () => {
+    const jwt = getCookie('authToken'); // Retrieve the authToken
+    return await rGet('video/videogen-voices', jwt);
+};
+
+export const getElaiVideoAvatarOptions = async () => {
+    const jwt = getCookie('authToken'); // Retrieve the authToken
+    return await rGet('video/avatars', jwt);
+};
+
 export const updateAudioContent = async (activityId, data) => {
     const jwt = getCookie('authToken'); // Retrieve the authToken
     return await rPut(`audio/${activityId}`, data, jwt);
@@ -41,12 +56,52 @@ export const generateActivityAudio = async (data) => {
     return await rPost('ActivityContent/generate-audio', data, jwt);
 };
 
-export const generateActivityScript = async (data) => {
+export const generateAudioScript = async (data) => {
     const jwt = getCookie('authToken'); // Retrieve the authToken
     return await rPost('ActivityContent/generate-guion', data, jwt);
 };
 
-export const regenerateActivityScript = async (data) => {
+export const regenerateAudioScript = async (data) => {
     const jwt = getCookie('authToken'); // Retrieve the authToken
     return await rPost('ActivityContent/regenerate-guion', data, jwt);
+};
+
+export const getActivityVideo = async (id) => {
+    const jwt = getCookie('authToken'); // Retrieve the authToken
+    return await rGet(`Activity/videos/${id}`, jwt);
+};
+
+export const generateVideoScript = async (data) => {
+    const jwt = getCookie('authToken'); // Retrieve the authToken
+    return await rPost('ActivityVideo/generate-guion', data, jwt);
+};
+
+export const regenerateVideoScript = async (data) => {
+    const jwt = getCookie('authToken'); // Retrieve the authToken
+    return await rPost('ActivityVideo/regenerate-guion', data, jwt);
+};
+
+export const retrieveElaiActivityVideoStatus = async (activityId) => {
+    const jwt = getCookie('authToken'); // Retrieve the authToken
+    return await rGet(`ActivityVideo/elai/retrieve/${activityId}`, jwt);
+};
+
+export const retrieveVideogenActivityVideoStatus = async (activityId) => {
+    const jwt = getCookie('authToken'); // Retrieve the authToken
+    return await rGet(`ActivityVideo/videogen/retrieve/${activityId}`, jwt);
+};
+
+export const generateElaiActivityVideo = async (data) => {
+    const jwt = getCookie('authToken'); // Retrieve the authToken
+    return await rPost(`ActivityVideo/elai/create-video`, data, jwt);
+};
+
+export const generateVideogenActivityVideo = async (data) => {
+    const jwt = getCookie('authToken'); // Retrieve the authToken
+    return await rPost(`ActivityVideo/videogen/create-video`, data, jwt);
+};
+
+export const updateVideoContent = async (activityId, data) => {
+    const jwt = getCookie('authToken'); // Retrieve the authToken
+    return await rPut(`video/${activityId}`, data, jwt);
 };
