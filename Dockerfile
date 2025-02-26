@@ -1,43 +1,50 @@
 # syntax = docker/dockerfile:1
 
-# Base stage for dependencies
+# === BASE IMAGE ===
 FROM node:20-alpine AS base
-
-# Set environment variables
-ARG PORT=3000
-ENV NEXT_TELEMETRY_DISABLED=1
 
 # Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY package.json package-lock.json ./
+# Copy package.json and lockfile
+COPY package*.json ./
 
 # Install dependencies
-RUN npm ci
+RUN npm ci --omit=dev # Or npm install if ci fails
 
-# Build stage
-FROM base AS build
+# === BUILD STAGE ===
+FROM base AS builder
 
-# Copy source code
+# Copy the rest of the application's source code
 COPY . .
 
-# Build Next.js app in standalone mode
+# Build the Next.js application
 RUN npm run build
 
-# Production stage
-FROM base AS production
+# === PRODUCTION STAGE ===
+FROM node:20-alpine AS production
+
+# Set the working directory
+WORKDIR /app
+
+# Copy only the necessary files from the builder stage
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/package-lock.json ./package-lock.json # Or yarn.lock if using yarn
+
+# Install only production dependencies (very important for smaller image size)
+RUN npm ci --omit=dev
+
+# Next.js Standalone Mode: Copy the standalone server (if you configured output: 'standalone')
+COPY --from=builder /app/.next/standalone ./
+
+# Expose the port Next.js will run on
+EXPOSE 3000
 
 # Set environment variables
-ENV NODE_ENV=production
-ENV PORT=$PORT
+ENV NODE_ENV production
+ENV PORT 3000
 
-# Copy built files
-COPY --from=build /app/.next/standalone ./
-COPY --from=build /app/public ./public
-
-# Expose port
-EXPOSE $PORT
-
-# Start command
+# Command to start the Next.js server
 CMD ["node", "server.js"]
