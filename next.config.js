@@ -1,5 +1,6 @@
 // next.config.js
 module.exports = {
+    output: 'standalone',
     // webpack(config, options) {
     //     config.module.rules.push({
     //         test: /\.module\.css$/,
