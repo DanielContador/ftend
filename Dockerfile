@@ -36,9 +36,6 @@ COPY --from=builder /app/package-lock.json ./package-lock.json # Or yarn.lock if
 # Install only production dependencies (very important for smaller image size)
 RUN npm ci --omit=dev
 
-# Next.js Standalone Mode: Copy the standalone server (if you configured output: 'standalone')
-COPY --from=builder /app/.next/standalone ./
-
 # Expose the port Next.js will run on
 EXPOSE 3000
 
