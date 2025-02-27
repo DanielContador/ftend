@@ -10,7 +10,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci --omit=dev # Or npm install if ci fails
+RUN npm install --omit=dev
 
 # === BUILD STAGE ===
 FROM base AS builder
