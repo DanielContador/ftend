@@ -39,6 +39,20 @@ RUN npm ci --omit=dev
 # Next.js Standalone Mode: Copy the standalone server (if you configured output: 'standalone')
 COPY --from=builder /app/.next/standalone ./
 
+# Create a PM2 ecosystem file
+RUN echo '{\
+  "apps": [{\
+    "name": "nextjs-app",\
+    "script": "server.js",\
+    "instances": "max",\
+    "exec_mode": "cluster",\
+    "env": {\
+      "NODE_ENV": "production",\
+      "PORT": "3000"\
+    }\
+  }]\
+}' > ecosystem.config.json
+
 # Expose the port Next.js will run on
 EXPOSE 3000
 
@@ -46,5 +60,8 @@ EXPOSE 3000
 ENV NODE_ENV production
 ENV PORT 3000
 
+# Command to start the Next.js server using PM2
+CMD ["pm2-runtime", "start", "ecosystem.config.json"]
+
 # Command to start the Next.js server
-CMD ["node", "server.js"]
+# CMD ["node", "server.js"]
