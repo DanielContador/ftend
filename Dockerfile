@@ -27,6 +27,9 @@ FROM node:20-alpine AS production
 # Set the working directory
 WORKDIR /app
 
+# Install PM2 globally (important for running pm2-runtime)
+RUN npm install -g pm2
+
 # Copy only the necessary files from the builder stage
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
@@ -62,6 +65,3 @@ ENV PORT 3000
 
 # Command to start the Next.js server using PM2
 CMD ["pm2-runtime", "start", "ecosystem.config.json"]
-
-# Command to start the Next.js server
-# CMD ["node", "server.js"]
