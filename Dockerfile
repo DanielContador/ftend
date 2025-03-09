@@ -11,6 +11,7 @@ COPY package*.json ./
 
 # Install dependencies
 RUN npm install --omit=dev
+RUN npm install sharp
 
 # === BUILD STAGE ===
 FROM base AS builder
