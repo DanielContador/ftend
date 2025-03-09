@@ -14,6 +14,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 # Install dependencies
+RUN npm install
 RUN npm ci
 
 # Build stage
