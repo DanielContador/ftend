@@ -105,3 +105,28 @@ export const updateVideoContent = async (activityId, data) => {
     const jwt = getCookie('authToken'); // Retrieve the authToken
     return await rPut(`video/${activityId}`, data, jwt);
 };
+
+export const getActivityPPT = async (id) => {
+    const jwt = getCookie('authToken'); // Retrieve the authToken
+    return await rGet(`Activity/ppts/${id}`, jwt);
+};
+
+export const generateActivityPPT = async (data) => {
+    const jwt = getCookie('authToken'); // Retrieve the authToken
+    return await rPost('ActivityPPT/generate', data, jwt);
+};
+
+export const getPPTTemplates = async () => {
+    const jwt = getCookie('authToken'); // Retrieve the authToken
+    return await rGet('ActivityPPT/templates', jwt);
+};
+
+export const retrieveActivityPPTStatus = async (activityId) => {
+    const jwt = getCookie('authToken'); // Retrieve the authToken
+    return await rGet(`ActivityPPT/retrieve/${activityId}`, jwt);
+};
+
+export const editPPTContent = async (data) => {
+    const jwt = getCookie('authToken'); // Retrieve the authToken
+    return await rPut('ActivityPPT/edit', data, jwt);
+};

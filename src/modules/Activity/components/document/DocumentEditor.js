@@ -30,9 +30,10 @@ const DocumentEditor = ({ courseId, activityId, handleError }) => {
         try {
             const response = await getActivityDocument(activityId);
             setActivityData(response.data.activity);
-            setActivityDocument(response.data.document);
-            if (response.data.document) {
-                setEditableContent(response.data.document.content);
+            
+            if (response.data.documents && response.data.documents.length > 0) {
+                setActivityDocument(response.data.documents);
+                setEditableContent(response.data.documents[0].content);
             }
             setActiveTab('settings')
         } catch (error) {

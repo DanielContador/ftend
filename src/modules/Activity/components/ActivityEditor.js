@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import DocumentEditor from './document/DocumentEditor';
 import AudioEditor from './audio/AudioEditor'; // Assuming you have an AudioEditor component
 import VideoEditor from './video/VideoEditor';
+import PPTEditor from './ppt/PPTEditor'; // Importing PPTEditor
 import { useTranslation } from 'react-i18next';
 
 const ActivityEditor = ({ courseId, handleError }) => {
@@ -21,6 +22,8 @@ const ActivityEditor = ({ courseId, handleError }) => {
             return <AudioEditor activityId={id} courseId={courseId} handleError={handleError} />;
         case 'video':
             return <VideoEditor activityId={id} courseId={courseId} handleError={handleError} />;
+        case 'ppt':
+            return <PPTEditor activityId={id} courseId={courseId} handleError={handleError} />;
         default:
             return <p>{t('invalidDataFormat')}</p>;
     }

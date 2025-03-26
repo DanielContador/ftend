@@ -3,9 +3,7 @@ import Select from 'react-select';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
-import { getVideogenVideoVoiceOptions, 
-    generateVideogenActivityVideo, 
-    retrieveVideogenActivityVideoStatus } from '../../services/activityService';
+import { getVideogenVideoVoiceOptions, generateVideogenActivityVideo, retrieveVideogenActivityVideoStatus } from '../../services/activityService';
 import Button2 from '../../../Shared/components/Button2';
 import styles from './SceneVideoConfig.module.css'; // Importing styles
 
@@ -55,6 +53,7 @@ const SceneVideoConfig = ({ setLoading, handleError, activityId, activityVideo, 
         try {
             const data = {
                 ActivityId: activityId,
+                Language: "Spanish", // Hardcoded for now
                 Voice: selectedVoice ? selectedVoice.value : null,
                 Subtitles: true,
                 CaptionFontName: "Verdana",

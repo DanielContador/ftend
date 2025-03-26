@@ -8,7 +8,7 @@
     "password": "Contraseña:",
     "invalidCredentials": "Credenciales inválidas",
     "internalError": "Ocurrió un error interno. Por favor, inténtelo de nuevo más tarde.",
-    "footerCopyright": "© 2025 Gestión de Cursos. Todos los derechos reservados.",
+    "footerCopyright": "© 2023 Gestión de Cursos. Todos los derechos reservados.",
     "fetchCoursesError": "Error al obtener los cursos. Por favor, inténtelo de nuevo más tarde.",
     "deleteCourseError": "Error al eliminar el curso. Por favor, inténtelo de nuevo más tarde.",
     "newCourse": "Nuevo Curso +",
@@ -92,5 +92,18 @@
     "videoType": "Tipo de video",
     "videoWithAvatar": "Video con Avatar",
     "videoWithScenes": "Video con escenas",
-    "sceneSettings": "Configuración de escenas"
+    "sceneSettings": "Configuración de escenas",
+    "ppt": "PPT",
+    "numberOfSlides": "Número de diapositivas",
+    "selectTemplate": "Seleccionar plantilla",
+    "generatePPT": "Generar PPT",
+    "pptNotGenerated": "PPT no generado",
+    "errorFetchingTemplates": "Error al obtener las plantillas",
+    "errorGeneratingPPT": "Error al generar el PPT",
+    "errorUpdatingPPTContent": "Error al actualizar el contenido del PPT",
+    "replaceText": "Reemplazar texto",
+    "shapeName": "Nombre de la forma",
+    "addReplacement": "Agregar reemplazo",
+    "replace": "Reemplazar",
+    "errorReplacingText": "Error al reemplazar el texto"
 }

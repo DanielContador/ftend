@@ -8,7 +8,7 @@
     "password": "Password:",
     "invalidCredentials": "Invalid credentials",
     "internalError": "An internal error occurred. Please try again later.",
-    "footerCopyright": "© 2025 Course Management. All rights reserved.",
+    "footerCopyright": "© 2023 Course Management. All rights reserved.",
     "fetchCoursesError": "Failed to fetch courses. Please try again later.",
     "deleteCourseError": "Failed to delete course. Please try again later.",
     "newCourse": "New Course +",
@@ -92,5 +92,18 @@
     "videoType": "Video Type",
     "videoWithAvatar": "Video with Avatar",
     "videoWithScenes": "Video with Scenes",
-    "sceneSettings": "Scene Settings"
+    "sceneSettings": "Scene Settings",
+    "ppt": "PPT",
+    "numberOfSlides": "Number of Slides",
+    "selectTemplate": "Select Template",
+    "generatePPT": "Generate PPT",
+    "pptNotGenerated": "PPT not generated",
+    "errorFetchingTemplates": "Error fetching templates",
+    "errorGeneratingPPT": "Error generating PPT",
+    "errorUpdatingPPTContent": "Error updating PPT content",
+    "replaceText": "Replace text",
+    "shapeName": "Shape name",
+    "addReplacement": "Add replacement",
+    "replace": "Replace",
+    "errorReplacingText": "Error replacing text"
 }
