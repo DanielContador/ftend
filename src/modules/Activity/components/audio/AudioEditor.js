@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getActivityAudio, updateAudioContent, generateActivityAudio, generateActivityScript, regenerateActivityScript, updateDocumentContent, getVoiceOptions } from '../../services/activityService';
+import { getActivityAudio, updateAudioContent, generateActivityAudio, generateAudioScript, regenerateAudioScript, updateDocumentContent, getVoiceOptions } from '../../services/activityService';
 import LoadingSpinner from '../../../Shared/components/LoadingSpinner';
 import Button2 from '../../../Shared/components/Button2';
 import Select from 'react-select';
@@ -22,25 +22,26 @@ const AudioEditor = ({ courseId, activityId, handleError }) => {
     const [stability, setStability] = useState(50); // State for stability level
     const [similarity, setSimilarity] = useState(50); // State for similarity level
 
-    useEffect(() => {
-        const fetchActivity = async () => {
-            setLoading(true);
-            try {
-                const response = await getActivityAudio(activityId);
-                setActivityData(response.data.activity);
-                if (response.data.audio) {
-                    setActivityAudio(response.data.audio);
-                    // console.log(response.data.audio.content)
-                    // console.log(response.data.audio.content)
-                    setEditableScript(response.data.audio.content);
-                }
-            } catch (error) {
-                console.error('Error fetching activity:', error);
-                handleError(t('errorFetchingActivity'));
-            } finally {
-                setLoading(false);
+    const fetchActivity = async () => {
+        setLoading(true);
+        try {
+            const response = await getActivityAudio(activityId);
+            setActivityData(response.data.activity);
+            if (response.data.audio) {
+                setActivityAudio(response.data.audio);
+                // console.log(response.data.audio.content)
+                // console.log(response.data.audio.content)
+                setEditableScript(response.data.audio.content);
             }
-        };
+        } catch (error) {
+            console.error('Error fetching activity:', error);
+            handleError(t('errorFetchingActivity'));
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
         fetchActivity();
     }, [activityId]);
 
@@ -89,10 +90,11 @@ const AudioEditor = ({ courseId, activityId, handleError }) => {
                 // Stability: stability,
                 // Similarity: similarity
             };
-            const response = await generateActivityScript(data);
-            setActivityAudio(response.data);
-            setEditableScript(response.data.contentGenerated);
-            console.log('Script generated');
+            const response = await generateAudioScript(data);
+            // setActivityAudio(response.data);
+            // setEditableScript(response.data.contentGenerated);
+            // console.log('Script generated');
+            fetchActivity();
             setActiveTab('script');
         } catch (error) {
             console.error('Error generating script:', error);
@@ -112,7 +114,7 @@ const AudioEditor = ({ courseId, activityId, handleError }) => {
                 // Stability: stability,
                 // Similarity: similarity
             };
-            const response = await regenerateActivityScript(data);
+            const response = await regenerateAudioScript(data);
             // setActivityAudio(response.data);
             setEditableScript(response.data.contentGenerated);
             console.log('Script regenerated');
@@ -133,7 +135,6 @@ const AudioEditor = ({ courseId, activityId, handleError }) => {
             };
             await updateAudioContent(activityAudio.id, data);
             console.log('Script content updated');
-            // setActiveTab('settings');
         } catch (error) {
             console.error('Error updating script content:', error);
             handleError(t('errorUpdatingDocumentContent')); // Use translation for error message

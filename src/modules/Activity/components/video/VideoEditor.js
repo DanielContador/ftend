@@ -218,7 +218,7 @@ const VideoEditor = ({ courseId, activityId, handleError }) => {
                     ) : (
                         activityVideo && activityVideo.videoUrl ? (
                             <video controls className={styles.videoPlayer}>
-                                <source src="https://apis.elai.io/public/video/676ee00930a99538efc47b68.mp4?s=1995cfdcb6db1f214cbac7f8a74200eea6e098ff8c358c8f37cda8c2de1519fb" type="video/mp4" />
+                                <source src={`${process.env.NEXT_PUBLIC_API_URL}/v1/download/video/file/${activityData.id}?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaWxlSWQiOiI1MTIiLCJleHAiOjE3NDI5Njg5MzF9.we4aDaQ3NPpfIahO4n8OhsVqdG0n0bCXQk08DbDKVs0`} type="video/mp4" />
                                 Your browser does not support the video element.
                             </video>
                         ) : (

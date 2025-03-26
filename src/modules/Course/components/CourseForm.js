@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'; // Importing useTranslation
 
 // Constants for resource types and evaluation methods
 const RESOURCE_TYPES = [
-    { value: 'html5', label: 'HTML5 (diapositivas interactivas)' },
+    { value: 'scorm', label: 'HTML5 (diapositivas interactivas)' },
     { value: 'video', label: 'Video' },
     { value: 'audio', label: 'Audio' },
     { value: 'text', label: 'Archivos de texto (Word, Excel, txt y PDF)' },
