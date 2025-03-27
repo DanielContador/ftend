@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getActivityVideo, generateActivityPPT, getPPTTemplates, retrieveActivityPPTStatus, editPPTContent } from '../../services/activityService';
+import { getActivityPPT, generateActivityPPT, getPPTTemplates, retrieveActivityPPTStatus, editPPTContent } from '../../services/activityService';
 import LoadingSpinner from '../../../Shared/components/LoadingSpinner';
 import Button2 from '../../../Shared/components/Button2';
 import Select from 'react-select';
@@ -12,6 +12,7 @@ const PPTEditor = ({ courseId, activityId, handleError }) => {
     const { t } = useTranslation();
     const [activityData, setActivityData] = useState(null);
     const [activityPPT, setActivityPPT] = useState(null);
+    const [fileToken, setFileToken] = useState(null);
     const [loading, setLoading] = useState(false);
     const [activeTab, setActiveTab] = useState('settings');
     const [instructions, setInstructions] = useState(''); // State for instructions
@@ -24,10 +25,13 @@ const PPTEditor = ({ courseId, activityId, handleError }) => {
     const fetchActivity = async () => {
         setLoading(true);
         try {
-            const response = await getActivityVideo(activityId);
+            const response = await getActivityPPT(activityId);
             setActivityData(response.data.activity);
-            if (response.data.video) {
-                setActivityPPT(response.data.video);
+            if (response.data.powerPoint) {
+                setActivityPPT(response.data.powerPoint);
+            }
+            if(response.data.token) {
+                setFileToken(response.data.token);
             }
         } catch (error) {
             console.error('Error fetching activity:', error);
@@ -96,8 +100,9 @@ const PPTEditor = ({ courseId, activityId, handleError }) => {
                 const response = await retrieveActivityPPTStatus(activityId);
                 if (response.data.content?.status === 'ready') {
                     clearInterval(interval);
-                    setActivityPPT(prev => ({ ...prev, videoUrl: response.data.url }));
+                    setActivityPPT(prev => ({ ...prev, pptUrl: response.data.url }));
                     setPPTLoading(false);
+                    fetchActivity();
                 } else if (response.data.content?.status === 'error') {
                     clearInterval(interval);
                     setPPTLoading(false);
@@ -230,7 +235,7 @@ const PPTEditor = ({ courseId, activityId, handleError }) => {
                             <>
                             <div className={styles.pptViewer}>
                                 <iframe
-                                    src={`https://view.officeapps.live.com/op/view.aspx?src=https://filesamples.com/samples/document/ppt/sample2.ppt`}
+                                    src={`https://view.officeapps.live.com/op/view.aspx?src=${process.env.NEXT_PUBLIC_API_URL}/v1/download/ppt/file/${activityData.id}?token=${fileToken}`}
                                     title="PPT Viewer"
                                     className={styles.pptIframe}
                                 />

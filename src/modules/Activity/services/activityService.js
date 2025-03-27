@@ -108,7 +108,7 @@ export const updateVideoContent = async (activityId, data) => {
 
 export const getActivityPPT = async (id) => {
     const jwt = getCookie('authToken'); // Retrieve the authToken
-    return await rGet(`Activity/ppts/${id}`, jwt);
+    return await rGet(`Activity/ppt/${id}`, jwt);
 };
 
 export const generateActivityPPT = async (data) => {
