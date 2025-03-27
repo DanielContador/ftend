@@ -12,6 +12,7 @@ const VideoEditor = ({ courseId, activityId, handleError }) => {
     const { t } = useTranslation();
     const [activityData, setActivityData] = useState(null);
     const [activityVideo, setActivityVideo] = useState(null);
+    const [fileToken, setFileToken] = useState(null);
     const [loading, setLoading] = useState(false);
     const [activeTab, setActiveTab] = useState('settings');
     const [editableScript, setEditableScript] = useState('');
@@ -27,6 +28,9 @@ const VideoEditor = ({ courseId, activityId, handleError }) => {
             if (response.data.video) {
                 setActivityVideo(response.data.video);
                 setEditableScript(response.data.video.content);
+            }
+            if(response.data.token) {
+                setFileToken(response.data.token);
             }
         } catch (error) {
             console.error('Error fetching activity:', error);
@@ -218,7 +222,7 @@ const VideoEditor = ({ courseId, activityId, handleError }) => {
                     ) : (
                         activityVideo && activityVideo.videoUrl ? (
                             <video controls className={styles.videoPlayer}>
-                                <source src={`${process.env.NEXT_PUBLIC_API_URL}/v1/download/video/file/${activityData.id}?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaWxlSWQiOiI1MTIiLCJleHAiOjE3NDI5Njg5MzF9.we4aDaQ3NPpfIahO4n8OhsVqdG0n0bCXQk08DbDKVs0`} type="video/mp4" />
+                                <source src={`${process.env.NEXT_PUBLIC_API_URL}/v1/download/video/file/${activityData.id}?token=${fileToken}`} type="video/mp4" />
                                 Your browser does not support the video element.
                             </video>
                         ) : (
