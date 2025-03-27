@@ -16,6 +16,7 @@ const DocumentEditor = ({ courseId, activityId, handleError }) => {
     const { id, format } = router.query; // Destructure id and type from query parameters
     const [activityData, setActivityData] = useState(null);
     const [activityDocument, setActivityDocument] = useState(null);
+    const [fileToken, setFileToken] = useState(null);
     const [loading, setLoading] = useState(false);
     const [activeTab, setActiveTab] = useState('settings'); // State to manage active tab
     const [instructions, setInstructions] = useState(''); // State for instructions
@@ -32,10 +33,12 @@ const DocumentEditor = ({ courseId, activityId, handleError }) => {
             setActivityData(response.data.activity);
             
             if (response.data.documents && response.data.documents.length > 0) {
-                setActivityDocument(response.data.documents);
+                setActivityDocument(response.data.documents[0]);
                 setEditableContent(response.data.documents[0].content);
             }
-            setActiveTab('settings')
+            if(response.data.token) {
+                setFileToken(response.data.token);
+            }
         } catch (error) {
             console.error('Error fetching activity:', error);
             handleError(t('errorFetchingActivity'));
@@ -60,7 +63,6 @@ const DocumentEditor = ({ courseId, activityId, handleError }) => {
             };
             const response = await generateActivityDocument(data);
             fetchActivity();
-            console.log('Activity generated');
             setActiveTab('preview');
         } catch (error) {
             console.error('Error generating activity document:', error);
@@ -80,7 +82,6 @@ const DocumentEditor = ({ courseId, activityId, handleError }) => {
             const response = await regenerateActivityDocument(data);
             setActivityDocument(response.data);
             setEditableContent(response.data.content);
-            console.log('Activity regenerated');
             setActiveTab('preview');
         } catch (error) {
             console.error('Error regenerating activity document:', error);
@@ -97,7 +98,6 @@ const DocumentEditor = ({ courseId, activityId, handleError }) => {
                 content: `${editableContent}`,
             };
             await updateDocumentContent(activityDocument.id, data);
-            console.log('Document content updated');
             setActiveTab('settings');
         } catch (error) {
             console.error('Error updating document content:', error);
@@ -205,7 +205,7 @@ const DocumentEditor = ({ courseId, activityId, handleError }) => {
                                 style={{ whiteSpace: 'pre-wrap' }}
                             />
                             <div className={styles.buttonRow}>
-                                <a href={activityDocument.filePath} className={styles.downloadLink} download>
+                                <a href={`${process.env.NEXT_PUBLIC_API_URL}/v1/download/${activityData.contentType}/file/${activityData.id}?token=${fileToken}`} className={styles.downloadLink} download>
                                     <FontAwesomeIcon icon={faDownload} />
                                 </a>
                                 <Button2 className={styles.editButton} onClick={handleSaveDocument}>
