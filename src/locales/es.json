@@ -105,5 +105,10 @@
     "shapeName": "Nombre de la forma",
     "addReplacement": "Agregar reemplazo",
     "replace": "Reemplazar",
-    "errorReplacingText": "Error al reemplazar el texto"
+    "errorReplacingText": "Error al reemplazar el texto",
+    "export": "Exportar",
+    "downloadCourseFiles": "Descargar archivos del curso",
+    "selectFormat": "Seleccionar formato",
+    "rawZip": "RawZip",
+    "download": "Descargar"
 }
