@@ -105,5 +105,10 @@
     "shapeName": "Shape name",
     "addReplacement": "Add replacement",
     "replace": "Replace",
-    "errorReplacingText": "Error replacing text"
+    "errorReplacingText": "Error replacing text",
+    "export": "Export",
+    "downloadCourseFiles": "Download Course Files",
+    "selectFormat": "Select Format",
+    "rawZip": "RawZip",
+    "download": "Download"
 }

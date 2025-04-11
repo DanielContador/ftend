@@ -4,10 +4,10 @@ import Footer from './components/Footer';
 import Sidebar from './components/Sidebar'; // Importing the new Sidebar component
 import BackButton from './components/BackButton'; // Importing the BackButton component
 import styles from './CourseLayout.module.css'; // Assuming we will create a CSS file for styles
-import { faEye, faCog, faSitemap, faBook, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faCog, faSitemap, faBook, faQuestionCircle, faFileExport } from '@fortawesome/free-solid-svg-icons'; // Importing the icons
 import { useTranslation } from 'react-i18next'; // Importing useTranslation
 
-const CourseLayout = ({ children, courseId, currentPage, backButtonEndpoint = '/' }) => { // Added default value for backButtonEndpoint
+const CourseLayout = ({ children, courseId, currentPage }) => { // Added currentPage as a parameter
     const { t } = useTranslation(); // Using the translation hook
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
@@ -35,11 +35,13 @@ const CourseLayout = ({ children, courseId, currentPage, backButtonEndpoint = '/
         { page: 'CourseStructurePage', label: t('structure'), link: `/course/${courseId}/edit/course-structure`, blocked: false, icon: faSitemap },
         { page: 'ActivityEditorPage', label: t('content'), link: `/course/${courseId}/edit/activity`, blocked: false, icon: faBook },
         { page: 'Quizzes', label: t('evaluation'), link: `/course/${courseId}/edit/quizzes`, blocked: false, icon: faQuestionCircle },
+        { page: 'FileDownloadManager', label: t('export'), link: `/course/${courseId}/edit/export`, blocked: false, icon: faFileExport }, // New menu item
     ] : [
         { page: 'NewCoursePage', label: t('settings'), link: '/course/new', blocked: false, icon: faCog },
         { page: 'CourseStructurePage', label: t('structure'), link: '#', blocked: true, icon: faSitemap },
         { page: 'ActivityEditorPage', label: t('content'), link: '#', blocked: true, icon: faBook },
         { page: 'Quizzes', label: t('evaluation'), link: '#', blocked: true, icon: faQuestionCircle },
+        { page: 'FileDownloadManager', label: t('export'), link: '#', blocked: true, icon: faFileExport }, // New menu item
     ];
 
     return (
@@ -53,7 +55,7 @@ const CourseLayout = ({ children, courseId, currentPage, backButtonEndpoint = '/
                     activeItem={currentPage || menuItems[0].page} // Pass active item to Sidebar
                 />
                 <main className={styles.mainContent}>
-                    <BackButton endpoint={backButtonEndpoint} /> {/* Adding the BackButton with endpoint */}
+                    <BackButton endpoint="/" /> {/* Adding the BackButton */}
                     {children}
                 </main>
             </div>

@@ -7,6 +7,8 @@ import Select from 'react-select';
 import styles from './VideoEditor.module.css';
 import AvatarVideoConfig from './AvatarVideoConfig'; // Importing AvatarVideoConfig component
 import SceneVideoConfig from './SceneVideoConfig'; // Importing SceneVideoConfig component
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDownload } from '@fortawesome/free-solid-svg-icons'; // Importing download icon
 
 const VideoEditor = ({ courseId, activityId, handleError }) => {
     const { t } = useTranslation();
@@ -221,10 +223,15 @@ const VideoEditor = ({ courseId, activityId, handleError }) => {
                         </div>
                     ) : (
                         activityVideo && activityVideo.videoUrl ? (
+                            <>
                             <video controls className={styles.videoPlayer}>
                                 <source src={`${process.env.NEXT_PUBLIC_API_URL}/v1/download/video/file/${activityData.id}?token=${fileToken}`} type="video/mp4" />
                                 Your browser does not support the video element.
                             </video>
+                            <a href={`${process.env.NEXT_PUBLIC_API_URL}/v1/download/video/file/${activityData.id}?token=${fileToken}`} className={styles.downloadLink} download>
+                                <FontAwesomeIcon icon={faDownload} />
+                            </a>
+                            </>
                         ) : (
                             <p>{t('videoNotGenerated')}</p>
                         )

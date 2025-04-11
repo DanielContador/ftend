@@ -267,3 +267,22 @@
     margin-top: 20px;
     text-align: left; /* Align to the left */
 }
+
+.downloadLink {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-self: start;
+    margin-top: 1rem;
+}
+
+.downloadLink:hover {
+    background-color: var(--primary-color);
+    color: white;
+    opacity: 0.8;
+}

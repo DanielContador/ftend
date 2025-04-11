@@ -6,12 +6,13 @@ import Button2 from '../../../Shared/components/Button2';
 import Select from 'react-select';
 import styles from './AudioEditor.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlay } from '@fortawesome/free-solid-svg-icons';
+import { faPlay, faDownload } from '@fortawesome/free-solid-svg-icons';
 
 const AudioEditor = ({ courseId, activityId, handleError }) => {
     const { t } = useTranslation();
     const [activityData, setActivityData] = useState(null);
     const [activityAudio, setActivityAudio] = useState(null);
+    const [fileToken, setFileToken] = useState(null);
     const [loading, setLoading] = useState(false);
     const [activeTab, setActiveTab] = useState('settings');
     const [editableScript, setEditableScript] = useState('');
@@ -29,9 +30,10 @@ const AudioEditor = ({ courseId, activityId, handleError }) => {
             setActivityData(response.data.activity);
             if (response.data.audio) {
                 setActivityAudio(response.data.audio);
-                // console.log(response.data.audio.content)
-                // console.log(response.data.audio.content)
                 setEditableScript(response.data.audio.content);
+            }
+            if(response.data.token) {
+                setFileToken(response.data.token);
             }
         } catch (error) {
             console.error('Error fetching activity:', error);
@@ -299,11 +301,17 @@ const AudioEditor = ({ courseId, activityId, handleError }) => {
             )}
             {activeTab === 'audio' && (
                 <div className={styles.audioContainer}>
-                    {activityAudio && activityAudio.rawAudio ? (
+                    {activityAudio && activityAudio.filePath ? (
+                        <>
                         <audio controls className={styles.audioPlayer}>
-                            <source src={`data:audio/mp3;base64,${activityAudio.rawAudio}`} type="audio/mp3" />
+                            <source src={`${process.env.NEXT_PUBLIC_API_URL}/v1/download/audio/file/${activityData.id}?token=${fileToken}`} type="audio/mp3" />
                             Your browser does not support the audio element.
                         </audio>
+                        <a href={`${process.env.NEXT_PUBLIC_API_URL}/v1/download/audio/file/${activityData.id}?token=${fileToken}`} className={styles.downloadLink} download>
+                            <FontAwesomeIcon icon={faDownload} />
+                        </a>
+                        </>
+                        
                     ) : (
                         <p>{t('audioContent')}</p>
                     )}
