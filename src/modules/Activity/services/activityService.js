@@ -81,14 +81,9 @@ export const regenerateVideoScript = async (data) => {
     return await rPost('ActivityVideo/regenerate-guion', data, jwt);
 };
 
-export const retrieveElaiActivityVideoStatus = async (activityId) => {
+export const retrieveActivityVideoStatus = async (activityId, videoCreatorApp) => {
     const jwt = getCookie('authToken'); // Retrieve the authToken
-    return await rGet(`ActivityVideo/elai/retrieve/${activityId}`, jwt);
-};
-
-export const retrieveVideogenActivityVideoStatus = async (activityId) => {
-    const jwt = getCookie('authToken'); // Retrieve the authToken
-    return await rGet(`ActivityVideo/videogen/retrieve/${activityId}`, jwt);
+    return await rGet(`ActivityVideo/${videoCreatorApp}/retrieve/${activityId}`, jwt);
 };
 
 export const generateElaiActivityVideo = async (data) => {

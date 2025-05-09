@@ -5,13 +5,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import { getElaiVideoVoiceOptions, 
     getElaiVideoAvatarOptions, 
-    generateElaiActivityVideo, 
-    retrieveElaiActivityVideoStatus } from '../../services/activityService';
+    generateElaiActivityVideo } from '../../services/activityService';
 import Button2 from '../../../Shared/components/Button2';
 import AvatarList from './AvatarList';
 import styles from './AvatarVideoConfig.module.css'; // Importing styles
 
-const AvatarVideoConfig = ({ setLoading, handleError, activityId, activityVideo, setActivityVideo, setActiveTab, setVideoLoading }) => {
+const AvatarVideoConfig = ({ setLoading, handleError, activityId, activityVideo, setActivityVideo, setActiveTab, setVideoLoading, pollVideoStatus }) => {
     const { t } = useTranslation(); // Using the translation hook
     const [selectedVoice, setSelectedVoice] = useState(null); // State for selected voice
     const [menuIsOpen, setMenuIsOpen] = useState(false); // State for menu open
@@ -94,35 +93,13 @@ const AvatarVideoConfig = ({ setLoading, handleError, activityId, activityVideo,
             setActivityVideo(activityVideo);
             setActiveTab('video');
             setVideoLoading(true);
-            pollVideoStatus();
+            pollVideoStatus('elai');
         } catch (error) {
             console.error('Error generating video:', error);
             handleError(t('errorGeneratingVideo')); // Use translation for error message
         } finally {
             setLoading(false);
         }
-    };
-
-    const pollVideoStatus = async () => {
-        const interval = setInterval(async () => {
-            try {
-                const response = await retrieveElaiActivityVideoStatus(activityId);
-                if (response.data.content?.status === 'ready') {
-                    clearInterval(interval);
-                    setActivityVideo(prev => ({ ...prev, rawVideo: response.data.url }));
-                    setVideoLoading(false);
-                } else if (response.data.content.status !== 'rendering') {
-                    clearInterval(interval);
-                    setVideoLoading(false);
-                    handleError(t('errorGeneratingVideo'));
-                }
-            } catch (error) {
-                clearInterval(interval);
-                setVideoLoading(false);
-                console.error('Error polling video status:', error);
-                handleError(t('errorGeneratingVideo'));
-            }
-        }, 5000); // Poll every 5 seconds
     };
 
     const handleAvatarSelect = (avatar, variant) => {

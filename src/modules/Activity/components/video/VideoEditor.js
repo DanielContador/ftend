@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getActivityVideo, updateVideoContent, generateVideoScript, regenerateVideoScript } from '../../services/activityService';
+import { getActivityVideo, updateVideoContent, generateVideoScript, regenerateVideoScript, retrieveActivityVideoStatus  } from '../../services/activityService';
 import LoadingSpinner from '../../../Shared/components/LoadingSpinner';
 import Button2 from '../../../Shared/components/Button2';
 import Select from 'react-select';
@@ -30,6 +30,14 @@ const VideoEditor = ({ courseId, activityId, handleError }) => {
             if (response.data.video) {
                 setActivityVideo(response.data.video);
                 setEditableScript(response.data.video.content);
+                if(response.data.video.videoUrl	== "rendering") {
+                    const videoId = response.data.video.videoId;
+                    if (typeof videoId === 'string' && (videoId.match(/-/g) || []).length > 2) {
+                        pollVideoStatus('videogen');
+                    } else {
+                        pollVideoStatus('elai');
+                    }
+                }
             }
             if(response.data.token) {
                 setFileToken(response.data.token);
@@ -97,6 +105,28 @@ const VideoEditor = ({ courseId, activityId, handleError }) => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const pollVideoStatus = async (videoCreatorApp) => {
+        const interval = setInterval(async () => {
+            try {
+                const response = await retrieveActivityVideoStatus(activityId, videoCreatorApp);
+                if (response.data.content?.status === 'ready') {
+                    clearInterval(interval);
+                    setActivityVideo(prev => ({ ...prev, rawVideo: response.data.url }));
+                    setVideoLoading(false);
+                } else if (response.data.content.status !== 'rendering') {
+                    clearInterval(interval);
+                    setVideoLoading(false);
+                    handleError(t('errorGeneratingVideo'));
+                }
+            } catch (error) {
+                clearInterval(interval);
+                setVideoLoading(false);
+                console.error('Error polling video status:', error.message);
+                handleError(t('errorGeneratingVideo') + ': ' + error.message);
+            }
+        }, 5000); // Poll every 5 seconds
     };
 
     if (loading) return <LoadingSpinner />; // Render loading spinner while loading
@@ -195,6 +225,7 @@ const VideoEditor = ({ courseId, activityId, handleError }) => {
                                 setActivityVideo={setActivityVideo}
                                 setActiveTab={setActiveTab}
                                 setVideoLoading={setVideoLoading}
+                                pollVideoStatus={pollVideoStatus} // Pass pollVideoStatus
                             />
                         )}
                         {videoType === 'scene' && (
@@ -206,6 +237,7 @@ const VideoEditor = ({ courseId, activityId, handleError }) => {
                                 setActivityVideo={setActivityVideo}
                                 setActiveTab={setActiveTab}
                                 setVideoLoading={setVideoLoading}
+                                pollVideoStatus={pollVideoStatus} // Pass pollVideoStatus
                             />
                         )}
                     </>

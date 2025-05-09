@@ -3,11 +3,11 @@ import Select from 'react-select';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
-import { getVideogenVideoVoiceOptions, generateVideogenActivityVideo, retrieveVideogenActivityVideoStatus } from '../../services/activityService';
+import { getVideogenVideoVoiceOptions, generateVideogenActivityVideo } from '../../services/activityService';
 import Button2 from '../../../Shared/components/Button2';
 import styles from './SceneVideoConfig.module.css'; // Importing styles
 
-const SceneVideoConfig = ({ setLoading, handleError, activityId, activityVideo, setActivityVideo, setActiveTab, setVideoLoading }) => {
+const SceneVideoConfig = ({ setLoading, handleError, activityId, activityVideo, setActivityVideo, setActiveTab, setVideoLoading, pollVideoStatus }) => {
     const { t } = useTranslation(); // Using the translation hook
     const [selectedVoice, setSelectedVoice] = useState(null); // State for selected voice
     const [menuIsOpen, setMenuIsOpen] = useState(false); // State for menu open
@@ -64,35 +64,13 @@ const SceneVideoConfig = ({ setLoading, handleError, activityId, activityVideo, 
             setActivityVideo(activityVideo);
             setActiveTab('video');
             setVideoLoading(true);
-            pollVideoStatus();
+            pollVideoStatus('videogen'); // Use pollVideoStatus
         } catch (error) {
             console.error('Error generating video:', error);
             handleError(t('errorGeneratingVideo')); // Use translation for error message
         } finally {
             setLoading(false);
         }
-    };
-
-    const pollVideoStatus = async () => {
-        const interval = setInterval(async () => {
-            try {
-                const response = await retrieveVideogenActivityVideoStatus(activityId);
-                if (response.data.content?.status === 'ready') {
-                    clearInterval(interval);
-                    setActivityVideo(prev => ({ ...prev, rawVideo: response.data.url }));
-                    setVideoLoading(false);
-                } else if (response.data.content.status !== 'rendering') {
-                    clearInterval(interval);
-                    setVideoLoading(false);
-                    handleError(t('errorGeneratingVideo'));
-                }
-            } catch (error) {
-                clearInterval(interval);
-                setVideoLoading(false);
-                console.error('Error polling video status:', error);
-                handleError(t('errorGeneratingVideo'));
-            }
-        }, 5000); // Poll every 5 seconds
     };
 
     const customStyles = {
