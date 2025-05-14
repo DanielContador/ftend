@@ -24,6 +24,8 @@ export class BaseService {
 
   add = async (data, partialUrl='') => {
     const jwt = this.#getAuthToken();
+    console.log('add');
+    console.log(this.baseUrl);
     return await rPost(`${this.baseUrl}${partialUrl}`, data, jwt);
   };
 

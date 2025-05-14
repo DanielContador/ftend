@@ -1,7 +1,7 @@
 import React from 'react';
 import CourseForm from '../components/CourseForm'; // Importing the CourseForm component
 import styles from './CourseFormPage.module.css'; // Assuming we will create a CSS file for styles
-import { generateCourseStructure } from '../services/courseService'; // Importing the service
+import courseService from '../services/courseService';
 import { useRouter } from 'next/router'; // Importing useRouter for navigation
 import { useTranslation } from 'react-i18next'; // Importing useTranslation
 
@@ -12,7 +12,8 @@ const CourseFormPage = ({ handleError }) => {
     const handleFormSubmit = async (formData) => {
         console.log('Form data:', formData);
         try {
-            const response = await generateCourseStructure('CourseContentAI/generate-course-structure', formData);
+            const response = await courseService.generateStructure(formData, '/CourseContentAI/generate-course-structure');
+            console.log(response);
             const generatedCourseId = response.courseId; // Assuming the response contains the courseId
             // Redirect to the new course structure page with generatedCourseId
             router.push(`/course/${generatedCourseId}/edit/course-structure`);

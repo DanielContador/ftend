@@ -24,8 +24,7 @@ export function useCrudManager(service, handleError, t) {
 
   const getItemById = async (id) => {
     try {
-      const item = await service.getById(id);
-      return item;
+      return await service.getById(id);;
     } catch (error) {
       console.error('Error editing item:', error);
       handleError(t('editError'));
@@ -35,7 +34,7 @@ export function useCrudManager(service, handleError, t) {
   const createItem = async (data) => {
     try {
       await service.add(data);
-      setItems(prev => [...prev, newItem]);
+      await fetchAll();
     } catch (error) {
       console.error('Error creating item:', error);
       handleError(t('createError'));
@@ -45,7 +44,7 @@ export function useCrudManager(service, handleError, t) {
   const editItem = async (id, data) => {
     try {
       const item = await service.update(id, data);
-      setItems(prev => [...prev, newItem]);
+      await fetchAll();
       return item;
     } catch (error) {
       console.error('Error editing item:', error);
@@ -56,7 +55,7 @@ export function useCrudManager(service, handleError, t) {
   const deleteItem = async (id) => {
     try {
       await service.delete(id);
-      setItems(prev => [...prev, newItem]);
+      await fetchAll();
     } catch (error) {
       console.error('Error deleting item:', error);
       handleError(t('deleteError'));

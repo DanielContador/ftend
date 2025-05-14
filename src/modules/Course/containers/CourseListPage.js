@@ -12,7 +12,6 @@ const CourseListPage = ({ handleError }) => {
     const { t } = useTranslation(); // Using the translation hook
     const crud = useCrudManager(courseService, handleError, t);
     const router = useRouter(); // Initialize router for navigation
-
     const handleDelete = async (id) => {
         crud.deleteItem(id);
     };
@@ -27,12 +26,6 @@ const CourseListPage = ({ handleError }) => {
         console.log('Create new course');
         router.push('/course/new'); // Redirect to the new course page using Next.js router
     };
-
-    if (crud.loading) {
-        return (<div className={styles.loadingCoursesArea}>
-                    <LoadingSpinner />
-                </div>);
-    }
 
     return (
         <>

@@ -7,7 +7,12 @@ class CourseService extends BaseService {
         super(courseModuleUrl);
     }
 
-    generateStructure = (data, partialUrl) => this.add(data, partialUrl);
+    generateStructure = (data, partialUrl) => {
+        console.log('generateStructure');
+        console.log(partialUrl);
+        console.log(this);
+        return this.add(data, partialUrl);
+    }
 
     reGenerateStructure = (data, partialUrl) => this.add(data, partialUrl);
 
