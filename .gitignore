@@ -1,0 +1,17 @@
+# Next.js
+.next/
+out/
+
+# Dependencias
+node_modules/
+
+# Archivos de entorno
+.env*.local
+
+# Logs y caché
+*.log
+*.cache
+
+# Sistema operativo
+.DS_Store  (macOS)
+Thumbs.db  (Windows)

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { getAllCourses, deleteCourse } from '../services/courseService'; // Importing the service
+import courseService from '../services/courseService'; // Importing the service
+import { useCrudManager } from '../../Shared/containers/useCrudManager';
 import Button1 from '../../Shared/components/Button1';
 import CourseList from '../components/CourseList'; // Importing the new CourseList component
 import LoadingSpinner from '../../Shared/components/LoadingSpinner'; // Importing the loading spinner
@@ -9,40 +10,11 @@ import { useTranslation } from 'react-i18next'; // Importing useTranslation
 
 const CourseListPage = ({ handleError }) => {
     const { t } = useTranslation(); // Using the translation hook
-    const [courses, setCourses] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const crud = useCrudManager(courseService, handleError, t);
     const router = useRouter(); // Initialize router for navigation
-    const COURSE_ENDPOINT = 'course';
-
-    const fetchCourses = async () => {
-        setLoading(true);
-        try {
-            const data = await getAllCourses(COURSE_ENDPOINT);
-            if (Array.isArray(data)) {
-                setCourses(data); // Set the courses state with the fetched data
-            } else {
-                throw new Error(t('invalidDataFormat')); // Using translation key for error message
-            }
-        } catch (error) {
-            console.error('Error fetching courses:', error);
-            handleError(t('fetchCoursesError')); // Set error message
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchCourses(); // Fetch courses on component mount
-    }, []);
 
     const handleDelete = async (id) => {
-        try {
-            await deleteCourse(COURSE_ENDPOINT, id); // Call the deleteCourse function
-            fetchCourses(); // Reload courses after deletion
-        } catch (error) {
-            console.error('Error deleting course:', error);
-            handleError(t('deleteCourseError')); // Set error message
-        }
+        crud.deleteItem(id);
     };
 
     const handleEdit = (id) => {
@@ -56,19 +28,28 @@ const CourseListPage = ({ handleError }) => {
         router.push('/course/new'); // Redirect to the new course page using Next.js router
     };
 
-    if (loading) {
+    if (crud.loading) {
         return (<div className={styles.loadingCoursesArea}>
                     <LoadingSpinner />
                 </div>);
     }
 
     return (
-        <div className={styles.courseListPage}>
+        <>
+        {crud.loading && (
+            <div className={styles.loadingCoursesArea}>
+                    <LoadingSpinner />
+                </div>
+        )}
+        {!crud.loading && (
+            <div className={styles.courseListPage}>
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1em' }}>
                 <Button1 onClick={handleCreate}>{t('newCourse')}</Button1>
             </div>
-            <CourseList courses={courses} onEdit={handleEdit} onDelete={handleDelete} />
+            <CourseList courses={crud.items} onEdit={handleEdit} onDelete={handleDelete} />
         </div>
+        )}
+        </>
     );
 };
 
