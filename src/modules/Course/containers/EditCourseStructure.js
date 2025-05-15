@@ -72,7 +72,6 @@ const EditCourseStructure = ({ courseId, handleError }) => {
                     Name: event.target.value,
                 };
                 crud.editItem(courseId, courseData); // Call the updateCourseTitle function with the endpoint, courseId, and new title
-                console.log(courseData);
                 setCourseTitle(event.target.value); // Update course title
                 setIsEditingCourseTitle(false); // Stop editing on save
                 console.log('Course title updated to:', event.target.value);
