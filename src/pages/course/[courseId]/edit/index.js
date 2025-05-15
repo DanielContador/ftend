@@ -24,7 +24,7 @@ const EditCoursePage = () => {
     useEffect(() => {
         const fetchCourseDetails = async () => {
             try {
-                const response = crud.getItemById(courseId);
+                const response = await crud.getItemById(courseId);
                 setCourseData(response);
             } catch (error) {
                 setError('Error fetching course details');

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import courseContentAIService from '../services/courseContentAIService';
+import courseContentAIService from '../../Course/services/courseContentAIService';
 import LoadingSpinner from '../../Shared/components/LoadingSpinner'; // Importing LoadingSpinner
 import { useRouter } from 'next/router'; // Import useRouter
 import styles from './CourseStructureNavigation.module.css'; // Assuming a CSS file for styles
