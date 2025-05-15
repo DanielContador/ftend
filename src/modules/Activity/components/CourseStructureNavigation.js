@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getCourseStructure } from '../../Course/services/courseService';
+import courseContentAIService from '../services/courseContentAIService';
 import LoadingSpinner from '../../Shared/components/LoadingSpinner'; // Importing LoadingSpinner
 import { useRouter } from 'next/router'; // Import useRouter
 import styles from './CourseStructureNavigation.module.css'; // Assuming a CSS file for styles
@@ -17,7 +17,7 @@ const CourseStructureNavigation = ({ courseId, handleError }) => {
         if (courseId) {
             setLoading(true); // Set loading to true before fetching
             try {
-                const data = await getCourseStructure('CourseContentAI/course-structure', courseId); // Replace with actual endpoint
+                const data = await courseContentAIService.getCourseStructure(courseId,'/course-structure'); // Replace with actual endpoint
                 setStructure(data.courseStructure);
                 // Set all modules to expanded by default
                 setExpandedModules(data.courseStructure.modules.map((_, index) => index));

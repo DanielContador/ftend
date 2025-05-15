@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { getCourseStructure, reGenerateCourseStructure, updateCourseTitle } from '../services/courseService'; // Adjust the import path as necessary
+import courseService from '../services/courseService'; // Adjust the import path as necessary
+import courseContentAIService from '../services/courseContentAIService';
 import styles from './EditCourseStructure.module.css';
 import LoadingSpinner from '../../Shared/components/LoadingSpinner'; // Importing LoadingSpinner
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,6 +9,7 @@ import { useTranslation } from 'react-i18next'; // Importing useTranslation
 import Button2 from '../../Shared/components/Button2'; // Updated to use Button2
 import { deleteTopic, deleteActivity, updateModuleTitle, updateActivityTitle } from '../services/courseStructureService'; // Import deleteTopic function
 import { useRouter } from 'next/router'; // Import useRouter
+import { useCrudManager } from '../../Shared/containers/useCrudManager';
 
 const EditCourseStructure = ({ courseId, handleError }) => {
     const { t } = useTranslation(); // Using the translation hook
@@ -20,12 +22,13 @@ const EditCourseStructure = ({ courseId, handleError }) => {
     const [isEditingModuleTitle, setIsEditingModuleTitle] = useState({}); // State to manage module title editing
     const [isEditingActivityTitle, setIsEditingActivityTitle] = useState({}); // State to manage activity title editing
     const router = useRouter(); // Initialize useRouter
+    const crud = useCrudManager(courseService, handleError, t);
 
     const fetchCourseStructure = async () => {
         if (courseId) {
             setLoading(true); // Set loading to true before fetching
             try {
-                const data = await getCourseStructure('CourseContentAI/course-structure', courseId); // Replace with actual endpoint
+                const data = await courseContentAIService.getCourseStructure(courseId,'/course-structure'); // Replace with actual endpoint
                 console.log('Course structure:', data);
                 setStructure(data.courseStructure);
                 setCourseTitle(data.courseStructure.course_title); // Set initial course title
@@ -51,7 +54,7 @@ const EditCourseStructure = ({ courseId, handleError }) => {
                 prompt: instructions,
                 courseId: courseId
             };
-            await reGenerateCourseStructure('CourseContentAI/regenerate-course-structure', promptInstructionsData); // Replace with actual endpoint
+            await courseContentAIService.reGenerateCourseStructure(promptInstructionsData,'/regenerate-course-structure'); // Replace with actual endpoint
             console.log('Regeneration successful');
             fetchCourseStructure(); // Call fetchCourseStructure instead of setting structure directly
         } catch (error) {
@@ -65,10 +68,11 @@ const EditCourseStructure = ({ courseId, handleError }) => {
     const handleKeyPress = async (event) => {
         if (event.key === 'Enter') {
             try {
-                const courdeData = {
+                const courseData = {
                     Name: event.target.value,
                 };
-                await updateCourseTitle('course', courseId, courdeData); // Call the updateCourseTitle function with the endpoint, courseId, and new title
+                crud.editItem(courseId, courseData); // Call the updateCourseTitle function with the endpoint, courseId, and new title
+                console.log(courseData);
                 setCourseTitle(event.target.value); // Update course title
                 setIsEditingCourseTitle(false); // Stop editing on save
                 console.log('Course title updated to:', event.target.value);

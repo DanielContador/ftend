@@ -24,7 +24,7 @@ export function useCrudManager(service, handleError, t) {
 
   const getItemById = async (id) => {
     try {
-      return await service.getById(id);;
+      return await service.getById(id);
     } catch (error) {
       console.error('Error editing item:', error);
       handleError(t('editError'));

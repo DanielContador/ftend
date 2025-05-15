@@ -2,20 +2,29 @@ import CourseLayout from '../../../../layouts/CourseLayout';
 import { useRouter } from 'next/router';
 import ErrorMessage from '../../../../layouts/components/ErrorMessage';
 import { useState, useEffect } from 'react';
-import { getCourseById } from '../../../../modules/Course/services/courseService'; // Import the service to get course details
+import { useTranslation } from 'react-i18next';
 import LoadingSpinner from '../../../../modules/Shared/components/LoadingSpinner'; // Import a loading spinner component
+import courseService from '../../../../modules/Course/services/courseService';
+import { useCrudManager } from '../../../../modules/Shared/containers/useCrudManager';
 
 const EditCoursePage = () => {
     const router = useRouter();
+    const { t } = useTranslation();
     const { courseId } = router.query;
     const [error, setError] = useState(null);
     const [courseData, setCourseData] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    const handleError = (errorMessage) => {
+        setError(errorMessage);
+    };
+
+    const crud = useCrudManager(courseService, handleError, t);
+
     useEffect(() => {
         const fetchCourseDetails = async () => {
             try {
-                const response = await getCourseById('course', courseId);
+                const response = crud.getItemById(courseId);
                 setCourseData(response);
             } catch (error) {
                 setError('Error fetching course details');
@@ -28,10 +37,6 @@ const EditCoursePage = () => {
             fetchCourseDetails();
         }
     }, [courseId]);
-
-    const handleError = (errorMessage) => {
-        setError(errorMessage);
-    };
 
     if (loading) return <LoadingSpinner />;
 
