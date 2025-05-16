@@ -64,7 +64,7 @@ export function useCrudManager(service, handleError, t) {
 
   useEffect(() => {
     fetchAll();
-  }, [fetchAll]);
+  }, []);
 
   return {
     items,
