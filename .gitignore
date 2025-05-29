@@ -6,7 +6,7 @@ out/
 node_modules/
 
 # Archivos de entorno
-.env*.local
+.env.local
 
 # Logs y caché
 *.log
