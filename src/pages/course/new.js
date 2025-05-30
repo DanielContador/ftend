@@ -1,7 +1,7 @@
-import CourseLayout from "../../layouts/CourseLayout";
+import CourseLayout from "../../shared/layouts/CourseLayout";
 import CourseFormPage from "../../modules/Course/containers/CourseFormPage";
 import { useState } from 'react';
-import ErrorMessage from '../../layouts/components/ErrorMessage'; // Importing ErrorMessage
+import ErrorMessage from '../../shared/layouts/components/ErrorMessage'; // Importing ErrorMessage
 
 const NewCoursePage = () => {
     const [error, setError] = useState(null); // State to hold error messages

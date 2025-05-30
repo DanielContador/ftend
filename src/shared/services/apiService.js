@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { deleteCookie } from '../../lib/session';
+import { deleteCookie } from '../utils/session';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL; // Use the environment variable for the API URL
 

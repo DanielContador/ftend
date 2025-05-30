@@ -1,6 +1,6 @@
-import CourseLayout from '../../../../../layouts/CourseLayout'; // Importing CourseLayout
+import CourseLayout from '../../../../../shared/layouts/CourseLayout'; // Importing CourseLayout
 import { useRouter } from 'next/router';
-import ErrorMessage from '../../../../../layouts/components/ErrorMessage'; // Importing ErrorMessage
+import ErrorMessage from '../../../../../shared/layouts/components/ErrorMessage'; // Importing ErrorMessage
 import { useState } from 'react';
 import EditActivityPage from '../../../../../modules/Activity/containers/EditActivityPage'; // Importing EditActivityPage
 

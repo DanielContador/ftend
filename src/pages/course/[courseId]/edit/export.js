@@ -1,5 +1,5 @@
 import React from 'react';
-import CourseLayout from '../../../../layouts/CourseLayout';
+import CourseLayout from '../../../../shared/layouts/CourseLayout';
 import FileDownloadManager from '../../../../modules/FileDownloadManager/containers/FileDownloadManager';
 import { useRouter } from 'next/router';
 

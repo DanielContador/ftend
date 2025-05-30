@@ -1,4 +1,4 @@
-import { getCookie } from '../../../lib/session';
+import { getCookie } from '../../../shared/utils/session';
 import { rGet, rPost, rPut } from '../../../shared/services/apiService'; // Importing the apiService
 
 export const getActivityDocument = async (id) => {

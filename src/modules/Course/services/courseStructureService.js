@@ -1,4 +1,4 @@
-import { getCookie } from '../../../lib/session';
+import { getCookie } from '../../../shared/utils/session';
 import { rDelete, rPut } from '../../../shared/services/apiService'; // Importing the apiService
 
 export const deleteTopic = async (endpoint, id) => {

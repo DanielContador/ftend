@@ -1,6 +1,6 @@
-import CourseLayout from '../../../../layouts/CourseLayout';
+import CourseLayout from '../../../../shared/layouts/CourseLayout';
 import { useRouter } from 'next/router';
-import ErrorMessage from '../../../../layouts/components/ErrorMessage';
+import ErrorMessage from '../../../../shared/layouts/components/ErrorMessage';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import LoadingSpinner from '../../../../shared/components/LoadingSpinner'; // Import a loading spinner component
