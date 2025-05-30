@@ -2,13 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router'; // Import useRouter
 import styles from './DocumentEditor.module.css'; // Importing styles
 import { useTranslation } from 'react-i18next'; // Importing useTranslation
-import Button2 from '../../../Shared/components/Button2';
-import LoadingSpinner from '../../../Shared/components/LoadingSpinner';
+import Button2 from '../../../../shared/components/Button2';
+import LoadingSpinner from '../../../../shared/components/LoadingSpinner';
 import { getActivityDocument, generateActivityDocument, regenerateActivityDocument, updateDocumentContent } from '../../services/activityService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload, faUpload } from '@fortawesome/free-solid-svg-icons';
 import Switch from 'react-switch'; // Importing Switch component
-import UploadDocumentPopup from '../../../Shared/components/UploadDocumentPopup'; // Importing UploadDocumentPopup
+import UploadDocumentPopup from '../../../../shared/components/UploadDocumentPopup'; // Importing UploadDocumentPopup
 
 const DocumentEditor = ({ courseId, activityId, handleError }) => {
     const router = useRouter();

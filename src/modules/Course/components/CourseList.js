@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faCheckCircle, faTimesSquare } from '@fortawesome/free-solid-svg-icons';
-import Button2 from '../../Shared/components/Button2'; // Importing Button2 for actions
+import Button2 from '../../../shared/components/Button2'; // Importing Button2 for actions
 import styles from './CourseList.module.css'; // Using CSS modules for styles
-import DeleteConfirmationPopup from '../../Shared/components/DeleteConfirmationPopup'; // Updated import path
+import DeleteConfirmationPopup from '../../../shared/components/DeleteConfirmationPopup'; // Updated import path
 import { useTranslation } from 'react-i18next'; // Importing useTranslation
 
 const CourseList = ({ courses, onEdit, onDelete }) => {

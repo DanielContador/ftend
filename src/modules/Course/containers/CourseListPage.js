@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import courseService from '../services/courseService'; // Importing the service
-import { useCrudManager } from '../../Shared/containers/useCrudManager';
-import Button1 from '../../Shared/components/Button1';
+import { useCrudManager } from '../../../shared/hooks/useCrudManager';
+import Button1 from '../../../shared/components/Button1';
 import CourseList from '../components/CourseList'; // Importing the new CourseList component
-import LoadingSpinner from '../../Shared/components/LoadingSpinner'; // Importing the loading spinner
+import LoadingSpinner from '../../../shared/components/LoadingSpinner'; // Importing the loading spinner
 import styles from './CourseListPage.module.css'; // Assuming we will create a CSS file for styles
 import { useRouter } from 'next/router'; // Importing useRouter for navigation
 import { useTranslation } from 'react-i18next'; // Importing useTranslation

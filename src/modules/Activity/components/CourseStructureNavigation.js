@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import courseContentAIService from '../../Course/services/courseContentAIService';
-import LoadingSpinner from '../../Shared/components/LoadingSpinner'; // Importing LoadingSpinner
+import LoadingSpinner from '../../../shared/components/LoadingSpinner'; // Importing LoadingSpinner
 import { useRouter } from 'next/router'; // Import useRouter
 import styles from './CourseStructureNavigation.module.css'; // Assuming a CSS file for styles
-import Button2 from '../../Shared/components/Button2';
+import Button2 from '../../../shared/components/Button2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGears } from '@fortawesome/free-solid-svg-icons';
 

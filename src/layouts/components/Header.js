@@ -1,7 +1,7 @@
 import React from 'react';
-import { useAuth } from '../../provider/authProvider';
+import { useAuth } from '../../shared/utils/authProvider';
 import styles from './Header.module.css';
-import Button2 from '../../modules/Shared/components/Button2';
+import Button2 from '../../shared/components/Button2';
 import logo from '../../../public/logo-dark.webp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getActivityPPT, generateActivityPPT, getPPTTemplates, retrieveActivityPPTStatus, editPPTContent } from '../../services/activityService';
-import LoadingSpinner from '../../../Shared/components/LoadingSpinner';
-import Button2 from '../../../Shared/components/Button2';
+import LoadingSpinner from '../../../../shared/components/LoadingSpinner';
+import Button2 from '../../../../shared/components/Button2';
 import Select from 'react-select';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';

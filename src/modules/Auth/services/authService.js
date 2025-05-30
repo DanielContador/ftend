@@ -1,4 +1,4 @@
-import { rPost } from '../../Shared/services/apiService';
+import { rPost } from '../../../shared/services/apiService';
 
 const LOGIN_ENDPOINT = 'user/login';
 

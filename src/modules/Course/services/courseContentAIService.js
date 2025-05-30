@@ -1,4 +1,4 @@
-import { BaseService } from '../../Shared/services/baseService';
+import { BaseService } from '../../../shared/services/baseService';
 
 const CourseContentAI_ENDPOINT = 'CourseContentAI';
 

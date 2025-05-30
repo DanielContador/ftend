@@ -1,5 +1,5 @@
 import { getCookie } from '../../../lib/session';
-import { rDelete, rPut } from '../../Shared/services/apiService'; // Importing the apiService
+import { rDelete, rPut } from '../../../shared/services/apiService'; // Importing the apiService
 
 export const deleteTopic = async (endpoint, id) => {
     const jwt = getCookie('authToken'); // Retrieve the authToken

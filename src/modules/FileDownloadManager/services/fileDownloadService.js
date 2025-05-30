@@ -1,3 +1,3 @@
 import { getCookie } from '../../../lib/session';
-import { rGet } from '../../Shared/services/apiService';
+import { rGet } from '../../shared/services/apiService';
 

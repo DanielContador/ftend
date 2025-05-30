@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getActivityAudio, updateAudioContent, generateActivityAudio, generateAudioScript, regenerateAudioScript, updateDocumentContent, getVoiceOptions } from '../../services/activityService';
-import LoadingSpinner from '../../../Shared/components/LoadingSpinner';
-import Button2 from '../../../Shared/components/Button2';
+import LoadingSpinner from '../../../../shared/components/LoadingSpinner';
+import Button2 from '../../../../shared/components/Button2';
 import Select from 'react-select';
 import styles from './AudioEditor.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

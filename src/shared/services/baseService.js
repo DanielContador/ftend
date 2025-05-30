@@ -1,5 +1,5 @@
 // src/shared/services/genericService.js
-import { getCookie } from '../../../lib/session';
+import { getCookie } from '../../lib/session';
 import { rGet, rPost, rPut, rDelete } from './apiService';
 
 export class BaseService {

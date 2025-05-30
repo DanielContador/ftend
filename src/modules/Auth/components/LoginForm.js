@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useAuth } from '../../../provider/authProvider';
+import { useAuth } from '../../../shared/utils/authProvider';
 import authService from '../services/authService';
-import Button1 from '../../Shared/components/Button1';
-import LoadingSpinner from '../../Shared/components/LoadingSpinner'; // Importing the LoadingSpinner component
+import Button1 from '../../../shared/components/Button1';
+import LoadingSpinner from '../../../shared/components/LoadingSpinner'; // Importing the LoadingSpinner component
 import { useTranslation } from 'react-i18next'; // Importing useTranslation
 
 const LoginForm = ({ onLoginSuccess }) => {

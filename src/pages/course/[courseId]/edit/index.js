@@ -3,9 +3,9 @@ import { useRouter } from 'next/router';
 import ErrorMessage from '../../../../layouts/components/ErrorMessage';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import LoadingSpinner from '../../../../modules/Shared/components/LoadingSpinner'; // Import a loading spinner component
+import LoadingSpinner from '../../../../shared/components/LoadingSpinner'; // Import a loading spinner component
 import courseService from '../../../../modules/Course/services/courseService';
-import { useCrudManager } from '../../../../modules/Shared/containers/useCrudManager';
+import { useCrudManager } from '../../../../shared/hooks/useCrudManager';
 
 const EditCoursePage = () => {
     const router = useRouter();

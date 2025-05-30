@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { useAuth } from '../provider/authProvider';
+import { useAuth } from '../shared/utils/authProvider';
 import MainLayout from '../layouts/MainLayout';
 import CourseListPage from '../modules/Course/containers/CourseListPage';
 import ErrorMessage from '../layouts/components/ErrorMessage';

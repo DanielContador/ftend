@@ -1,5 +1,5 @@
 import { getCookie } from '../../../lib/session';
-import { rGet, rPost, rPut } from '../../Shared/services/apiService'; // Importing the apiService
+import { rGet, rPost, rPut } from '../../../shared/services/apiService'; // Importing the apiService
 
 export const getActivityDocument = async (id) => {
     const jwt = getCookie('authToken'); // Retrieve the authToken

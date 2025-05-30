@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import courseService from '../services/courseService'; // Adjust the import path as necessary
 import courseContentAIService from '../services/courseContentAIService';
 import styles from './EditCourseStructure.module.css';
-import LoadingSpinner from '../../Shared/components/LoadingSpinner'; // Importing LoadingSpinner
+import LoadingSpinner from '../../../shared/components/LoadingSpinner'; // Importing LoadingSpinner
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronRight, faEdit, faTrash, faGears } from '@fortawesome/free-solid-svg-icons'; // Importing icons for arrow buttons, edit, delete, and gears
 import { useTranslation } from 'react-i18next'; // Importing useTranslation
-import Button2 from '../../Shared/components/Button2'; // Updated to use Button2
+import Button2 from '../../../shared/components/Button2'; // Updated to use Button2
 import { deleteTopic, deleteActivity, updateModuleTitle, updateActivityTitle } from '../services/courseStructureService'; // Import deleteTopic function
 import { useRouter } from 'next/router'; // Import useRouter
-import { useCrudManager } from '../../Shared/containers/useCrudManager';
+import { useCrudManager } from '../../../shared/hooks/useCrudManager';
 
 const EditCourseStructure = ({ courseId, handleError }) => {
     const { t } = useTranslation(); // Using the translation hook

@@ -6,7 +6,7 @@ import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import { getElaiVideoVoiceOptions, 
     getElaiVideoAvatarOptions, 
     generateElaiActivityVideo } from '../../services/activityService';
-import Button2 from '../../../Shared/components/Button2';
+import Button2 from '../../../../shared/components/Button2';
 import AvatarList from './AvatarList';
 import styles from './AvatarVideoConfig.module.css'; // Importing styles
 

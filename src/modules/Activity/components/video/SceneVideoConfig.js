@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import { getVideogenVideoVoiceOptions, generateVideogenActivityVideo } from '../../services/activityService';
-import Button2 from '../../../Shared/components/Button2';
+import Button2 from '../../../../shared/components/Button2';
 import styles from './SceneVideoConfig.module.css'; // Importing styles
 
 const SceneVideoConfig = ({ setLoading, handleError, activityId, activityVideo, setActivityVideo, setActiveTab, setVideoLoading, pollVideoStatus }) => {

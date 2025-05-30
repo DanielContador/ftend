@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from './CourseForm.module.css'; // Assuming we will create a CSS file for styles
-import stylesButton1 from '../../Shared/components/Button1.module.css'; // Importing Button1
-import LoadingSpinner from '../../Shared/components/LoadingSpinner'; // Importing LoadingSpinner
+import stylesButton1 from '../../../shared/components/Button1.module.css'; // Importing Button1
+import LoadingSpinner from '../../../shared/components/LoadingSpinner'; // Importing LoadingSpinner
 import { useTranslation } from 'react-i18next'; // Importing useTranslation
 
 // Constants for resource types and evaluation methods

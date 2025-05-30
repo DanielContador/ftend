@@ -1,13 +1,13 @@
-import { AuthProvider } from '../provider/authProvider';
+import { AuthProvider } from '../shared/utils/authProvider';
 import Head from 'next/head';
-import '../styles/globals.css'; // Ensure this path is correct and the file exists
+import '../shared/styles/globals.css'; // Ensure this path is correct and the file exists
 import { I18nextProvider } from 'react-i18next';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 // Translation resources
-import translationES from '../locales/es.json';
-import translationEN from '../locales/en.json';
+import translationES from '../shared/locales/es.json';
+import translationEN from '../shared/locales/en.json';
 
 // i18n configuration
 i18n
