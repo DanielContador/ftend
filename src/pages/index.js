@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../shared/utils/authProvider';
 import MainLayout from '../shared/layouts/MainLayout';
+import Layout from '../shared/layouts/welcome/Layout';
 import CourseListPage from '../modules/Course/pages/CourseListPage';
 import ErrorMessage from '../shared/layouts/components/ErrorMessage';
 import { useTranslation } from 'react-i18next'; // Importing useTranslation
@@ -26,11 +27,17 @@ const HomePage = () => {
         setError(errorMessage);
     };
 
+    // return (
+    //     <MainLayout>
+    //         {error && <ErrorMessage error={error} />} {/* Display error message if exists */}
+    //         <CourseListPage handleError={handleError}/>
+    //     </MainLayout>
+    // );
     return (
-        <MainLayout>
+        <Layout>
             {error && <ErrorMessage error={error} />} {/* Display error message if exists */}
             <CourseListPage handleError={handleError}/>
-        </MainLayout>
+        </Layout>
     );
 };
 
