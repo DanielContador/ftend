@@ -4,8 +4,12 @@ import { getCookie } from './shared/utils/session';
 export default async function middleware(req) {
     const token = getCookie('authToken', req);
     const { pathname } = req.nextUrl;
-    if (!token && pathname !== '/login') {
+    console.log(pathname);
+    if (!token && pathname !== '/login' && pathname !== '/welcome' && pathname !== '/') {
         return NextResponse.redirect(new URL('/login', req.url)); // Redirect to login page
+    }
+    if (!token && pathname === '/') {
+        return NextResponse.redirect(new URL('/welcome', req.url)); // Redirect to login page
     }
 }
 

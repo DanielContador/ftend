@@ -10,12 +10,6 @@ const Header = () => {
           <FontAwesomeIcon icon={faInfinity} className='me-2' />
           MentorIA
         </div>
-        <nav className={styles.nav}>
-          <Link href="/">Home</Link>
-          <Link href="/about">About Us</Link>
-          <Link href="/contact">Contact</Link>
-          <Link href="/login" className={styles.loginButton}>Login</Link>
-        </nav>
       </header>
   );
 };

@@ -1,5 +1,6 @@
 import { AuthProvider } from '../shared/utils/authProvider';
 import Head from 'next/head';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import '../shared/styles/globals.css'; // Ensure this path is correct and the file exists
 import { I18nextProvider } from 'react-i18next';
 import i18n from 'i18next';
