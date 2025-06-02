@@ -5,9 +5,6 @@ out/
 # Dependencias
 node_modules/
 
-# Archivos de entorno
-.env.local
-
 # Logs y caché
 *.log
 *.cache
