@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
-import ScormEditorPage from './ScormEditorPage';
+import ScormEditorPage from './pages/ScormEditorPage';
 
 const ScormRoutes = () => {
     return (

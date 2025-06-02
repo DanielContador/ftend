@@ -1,5 +1,5 @@
 import CourseLayout from "../../shared/layouts/CourseLayout";
-import CourseFormPage from "../../modules/Course/containers/CourseFormPage";
+import CourseFormPage from "../../modules/Course/pages/CourseFormPage";
 import { useState } from 'react';
 import ErrorMessage from '../../shared/layouts/components/ErrorMessage'; // Importing ErrorMessage
 

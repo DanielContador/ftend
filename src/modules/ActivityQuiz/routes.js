@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
-import QuizEditorPage from './QuizEditorPage';
+import QuizEditorPage from './pages/QuizEditorPage';
 
 const QuizRoutes = () => {
     return (

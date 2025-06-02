@@ -1,6 +1,6 @@
 import React from 'react';
 import CourseLayout from '../../../../shared/layouts/CourseLayout';
-import FileDownloadManager from '../../../../modules/FileDownloadManager/containers/FileDownloadManager';
+import FileDownloadManager from '../../../../modules/FileDownloadManager/components/FileDownloadManager';
 import { useRouter } from 'next/router';
 
 const ExportPage = () => {

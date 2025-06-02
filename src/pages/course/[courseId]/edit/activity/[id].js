@@ -2,7 +2,7 @@ import CourseLayout from '../../../../../shared/layouts/CourseLayout'; // Import
 import { useRouter } from 'next/router';
 import ErrorMessage from '../../../../../shared/layouts/components/ErrorMessage'; // Importing ErrorMessage
 import { useState } from 'react';
-import EditActivityPage from '../../../../../modules/Activity/containers/EditActivityPage'; // Importing EditActivityPage
+import EditActivityPage from '../../../../../modules/Activity/pages/EditActivityPage'; // Importing EditActivityPage
 
 const ActivityEditorPage = () => {
     const router = useRouter();

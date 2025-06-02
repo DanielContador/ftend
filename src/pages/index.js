@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../shared/utils/authProvider';
 import MainLayout from '../shared/layouts/MainLayout';
-import CourseListPage from '../modules/Course/containers/CourseListPage';
+import CourseListPage from '../modules/Course/pages/CourseListPage';
 import ErrorMessage from '../shared/layouts/components/ErrorMessage';
 import { useTranslation } from 'react-i18next'; // Importing useTranslation
 
