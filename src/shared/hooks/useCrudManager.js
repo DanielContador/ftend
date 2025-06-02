@@ -9,6 +9,8 @@ export function useCrudManager(service, handleError, t) {
     setLoading(true);
     try {
       const data = await service.getAll();
+      console.log('data');
+      console.log(data);
       if (Array.isArray(data)) {
         setItems(data);
       } else {
