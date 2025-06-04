@@ -1,18 +1,23 @@
-import { NextResponse } from 'next/server';
-import { getCookie } from './shared/utils/session';
+import { NextResponse } from "next/server";
+import { getCookie } from "./shared/utils/session";
 
 export default async function middleware(req) {
-    const token = getCookie('authToken', req);
-    const { pathname } = req.nextUrl;
-    console.log(pathname);
-    if (!token && pathname !== '/login' && pathname !== '/welcome' && pathname !== '/') {
-        return NextResponse.redirect(new URL('/login', req.url)); // Redirect to login page
-    }
-    if (!token && pathname === '/') {
-        return NextResponse.redirect(new URL('/welcome', req.url)); // Redirect to login page
-    }
+  const token = getCookie("authToken", req);
+  const { pathname } = req.nextUrl;
+  if (
+    !token &&
+    pathname !== "/login" &&
+    pathname !== "/welcome" &&
+    pathname !== "/" &&
+    pathname !== "/help" // Permitir acceso a /help sin login
+  ) {
+    return NextResponse.redirect(new URL("/login", req.url)); // Redirect to login page
+  }
+  if (!token && pathname === "/") {
+    return NextResponse.redirect(new URL("/welcome", req.url)); // Redirect to login page
+  }
 }
 
 export const config = {
-    matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'], // Routes to match
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"], // Routes to match
 };

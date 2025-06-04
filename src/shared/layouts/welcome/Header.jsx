@@ -16,7 +16,7 @@ const Header = () => {
       <nav className={styles.nav}>
         <Link href="/">Home</Link>
         <Link href="/about">About Us</Link>
-        <Link href="/contact">Contact</Link>
+        <Link href="/help">Contact</Link>
         <Link href="/login" className={styles.loginButton}>
           Login
         </Link>
