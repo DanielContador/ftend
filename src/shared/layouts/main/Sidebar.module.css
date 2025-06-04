@@ -3,7 +3,6 @@
   min-width: 220px;
   max-width: 320px;
   background: linear-gradient(180deg, #7d3cff 0%, #a259ff 100%);
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -54,7 +53,7 @@
   padding: 10px 14px;
   margin-bottom: 6px;
   cursor: pointer;
-  transition: background 0.18s;
+  transition: 0.18s;
 }
 
 .menuBtn:hover {
