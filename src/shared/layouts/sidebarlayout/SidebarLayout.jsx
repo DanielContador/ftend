@@ -1,10 +1,10 @@
-import styles from "./Layout.module.css";
+import styles from "./SidebarLayout.module.css";
 import Sidebar from "./Sidebar";
 import Footer from "./Footer";
 
-const Layout = ({ children }) => (
+const SidebarLayout = ({ children, menuButtons }) => (
   <div className={styles.root}>
-    <Sidebar />
+    <Sidebar menuButtons={menuButtons} />
     <div className={styles.content}>
       {children}
       <Footer />
@@ -12,4 +12,4 @@ const Layout = ({ children }) => (
   </div>
 );
 
-export default Layout;
+export default SidebarLayout;

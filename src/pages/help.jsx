@@ -1,10 +1,11 @@
-import Layout from "../shared/layouts/help/Layout";
-import SuccessBox from "../shared/layouts/help/SuccessBox";
+import SplitLayout from "../shared/layouts/splitlayout/SplitLayout";
+import HelpContent from "../shared/layouts/components/help/HelpContent";
+import SuccessBox from "../shared/layouts/components/help/SuccessBox";
 
 export default function HelpPage() {
   return (
-    <Layout>
-      <SuccessBox />
-    </Layout>
+    <SplitLayout centerComponent={<HelpContent />} children={<SuccessBox />}>
+      {/* Puedes agregar contenido adicional aquí si lo necesitas */}
+    </SplitLayout>
   );
 }

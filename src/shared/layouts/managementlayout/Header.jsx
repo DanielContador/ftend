@@ -2,12 +2,10 @@ import styles from "./Header.module.css";
 import Image from "next/image";
 import MentorIALogoBlanco from "../../../../public/MentorIALogoBlanco.png";
 import arrowLeft from "../../../../public/arrowleft.png";
-import save from "../../../../public/save.png";
 import { useRouter } from "next/router";
 
-const Header = () => {
+const Header = ({ button }) => {
   const router = useRouter();
-
   return (
     <header className={styles.header}>
       <div className={styles.left}>
@@ -18,10 +16,7 @@ const Header = () => {
           <Image src={arrowLeft} alt="Volver" width={20} height={20} />
           <span>Volver</span>
         </button>
-        <button className={styles.saveBtn}>
-          <Image src={save} alt="Guardar" width={20} height={20} />
-          <span>Guardar y continuar</span>
-        </button>
+        {button}
       </div>
     </header>
   );

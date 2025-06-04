@@ -40,7 +40,7 @@
 }
 
 .menuBtn {
-  width: 80%;
+  width: 100%; /* Cambiado de 80% a 100% para que la sombra ocupe todo el ancho disponible */
   background: rgba(255, 255, 255, 0.18);
   border: none;
   border-radius: 12px;
@@ -58,6 +58,14 @@
 
 .menuBtn:hover {
   background: rgba(255, 255, 255, 0.28);
+}
+
+.menuBtnGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 80%; /* Asegura que el grupo de botones ocupe el mismo ancho que los elementos de abajo */
+  align-items: center; /* Centra los botones dentro del grupo */
 }
 
 .bottom {

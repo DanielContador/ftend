@@ -1,0 +1,18 @@
+.saveBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #7d3cff;
+  color: #fff;
+  border: none;
+  border-radius: 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 10px 22px;
+  cursor: pointer;
+  transition: 0.18s;
+}
+
+.saveBtn:hover {
+  background: #5f2eea;
+}

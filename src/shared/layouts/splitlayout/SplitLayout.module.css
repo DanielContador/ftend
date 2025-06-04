@@ -39,3 +39,25 @@
   text-align: center;
   margin: 0 auto;
 }
+
+.rightMain {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+  background: #fff;
+  color: #222;
+}
+
+/* Responsive: stack columns on small screens */
+@media (max-width: 900px) {
+  .container {
+    min-height: auto;
+  }
+  .rightMain {
+    min-height: auto;
+    padding: 2rem 1rem;
+  }
+}

@@ -19,6 +19,16 @@
   display: flex;
   align-items: center;
   gap: 18px;
+  /* Asegura que los hijos no se oculten ni colapsen */
+  flex-wrap: nowrap;
+  min-width: 0;
+  overflow: visible;
+}
+
+.actionContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .actionBtn {

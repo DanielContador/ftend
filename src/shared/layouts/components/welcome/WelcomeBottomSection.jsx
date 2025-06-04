@@ -1,15 +1,15 @@
 import React from "react";
 import styles from "./WelcomeBottomSection.module.css";
 import Image from "next/image";
-import robotPurple from "../../../../public/robotPurple.png";
-import thunder from "../../../../public/thunder.png";
-import hat from "../../../../public/hat.png";
-import brain from "../../../../public/brain.png";
-import check from "../../../../public/check.png";
-import listcheck from "../../../../public/checklist.png";
-import edit from "../../../../public/edit.png";
-import keyboard from "../../../../public/keyboard.png";
-import rocket from "../../../../public/rocket.png";
+import robotPurple from "../../../../../public/robotPurple.png";
+import thunder from "../../../../../public/thunder.png";
+import hat from "../../../../../public/hat.png";
+import brain from "../../../../../public/brain.png";
+import check from "../../../../../public/check.png";
+import listcheck from "../../../../../public/checklist.png";
+import edit from "../../../../../public/edit.png";
+import keyboard from "../../../../../public/keyboard.png";
+import rocket from "../../../../../public/rocket.png";
 
 const features = [
   {

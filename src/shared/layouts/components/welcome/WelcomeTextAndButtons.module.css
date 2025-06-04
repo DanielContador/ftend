@@ -1,0 +1,67 @@
+.textAndButtons {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.title {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  color: #f3f3f3;
+  margin-bottom: 0.5rem;
+}
+
+.ctaButtonsRow {
+  display: flex;
+  gap: 1rem;
+}
+
+.ctaButton {
+  background: #7d3cff;
+  color: #fff;
+  border: none;
+  border-radius: 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 10px 22px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+
+.ctaButton:hover {
+  background: #5f2eea;
+}
+
+.secondaryButton {
+  background: #fff;
+  color: #7d3cff;
+  border: 2px solid #7d3cff;
+  border-radius: 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 10px 22px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+}
+
+.secondaryButton:hover {
+  background: #f3f3f3;
+  color: #5f2eea;
+}
+
+.ctaIcon {
+  margin-left: 6px;
+}

@@ -3,8 +3,10 @@ import { useRouter } from "next/router";
 import { useAuth } from "../shared/utils/authProvider";
 import CourseListPage from "../modules/Course/pages/CourseListPage";
 import ErrorMessage from "../shared/layouts/components/ErrorMessage";
-import Layout from "../shared/layouts/main/Layout";
+import SidebarLayout from "../shared/layouts/sidebarlayout/SidebarLayout";
 import { useTranslation } from "react-i18next"; // Importing useTranslation
+import SidebarHelpButton from "../shared/layouts/components/sidebar/SidebarHelpButton";
+import SidebarHomeButton from "../shared/layouts/components/sidebar/SidebarHomeButton";
 
 const HomePage = () => {
   const { t } = useTranslation(); // Using the translation hook
@@ -27,11 +29,11 @@ const HomePage = () => {
   };
 
   return (
-    <Layout>
+    <SidebarLayout menuButtons={[SidebarHomeButton, SidebarHelpButton]}>
       {error && <ErrorMessage error={error} />}{" "}
       {/* Display error message if exists */}
       <CourseListPage handleError={handleError} />
-    </Layout>
+    </SidebarLayout>
   );
 };
 

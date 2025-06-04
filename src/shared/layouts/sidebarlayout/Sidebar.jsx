@@ -1,13 +1,11 @@
 import styles from "./Sidebar.module.css";
 import Image from "next/image";
 import LogoBlanco from "../../../../public/LogoBlanco.png";
-import home from "../../../../public/home.png";
-import helpIcon from "../../../../public/help.png";
 import useravatar from "../../../../public/useravatar.png";
 import settings from "../../../../public/settings.png";
 import { useRouter } from "next/router";
 
-const Sidebar = () => {
+const Sidebar = ({ menuButtons }) => {
   const router = useRouter();
 
   return (
@@ -17,14 +15,12 @@ const Sidebar = () => {
           <Image src={LogoBlanco} alt="MentorIA" width={44} height={44} />
           <span className={styles.logoText}>MentorIA</span>
         </div>
-        <button className={styles.menuBtn} onClick={() => router.back()}>
-          <Image src={home} alt="Home" width={22} height={22} />
-          <span>Home</span>
-        </button>
-        <button className={styles.menuBtn} onClick={() => router.push("/help")}>
-          <Image src={helpIcon} alt="Help" width={22} height={22} />
-          <span>Help</span>
-        </button>
+        <div className={styles.menuBtnGroup}>
+          {menuButtons &&
+            menuButtons.map((BtnComponent, idx) => (
+              <BtnComponent key={idx} className={styles.menuBtn} />
+            ))}
+        </div>
       </div>
       <div className={styles.bottom}>
         <div className={styles.creditsBox}>
