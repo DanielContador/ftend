@@ -1,12 +1,7 @@
-import Layout from '../shared/layouts/welcome/Layout';
+import Welcome from "../shared/layouts/welcome/Welcome";
 
 const WelcomePage = () => {
-    return (
-        <Layout>
-        </Layout>
-    );
+  return <Welcome></Welcome>;
 };
 
 export default WelcomePage;
-
-
