@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useAuth } from "../shared/utils/authProvider";
-import MainLayout from "../shared/layouts/MainLayout";
 import CourseListPage from "../modules/Course/pages/CourseListPage";
 import ErrorMessage from "../shared/layouts/components/ErrorMessage";
 import Layout from "../shared/layouts/main/Layout";
@@ -27,12 +26,6 @@ const HomePage = () => {
     setError(errorMessage);
   };
 
-  // return (
-  //     <MainLayout>
-  //         {error && <ErrorMessage error={error} />} {/* Display error message if exists */}
-  //         <CourseListPage handleError={handleError}/>
-  //     </MainLayout>
-  // );
   return (
     <Layout>
       {error && <ErrorMessage error={error} />}{" "}

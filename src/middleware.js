@@ -9,7 +9,8 @@ export default async function middleware(req) {
     pathname !== "/login" &&
     pathname !== "/welcome" &&
     pathname !== "/" &&
-    pathname !== "/help" // Permitir acceso a /help sin login
+    pathname !== "/help" &&
+    pathname !== "/management" // Permitir acceso a /management sin login
   ) {
     return NextResponse.redirect(new URL("/login", req.url)); // Redirect to login page
   }
