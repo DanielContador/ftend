@@ -1,37 +1,45 @@
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { useAuth } from '../shared/utils/authProvider';
-import MainLayout from '../shared/layouts/MainLayout';
-import CourseListPage from '../modules/Course/pages/CourseListPage';
-import ErrorMessage from '../shared/layouts/components/ErrorMessage';
-import { useTranslation } from 'react-i18next'; // Importing useTranslation
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import { useAuth } from "../shared/utils/authProvider";
+import MainLayout from "../shared/layouts/MainLayout";
+import CourseListPage from "../modules/Course/pages/CourseListPage";
+import ErrorMessage from "../shared/layouts/components/ErrorMessage";
+import Layout from "../shared/layouts/main/Layout";
+import { useTranslation } from "react-i18next"; // Importing useTranslation
 
 const HomePage = () => {
-    const { t } = useTranslation(); // Using the translation hook
-    const router = useRouter();
-    const { isLoggedIn, isLoading } = useAuth();
-    const [error, setError] = useState(null); // State to hold error messages
+  const { t } = useTranslation(); // Using the translation hook
+  const router = useRouter();
+  const { isLoggedIn, isLoading } = useAuth();
+  const [error, setError] = useState(null); // State to hold error messages
 
-    useEffect(() => {
-        if (!isLoading && !isLoggedIn) {
-            router.push('/login');
-        }
-    }, [isLoggedIn, isLoading, router]);
-
-    if (isLoading) {
-        return <div>{t('loading')}</div>; // Using translation key for loading message
+  useEffect(() => {
+    if (!isLoading && !isLoggedIn) {
+      router.push("/login");
     }
+  }, [isLoggedIn, isLoading, router]);
 
-    const handleError = (errorMessage) => {
-        setError(errorMessage);
-    };
+  if (isLoading) {
+    return <div>{t("loading")}</div>; // Using translation key for loading message
+  }
 
-    return (
-        <MainLayout>
-            {error && <ErrorMessage error={error} />} {/* Display error message if exists */}
-            <CourseListPage handleError={handleError}/>
-        </MainLayout>
-    );
+  const handleError = (errorMessage) => {
+    setError(errorMessage);
+  };
+
+  // return (
+  //     <MainLayout>
+  //         {error && <ErrorMessage error={error} />} {/* Display error message if exists */}
+  //         <CourseListPage handleError={handleError}/>
+  //     </MainLayout>
+  // );
+  return (
+    <Layout>
+      {error && <ErrorMessage error={error} />}{" "}
+      {/* Display error message if exists */}
+      <CourseListPage handleError={handleError} />
+    </Layout>
+  );
 };
 
 export default HomePage;
