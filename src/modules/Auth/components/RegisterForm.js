@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import styles from "./RegisterForm.module.css";
-import registerService from "../services/registerService";
 import { useRouter } from "next/router";
 
-const RegisterForm = () => {
+const RegisterForm = ({ onRegister, loading, error }) => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -12,7 +11,6 @@ const RegisterForm = () => {
   const [news, setNews] = useState("yes");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const router = useRouter();
 
@@ -22,16 +20,14 @@ const RegisterForm = () => {
       alert("El nombre completo es obligatorio.");
       return;
     }
-    setError("");
     setSuccess("");
 
-    // Separar nombre completo en firstname y lastname (simplemente por el primer espacio)
     const [firstname, ...rest] = fullName.trim().split(" ");
     const lastname = rest.join(" ");
     const username = email.split("@")[0];
 
     try {
-      await registerService.add({
+      await onRegister({
         username,
         firstname,
         lastname,
@@ -41,7 +37,7 @@ const RegisterForm = () => {
       setSuccess("Registro exitoso. Ahora puedes iniciar sesión.");
       // ...puedes redirigir o limpiar el formulario aquí si lo deseas...
     } catch (err) {
-      setError(err.message);
+      // El error ya es manejado por el hook y mostrado por la prop error
     }
   };
 
@@ -172,8 +168,8 @@ const RegisterForm = () => {
         {success && (
           <div style={{ color: "green", marginBottom: 8 }}>{success}</div>
         )}
-        <button type="submit" className={styles.submitBtn}>
-          Crear cuenta
+        <button type="submit" className={styles.submitBtn} disabled={loading}>
+          {loading ? "Registrando..." : "Crear cuenta"}
         </button>
         <div className={styles.loginLink}>
           <a

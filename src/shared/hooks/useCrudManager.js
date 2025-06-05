@@ -1,9 +1,11 @@
 // src/shared/hooks/useCrudManager.js
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from "react";
 
-export function useCrudManager(service, handleError, t) {
+export function useCrudManager(service, handleError, t, options = {}) {
+  const { fetchOnMount = true } = options;
   const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(fetchOnMount);
+  const didFetch = useRef(false);
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
@@ -12,11 +14,11 @@ export function useCrudManager(service, handleError, t) {
       if (Array.isArray(data)) {
         setItems(data);
       } else {
-        throw new Error(t('invalidDataFormat'));
+        throw new Error(t("invalidDataFormat"));
       }
     } catch (error) {
-      console.error('Error fetching items:', error);
-      handleError(t('fetchError'));
+      console.error("Error fetching items:", error);
+      handleError(t("fetchError"));
     } finally {
       setLoading(false);
     }
@@ -26,45 +28,56 @@ export function useCrudManager(service, handleError, t) {
     try {
       return await service.getById(id);
     } catch (error) {
-      console.error('Error editing item:', error);
-      handleError(t('editError'));
+      console.error("Error editing item:", error);
+      handleError(t("editError"));
     }
   };
 
   const createItem = async (data) => {
     try {
       await service.add(data);
-      await fetchAll();
+      // Solo recarga la lista si fetchAll fue ejecutado alguna vez
+      if (fetchOnMount || didFetch.current) {
+        await fetchAll();
+      }
     } catch (error) {
-      console.error('Error creating item:', error);
-      handleError(t('createError'));
+      console.error("Error creating item:", error);
+      handleError(t("createError"));
     }
   };
 
   const editItem = async (id, data) => {
     try {
       const item = await service.update(id, data);
-      await fetchAll();
+      if (fetchOnMount || didFetch.current) {
+        await fetchAll();
+      }
       return item;
     } catch (error) {
-      console.error('Error editing item:', error);
-      handleError(t('editError'));
+      console.error("Error editing item:", error);
+      handleError(t("editError"));
     }
   };
 
   const deleteItem = async (id) => {
     try {
       await service.delete(id);
-      await fetchAll();
+      if (fetchOnMount || didFetch.current) {
+        await fetchAll();
+      }
     } catch (error) {
-      console.error('Error deleting item:', error);
-      handleError(t('deleteError'));
+      console.error("Error deleting item:", error);
+      handleError(t("deleteError"));
     }
   };
 
   useEffect(() => {
-    fetchAll();
-  }, []);
+    if (fetchOnMount) {
+      didFetch.current = true;
+      fetchAll();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchOnMount, fetchAll]);
 
   return {
     items,
