@@ -1,15 +1,15 @@
 import React from "react";
-import Image from "next/image";
 import styles from "./CenterBrand.module.css";
-import LogoBlanco from "../../../../../public/LogoBlanco.png"; // Ajusta el path si es necesario
 
 const CenterBrand = () => (
   <div className={styles.centerBrand}>
-    <Image src={LogoBlanco} alt="MentorIA" width={96} height={96} />
     <span className={styles.brandText}>MentorIA</span>
     <span className={styles.welcomeText}>
-      Bienvenidos de nuevo
-      <br />a Robot de Cursos DL
+      ¡Bienvenido
+      <br />
+      a Robot de Cursos DL!
+      <br />
+      <span className={styles.registerText}>Registrate para comenzar</span>
     </span>
   </div>
 );

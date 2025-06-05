@@ -1,0 +1,154 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Cambiado de center a flex-start */
+}
+
+.form {
+  width: 360px;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 0 18px rgba(0, 0, 0, 0.08);
+  padding: 24px 24px 16px 24px;
+  margin: 0; /* Quitado el margen vertical */
+  max-height: 92vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.title {
+  text-align: center;
+  color: #6c2bd7;
+  font-weight: 700;
+  margin-bottom: 16px;
+  font-size: 1.4rem;
+}
+
+.inputGroup {
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.inputGroupSmall {
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.label {
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 1rem;
+}
+
+.input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 15px;
+}
+
+.inputPasswordWrapper {
+  position: relative;
+}
+
+.eyeIcon {
+  position: absolute;
+  right: 10px;
+  top: 9px;
+  cursor: pointer;
+  color: #888;
+  font-size: 1.1em;
+  user-select: none;
+}
+
+.infoIcon {
+  margin-left: 6px;
+  cursor: pointer;
+  color: #888;
+  font-size: 1em;
+}
+
+.passwordHint {
+  font-size: 11px;
+  color: #888;
+  margin-top: 2px;
+}
+
+.termsRow {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.97em;
+}
+
+.checkbox {
+  margin-right: 4px;
+}
+
+.termsLink {
+  color: #6c2bd7;
+  text-decoration: underline;
+}
+
+.newsGroup {
+  margin-bottom: 10px;
+}
+
+.newsOptions {
+  display: flex;
+  gap: 12px;
+}
+
+.newsOption {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #f3f3f3;
+  color: #222;
+  border-radius: 16px;
+  padding: 4px 14px;
+  cursor: pointer;
+  font-size: 0.98em;
+  transition: background 0.2s, color 0.2s;
+}
+
+.newsOptionActive {
+  background: #6c2bd7;
+  color: #fff;
+}
+
+.radio {
+  accent-color: #6c2bd7;
+}
+
+.submitBtn {
+  width: 100%;
+  background: #a89cc8;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.08rem;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 0;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.submitBtn:hover {
+  background: #6c2bd7;
+}
+
+.loginLink {
+  text-align: center;
+  font-size: 14px;
+  margin-top: 4px;
+}

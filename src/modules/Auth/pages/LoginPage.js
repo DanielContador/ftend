@@ -1,17 +1,8 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import LoginForm from '../components/LoginForm';
+import React from "react";
+import LoginForm from "../components/LoginForm";
 
 const LoginPage = () => {
-    const router = useRouter();
-
-    const handleLoginSuccess = () => {
-        router.push('/');
-    };
-
-    return (
-        <LoginForm onLoginSuccess={handleLoginSuccess} />
-    );
+  return <LoginForm />;
 };
 
 export default LoginPage;
