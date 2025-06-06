@@ -1,6 +1,6 @@
 import styles from "./Footer.module.css";
 import Image from "next/image";
-import LogoBlanco from "../../../../public/LogoBlanco.png";
+import LogoBlanco from "../../../../public/LogoBlanco.svg";
 
 const Footer = () => {
   return (

@@ -1,10 +1,10 @@
 import React from "react";
 import styles from "./WelcomeBottomSection.module.css";
 import Image from "next/image";
-import robotPurple from "../../../../../public/robotPurple.png";
-import thunder from "../../../../../public/thunder.png";
-import hat from "../../../../../public/hat.png";
-import brain from "../../../../../public/brain.png";
+import robotPurple from "../../../../../public/robotPurple.svg";
+import thunder from "../../../../../public/thunder.svg";
+import hat from "../../../../../public/hat.svg";
+import brain from "../../../../../public/brain.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheck,

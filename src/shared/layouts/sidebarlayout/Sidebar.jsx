@@ -1,6 +1,6 @@
 import styles from "./Sidebar.module.css";
 import Image from "next/image";
-import LogoBlanco from "../../../../public/LogoBlanco.png";
+import LogoBlanco from "../../../../public/LogoBlanco.svg";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";

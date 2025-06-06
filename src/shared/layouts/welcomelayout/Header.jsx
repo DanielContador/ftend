@@ -1,7 +1,7 @@
 import Link from "next/link";
 import styles from "./Header.module.css";
 import Image from "next/image";
-import MentorIALogoBlanco from "../../../../public/MentorIALogoBlanco.png";
+import MentorIALogoBlanco from "../../../../public/MentorIALogoBlanco.svg";
 
 const Header = () => {
   return (

@@ -1,6 +1,6 @@
 import styles from "./Header.module.css";
 import Image from "next/image";
-import MentorIALogoBlanco from "../../../../public/MentorIALogoBlanco.png";
+import MentorIALogoBlanco from "../../../../public/MentorIALogoBlanco.svg";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
