@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import { useAuth } from "../../../shared/utils/authProvider";
 import { useRouter } from "next/router";
-import Button1 from "../../../shared/components/Button1";
-import LoadingSpinner from "../../../shared/components/LoadingSpinner";
 import { useTranslation } from "react-i18next";
 import styles from "./LoginForm.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faCircleInfo } from "@fortawesome/free-solid-svg-icons";
+import { faEye } from "@fortawesome/free-solid-svg-icons";
 
 const LoginForm = ({ onLogin, loading, error }) => {
   const { t } = useTranslation();
@@ -15,12 +13,33 @@ const LoginForm = ({ onLogin, loading, error }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [localError, setLocalError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [remember, setRemember] = useState(true);
+  const [fieldErrors, setFieldErrors] = useState({});
   const router = useRouter();
   const { initSession } = useAuth();
+
+  const validate = () => {
+    const errors = {};
+    if (!username) {
+      errors.username = "El email es obligatorio.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(username)) {
+      errors.username = "Ingresa un email válido.";
+    }
+    if (!password) {
+      errors.password = "La contraseña es obligatoria.";
+    }
+    return errors;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLocalError("");
+    setFieldErrors({});
+    const errors = validate();
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      return;
+    }
     setSubmitting(true);
     try {
       const response = await onLogin({ username, password });
@@ -39,109 +58,99 @@ const LoginForm = ({ onLogin, loading, error }) => {
 
   return (
     <div className={styles.container}>
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <h2 className={styles.title}>{t("login")}</h2>
+      <form onSubmit={handleSubmit} className={styles.form} noValidate>
+        <h2 className={styles.title}>Inicio de sesión</h2>
         <div className={styles.inputGroup}>
-          <label className={styles.label}>
-            Usuario
-            <span
-              title="Ingresa tu usuario"
-              className={styles.infoIcon}
-              style={{
-                marginLeft: 6,
-                color: "#888",
-                display: "inline-flex",
-                alignItems: "center",
-              }}
-            >
-              <FontAwesomeIcon
-                icon={faCircleInfo}
-                style={{ width: "1rem", color: "#888" }}
-              />
-            </span>
-          </label>
+          <label className={styles.label}>Email</label>
           <input
-            type="text"
+            type="email"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
-            className={styles.input}
+            className={`${styles.input} ${
+              fieldErrors.username ? styles.inputError : ""
+            }`}
             autoComplete="username"
+            placeholder="Enter your email"
           />
+          {fieldErrors.username && (
+            <div className={styles.fieldError}>{fieldErrors.username}</div>
+          )}
         </div>
         <div className={styles.inputGroupSmall}>
-          <label className={styles.label}>
-            {t("password")}
-            <span
-              title="Ingresa tu contraseña"
-              className={styles.infoIcon}
-              style={{
-                marginLeft: 6,
-                color: "#888",
-                display: "inline-flex",
-                alignItems: "center",
-              }}
-            >
-              <FontAwesomeIcon
-                icon={faCircleInfo}
-                style={{ width: "1rem", color: "#888" }}
-              />
-            </span>
-          </label>
+          <label className={styles.label}>Contraseña</label>
           <div className={styles.inputPasswordWrapper}>
             <input
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className={styles.input}
+              className={`${styles.input} ${
+                fieldErrors.password ? styles.inputError : ""
+              }`}
               autoComplete="current-password"
+              placeholder="Enter your password"
             />
             <span
               onClick={() => setShowPassword(!showPassword)}
               className={styles.eyeIcon}
-              style={{ cursor: "pointer" }}
+              title="Pulsar para mostrar/ocultar contraseña"
             >
               <FontAwesomeIcon icon={faEye} />
             </span>
           </div>
+          {fieldErrors.password && (
+            <div className={styles.fieldError}>{fieldErrors.password}</div>
+          )}
+          <div className={styles.passwordHintRow}>
+            <FontAwesomeIcon icon={faEye} className={styles.infoIcon} />
+            <span className={styles.passwordHintText}>
+              Pulsa para mostrar/ocultar contraseña
+            </span>
+          </div>
+        </div>
+        <div className={styles.rememberRow}>
+          <span className={styles.rememberLabel}>¿Recordar sesión?</span>
+          <button
+            type="button"
+            className={`${styles.rememberBtn} ${
+              remember ? styles.rememberBtnActive : ""
+            }`}
+            onClick={() => setRemember(true)}
+          >
+            Sí
+          </button>
+          <button
+            type="button"
+            className={`${styles.rememberBtn} ${
+              !remember ? styles.rememberBtnActive : ""
+            }`}
+            onClick={() => setRemember(false)}
+          >
+            No
+          </button>
         </div>
         {(error || localError) && (
           <div style={{ color: "red", marginBottom: 8 }}>
             {error || localError}
           </div>
         )}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-          }}
-        >
-          {loading || submitting ? (
-            <LoadingSpinner />
-          ) : (
-            <Button1
-              type="submit"
-              className={styles.submitBtn}
-              disabled={loading || submitting}
-            >
-              {t("login")}
-            </Button1>
-          )}
-        </div>
-        <div className={styles.loginLink}>
-          <a
-            href="#"
-            className={styles.termsLink}
-            onClick={(e) => {
-              e.preventDefault();
-              router.push("/register");
-            }}
+        <div className={styles.actionsRow}>
+          <button
+            type="button"
+            className={styles.secondaryBtn}
+            onClick={() => router.push("/forgot-password")}
+            tabIndex={-1}
           >
-            {t("no_account")} {t("register")}
-          </a>
+            ¿Olvidaste tu contraseña?
+          </button>
+          <button
+            type="submit"
+            className={styles.submitBtn}
+            disabled={loading || submitting}
+          >
+            {loading || submitting ? "Cargando..." : "Iniciar sesión"}
+          </button>
         </div>
       </form>
     </div>

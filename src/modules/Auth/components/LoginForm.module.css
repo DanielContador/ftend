@@ -21,11 +21,12 @@
 }
 
 .title {
-  text-align: center;
-  color: #6c2bd7;
+  text-align: left;
+  color: #181828;
   font-weight: 700;
   margin-bottom: 16px;
-  font-size: 1.4rem;
+  font-size: 2rem;
+  letter-spacing: -0.5px;
 }
 
 .inputGroup {
@@ -46,6 +47,7 @@
   font-weight: 600;
   margin-bottom: 4px;
   font-size: 1rem;
+  color: #181828;
 }
 
 .input {
@@ -54,6 +56,21 @@
   border-radius: 10px;
   border: 1px solid #ddd;
   font-size: 15px;
+  background: #fafaff;
+  color: #181828;
+}
+
+.inputError {
+  border: 1.5px solid #e8530e !important;
+  background: #fff7f5;
+}
+
+.fieldError {
+  color: #e8530e;
+  font-size: 0.97em;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  font-weight: 500;
 }
 
 .inputPasswordWrapper {
@@ -63,29 +80,109 @@
 .eyeIcon {
   position: absolute;
   right: 10px;
-  top: 9px;
+  top: 50%;
+  transform: translateY(-50%);
   cursor: pointer;
   color: #888;
   font-size: 1.1em;
   user-select: none;
+  display: flex;
+  align-items: center;
+}
+
+.passwordHintRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  margin-bottom: 2px;
+}
+
+.infoIcon {
+  color: #888;
+  font-size: 1em;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.passwordHintText {
+  color: #888;
+  font-size: 0.95em;
+}
+
+.rememberRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0 0 0;
+}
+
+.rememberLabel {
+  font-size: 1em;
+  color: #181828;
+  margin-right: 4px;
+}
+
+.rememberBtn {
+  border: none;
+  background: #f3f3f3;
+  color: #222;
+  border-radius: 8px;
+  padding: 4px 18px;
+  font-weight: 600;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  outline: none;
+}
+
+.rememberBtnActive {
+  background: #6c2bd7;
+  color: #fff;
+}
+
+.actionsRow {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.secondaryBtn {
+  flex: 1;
+  background: #fff;
+  color: #181828;
+  border: 1.5px solid #ececec;
+  border-radius: 12px;
+  padding: 12px 0;
+  font-weight: 600;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+
+.secondaryBtn:hover {
+  background: #f3f3f3;
+  border-color: #d1d1d1;
 }
 
 .submitBtn {
-  width: 100%;
-  background: #a89cc8;
+  flex: 1;
+  background: #181828;
   color: #fff;
   font-weight: 700;
   font-size: 1.08rem;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 12px 0;
-  margin-bottom: 8px;
   cursor: pointer;
   transition: 0.2s;
 }
 
-.submitBtn:hover {
-  background: #6c2bd7;
+.submitBtn:disabled {
+  background: #bdbdbd;
+  color: #fff;
+  cursor: not-allowed;
 }
 
 .loginLink {
@@ -97,13 +194,4 @@
 .termsLink {
   color: #6c2bd7;
   text-decoration: underline;
-}
-
-.infoIcon {
-  margin-left: 6px;
-  color: #888;
-  font-size: 1em;
-  display: inline-flex;
-  align-items: center;
-  vertical-align: middle;
 }
