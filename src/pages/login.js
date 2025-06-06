@@ -1,4 +1,3 @@
-import AuthLayout from "../shared/layouts/AuthLayout";
 import LoginPage from "../modules/Auth/pages/LoginPage";
 import SplitLayout from "../shared/layouts/splitlayout/SplitLayout";
 import CenterBrand from "../shared/layouts/components/login/CenterBrand";

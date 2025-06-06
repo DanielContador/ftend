@@ -10,16 +10,14 @@ const WelcomeTextAndButtons = () => (
     </p>
     <div className={styles.ctaButtonsRow}>
       <button className={styles.ctaButton}>
-        <span className={styles.ctaButtonContent}>
+        <span style={{ display: "flex", alignItems: "center" }}>
           Comenzar
           <FontAwesomeIcon icon={faArrowRight} className={styles.ctaIcon} />
         </span>
       </button>
       <button className={styles.secondaryButton}>
-        <span className={styles.ctaButtonContent}>
-          Saber más
-          <FontAwesomeIcon icon={faLightbulb} className={styles.ctaIcon} />
-        </span>
+        Saber más
+        <FontAwesomeIcon icon={faLightbulb} className={styles.ctaIcon} />
       </button>
     </div>
   </div>
