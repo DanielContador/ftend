@@ -5,11 +5,14 @@ import robotPurple from "../../../../../public/robotPurple.png";
 import thunder from "../../../../../public/thunder.png";
 import hat from "../../../../../public/hat.png";
 import brain from "../../../../../public/brain.png";
-import check from "../../../../../public/check.png";
-import listcheck from "../../../../../public/checklist.png";
-import edit from "../../../../../public/edit.png";
-import keyboard from "../../../../../public/keyboard.png";
-import rocket from "../../../../../public/rocket.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCheck,
+  faListCheck,
+  faEdit,
+  faKeyboard,
+  faRocket,
+} from "@fortawesome/free-solid-svg-icons";
 
 const features = [
   {
@@ -30,10 +33,10 @@ const features = [
 ];
 
 const steps = [
-  { icon: check, label: "Ingresa el tema" },
-  { icon: listcheck, label: "Selecciona el tipo de recurso" },
-  { icon: edit, label: "Revisa y ajusta" },
-  { icon: keyboard, label: "¡Listo para usar!" },
+  { icon: faCheck, label: "Ingresa el tema" },
+  { icon: faListCheck, label: "Selecciona el tipo de recurso" },
+  { icon: faEdit, label: "Revisa y ajusta" },
+  { icon: faKeyboard, label: "¡Listo para usar!" },
 ];
 
 const WelcomeBottomSection = () => (
@@ -76,7 +79,17 @@ const WelcomeBottomSection = () => (
           <React.Fragment key={i}>
             <div className={styles.step}>
               <div className={styles.stepIcon}>
-                <Image src={s.icon} alt={s.label} width={48} height={48} />
+                <FontAwesomeIcon
+                  icon={s.icon}
+                  className={styles.ctaIcon}
+                  style={{
+                    fontSize: "1em",
+                    width: "1em",
+                    height: "1em",
+                    minWidth: "1em",
+                    flexShrink: 0,
+                  }}
+                />
               </div>
               <span>{s.label}</span>
             </div>
@@ -91,13 +104,7 @@ const WelcomeBottomSection = () => (
       <div className={styles.ctaButtonsRow}>
         <button className={styles.ctaButton}>
           Comenzar ahora
-          <Image
-            src={rocket}
-            alt="Rocket"
-            width={22}
-            height={22}
-            className={styles.ctaIcon}
-          />
+          <FontAwesomeIcon icon={faRocket} className={styles.ctaIcon} />
         </button>
       </div>
     </section>

@@ -1,7 +1,6 @@
 import styles from "./WelcomeTextAndButtons.module.css";
-import Image from "next/image";
-import arrowRight from "../../../../../public/arrowright.png";
-import bulb from "../../../../../public/lightball.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight, faLightbulb } from "@fortawesome/free-solid-svg-icons";
 
 const WelcomeTextAndButtons = () => (
   <div className={styles.textAndButtons}>
@@ -11,24 +10,16 @@ const WelcomeTextAndButtons = () => (
     </p>
     <div className={styles.ctaButtonsRow}>
       <button className={styles.ctaButton}>
-        Comenzar
-        <Image
-          src={arrowRight}
-          alt="Comenzar"
-          width={22}
-          height={22}
-          className={styles.ctaIcon}
-        />
+        <span className={styles.ctaButtonContent}>
+          Comenzar
+          <FontAwesomeIcon icon={faArrowRight} className={styles.ctaIcon} />
+        </span>
       </button>
       <button className={styles.secondaryButton}>
-        Saber más
-        <Image
-          src={bulb}
-          alt="Saber más"
-          width={20}
-          height={20}
-          className={styles.ctaIcon}
-        />
+        <span className={styles.ctaButtonContent}>
+          Saber más
+          <FontAwesomeIcon icon={faLightbulb} className={styles.ctaIcon} />
+        </span>
       </button>
     </div>
   </div>

@@ -9,7 +9,7 @@ const WelcomePage = () => {
       WelcomeBottomSection={<WelcomeBottomSection />}
       WelcomeTextAndButtons={<WelcomeTextAndButtons />}
       WelcomeRobot={<WelcomeRobot />}
-    ></Welcome>
+    />
   );
 };
 

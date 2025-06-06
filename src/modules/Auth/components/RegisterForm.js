@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import styles from "./RegisterForm.module.css";
 import { useRouter } from "next/router";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 
 const RegisterForm = ({ onRegister, loading, error }) => {
   const [fullName, setFullName] = useState("");
@@ -71,8 +73,12 @@ const RegisterForm = ({ onRegister, loading, error }) => {
             <span
               title="Mínimo 8 caracteres, 1 mayúscula, 1 número"
               className={styles.infoIcon}
+              style={{ marginLeft: 6 }}
             >
-              ⓘ
+              <FontAwesomeIcon
+                icon={faCircleInfo}
+                style={{ width: "1rem", color: "#888" }}
+              />
             </span>
           </label>
           <div className={styles.inputPasswordWrapper}>
@@ -86,8 +92,9 @@ const RegisterForm = ({ onRegister, loading, error }) => {
             <span
               onClick={() => setShowPassword(!showPassword)}
               className={styles.eyeIcon}
+              style={{ cursor: "pointer" }}
             >
-              👁️
+              <FontAwesomeIcon icon={faEye} />
             </span>
           </div>
           <div className={styles.passwordHint}>
@@ -107,8 +114,9 @@ const RegisterForm = ({ onRegister, loading, error }) => {
             <span
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               className={styles.eyeIcon}
+              style={{ cursor: "pointer" }}
             >
-              👁️
+              <FontAwesomeIcon icon={faEye} />
             </span>
           </div>
         </div>
@@ -136,30 +144,24 @@ const RegisterForm = ({ onRegister, loading, error }) => {
               className={`${styles.newsOption} ${
                 news === "yes" ? styles.newsOptionActive : ""
               }`}
+              style={{
+                background: news === "yes" ? "#6C2BD7" : "#f3f3f3",
+                color: news === "yes" ? "#fff" : "#222",
+              }}
+              onClick={() => setNews("yes")}
             >
-              <input
-                type="radio"
-                name="news"
-                value="yes"
-                checked={news === "yes"}
-                onChange={() => setNews("yes")}
-                className={styles.radio}
-              />
               Sí
             </label>
             <label
               className={`${styles.newsOption} ${
                 news === "no" ? styles.newsOptionActive : ""
               }`}
+              style={{
+                background: news === "no" ? "#6C2BD7" : "#f3f3f3",
+                color: news === "no" ? "#fff" : "#222",
+              }}
+              onClick={() => setNews("no")}
             >
-              <input
-                type="radio"
-                name="news"
-                value="no"
-                checked={news === "no"}
-                onChange={() => setNews("no")}
-                className={styles.radio}
-              />
               No
             </label>
           </div>

@@ -1,39 +1,39 @@
 import React, { useState } from "react";
 import { useAuth } from "../../../shared/utils/authProvider";
-import loginService from "../services/loginService";
 import { useRouter } from "next/router";
 import Button1 from "../../../shared/components/Button1";
 import LoadingSpinner from "../../../shared/components/LoadingSpinner";
 import { useTranslation } from "react-i18next";
 import styles from "./LoginForm.module.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 
-const LoginForm = ({ onLoginSuccess }) => {
+const LoginForm = ({ onLogin, loading, error }) => {
   const { t } = useTranslation();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [localError, setLocalError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const router = useRouter();
   const { initSession } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setLoading(true);
-
+    setLocalError("");
+    setSubmitting(true);
     try {
-      const response = await loginService.add({ username, password });
-      initSession(response.token);
-      setLoading(false);
-      if (onLoginSuccess) {
-        onLoginSuccess();
-      } else {
+      const response = await onLogin({ username, password });
+      if (response && response.token) {
+        initSession(response.token);
         router.push("/");
+      } else {
+        setLocalError(t("loginError") || "Usuario o contraseña incorrectos.");
       }
     } catch (err) {
-      setError(err.message || "Error al iniciar sesión");
-      setLoading(false);
+      setLocalError(err?.message || t("loginError"));
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -42,7 +42,24 @@ const LoginForm = ({ onLoginSuccess }) => {
       <form onSubmit={handleSubmit} className={styles.form}>
         <h2 className={styles.title}>{t("login")}</h2>
         <div className={styles.inputGroup}>
-          <label className={styles.label}>Usuario</label>
+          <label className={styles.label}>
+            Usuario
+            <span
+              title="Ingresa tu usuario"
+              className={styles.infoIcon}
+              style={{
+                marginLeft: 6,
+                color: "#888",
+                display: "inline-flex",
+                alignItems: "center",
+              }}
+            >
+              <FontAwesomeIcon
+                icon={faCircleInfo}
+                style={{ width: "1rem", color: "#888" }}
+              />
+            </span>
+          </label>
           <input
             type="text"
             value={username}
@@ -53,7 +70,24 @@ const LoginForm = ({ onLoginSuccess }) => {
           />
         </div>
         <div className={styles.inputGroupSmall}>
-          <label className={styles.label}>{t("password")}</label>
+          <label className={styles.label}>
+            {t("password")}
+            <span
+              title="Ingresa tu contraseña"
+              className={styles.infoIcon}
+              style={{
+                marginLeft: 6,
+                color: "#888",
+                display: "inline-flex",
+                alignItems: "center",
+              }}
+            >
+              <FontAwesomeIcon
+                icon={faCircleInfo}
+                style={{ width: "1rem", color: "#888" }}
+              />
+            </span>
+          </label>
           <div className={styles.inputPasswordWrapper}>
             <input
               type={showPassword ? "text" : "password"}
@@ -66,12 +100,17 @@ const LoginForm = ({ onLoginSuccess }) => {
             <span
               onClick={() => setShowPassword(!showPassword)}
               className={styles.eyeIcon}
+              style={{ cursor: "pointer" }}
             >
-              👁️
+              <FontAwesomeIcon icon={faEye} />
             </span>
           </div>
         </div>
-        {error && <div style={{ color: "red", marginBottom: 8 }}>{error}</div>}
+        {(error || localError) && (
+          <div style={{ color: "red", marginBottom: 8 }}>
+            {error || localError}
+          </div>
+        )}
         <div
           style={{
             display: "flex",
@@ -80,13 +119,13 @@ const LoginForm = ({ onLoginSuccess }) => {
             width: "100%",
           }}
         >
-          {loading ? (
+          {loading || submitting ? (
             <LoadingSpinner />
           ) : (
             <Button1
               type="submit"
               className={styles.submitBtn}
-              disabled={loading}
+              disabled={loading || submitting}
             >
               {t("login")}
             </Button1>

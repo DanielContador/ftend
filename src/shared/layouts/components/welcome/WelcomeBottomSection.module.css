@@ -6,19 +6,19 @@
   right: 50%;
   margin-left: -50vw;
   margin-right: -50vw;
-  padding: 80px 0 0 0; /* Más padding arriba */
-  padding-bottom: 80px; /* Agrega espacio extra abajo */
-  min-height: 900px; /* Más alto para dar sensación de sección amplia */
+  padding: 80px 0 0 0;
+  padding-bottom: 80px;
+  min-height: 900px;
   box-sizing: border-box;
   z-index: 2;
 }
 
 .whatIs {
   display: flex;
-  align-items: flex-start;
+  align-items: center; /* Cambiado de flex-start a center */
   gap: 24px;
   max-width: 900px;
-  margin: 0 auto 64px auto; /* Más margen inferior */
+  margin: 0 auto 64px auto;
   padding: 0 24px;
 }
 
@@ -29,12 +29,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: 80px;
+  min-height: 80px;
+  box-shadow: 0 2px 8px #eae6fa;
 }
 
 .whatIs h2 {
   color: #7d3cff;
   margin-bottom: 8px;
   font-size: 1.4rem;
+  font-weight: 700;
 }
 
 .whatIs p,
@@ -44,13 +48,14 @@
   margin-top: 0;
   margin-bottom: 0;
   font-weight: 400;
+  max-width: 500px;
 }
 
 .features {
   display: flex;
   justify-content: center;
   gap: 32px;
-  margin: 64px 0; /* Más espacio arriba y abajo */
+  margin: 64px 0;
   flex-wrap: wrap;
 }
 
@@ -60,11 +65,16 @@
   box-shadow: 0 4px 24px #eae6fa;
   padding: 32px 24px;
   text-align: center;
-  width: 260px;
+  width: 320px; /* Más ancho para parecerse a la imagen */
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .featureIcon {
-  background: #f4f0ff;
+  background: #7d3cff;
   border-radius: 50%;
   width: 56px;
   height: 56px;
@@ -72,12 +82,16 @@
   align-items: center;
   justify-content: center;
   margin: 0 auto 16px auto;
+  color: #fff;
+  font-size: 2rem;
+  box-shadow: 0 2px 8px #eae6fa;
 }
 
 .featureCard h3 {
   color: #7d3cff;
   margin-bottom: 8px;
   font-size: 1.1rem;
+  font-weight: 700;
 }
 
 .featureCard p {
@@ -90,12 +104,14 @@
 
 .howItWorks {
   text-align: center;
-  margin: 80px 0 64px 0; /* Más espacio arriba y abajo */
+  margin: 80px 0 64px 0;
 }
 
 .howItWorks h2 {
   color: #7d3cff;
   margin-bottom: 24px;
+  font-size: 1.3rem;
+  font-weight: 700;
 }
 
 .steps {
@@ -110,17 +126,35 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 120px;
-  font-size: 0.95rem;
+  min-width: 110px;
+  font-size: 0.92rem;
   color: #7d3cff;
 }
 
+.stepIcon {
+  background: #fff;
+  border-radius: 50%;
+  width: 56px; /* más pequeño, antes 68px */
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 8px #eae6fa;
+  border: 1.5px solid #e0d7fa;
+}
+
+.stepIcon svg {
+  font-size: 1.2rem !important;
+  color: #7d3cff !important;
+}
+
 .dash {
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: #d1c4e9;
-  margin: 0 12px;
+  margin: 0 6px; /* centrado verticalmente */
   align-self: center;
-  line-height: 48px;
+  line-height: 56px;
   display: flex;
   align-items: center;
 }
@@ -129,7 +163,7 @@
   background: #f8f6ff;
   border-radius: 18px;
   max-width: 500px;
-  margin: 80px auto 0 auto; /* Más espacio arriba */
+  margin: 80px auto 0 auto;
   padding: 48px 24px;
   text-align: center;
   box-shadow: 0 4px 24px #eae6fa;
@@ -138,6 +172,8 @@
 .ctaSection h2 {
   color: #7d3cff;
   margin-bottom: 12px;
+  font-size: 1.2rem;
+  font-weight: 700;
 }
 
 .ctaSection p {
@@ -161,19 +197,32 @@
   color: #fff;
   border: none;
   border-radius: 24px;
-  padding: 12px 32px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 2px 8px #eae6fa;
+  padding: 12px 0;
+  min-width: 200px; /* más ancho horizontalmente */
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px #eae6fa;
+  font-size: 1rem;
+  font-weight: 600;
   transition: background 0.2s;
+  justify-content: center;
 }
 
 .ctaButton:hover {
   background: linear-gradient(90deg, #5f2eea 0%, #7d3cff 100%);
+}
+
+.ctaButton .ctaIcon {
+  margin-left: 10px;
+  font-size: 0.95em; /* más pequeño */
+  width: 1em;
+  height: 1em;
+  min-width: 1em;
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
 }
 
 .secondaryButton {
@@ -202,6 +251,7 @@
   margin-left: 6px;
   display: inline-block;
   vertical-align: middle;
+  font-size: 1.2em;
 }
 
 .footerCustom {

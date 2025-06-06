@@ -85,16 +85,20 @@
   margin-right: auto;
   margin-top: 0;
   width: 100%;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .emailIcon {
   background: #f4f0ff;
   border-radius: 8px;
-  padding: 8px;
+  padding: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: 48px;
+  min-height: 48px;
+  height: 48px;
+  width: 48px;
 }
 
 .emailLabel {
@@ -126,4 +130,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.ctaIcon {
+  margin-top: 4px;
+  margin-left: 4px;
+  font-size: 1em;
+  width: 1em; /* Asegura ancho fijo para el icono */
+  height: 1.2em; /* Asegura alto fijo para el icono */
+  min-width: 1em; /* Previene colapso a 0px */
+  display: inline-block;
+  vertical-align: bottom;
+  flex-shrink: 0; /* Previene que el icono se reduzca */
 }

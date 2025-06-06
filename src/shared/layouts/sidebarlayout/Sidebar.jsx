@@ -1,9 +1,10 @@
 import styles from "./Sidebar.module.css";
 import Image from "next/image";
 import LogoBlanco from "../../../../public/LogoBlanco.png";
-import useravatar from "../../../../public/useravatar.png";
-import settings from "../../../../public/settings.png";
 import { useRouter } from "next/router";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { faSlidersH } from "@fortawesome/free-solid-svg-icons"; // faSlidersH es el icono de sliders/settings horizontal
 
 const Sidebar = ({ menuButtons }) => {
   const router = useRouter();
@@ -33,12 +34,29 @@ const Sidebar = ({ menuButtons }) => {
           </div>
         </div>
         <div className={styles.supportBox}>
-          <div className={styles.supportIcon}>
-            <Image src={useravatar} alt="Soporte" width={32} height={32} />
+          <div
+            className={styles.supportIcon}
+            style={{
+              background: "#bdb7e6",
+              borderRadius: "50%",
+              width: 28,
+              height: 28,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <FontAwesomeIcon
+              icon={faUser}
+              style={{ fontSize: 16, color: "#fff" }}
+            />
           </div>
           <span className={styles.supportText}>Soporte.ti@dl.cl</span>
           <div className={styles.supportSettings}>
-            <Image src={settings} alt="Settings" width={22} height={22} />
+            <FontAwesomeIcon
+              icon={faSlidersH}
+              style={{ fontSize: 20, color: "#bdb7e6" }}
+            />
           </div>
         </div>
       </div>

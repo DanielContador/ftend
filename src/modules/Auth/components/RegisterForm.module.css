@@ -70,9 +70,11 @@
 
 .infoIcon {
   margin-left: 6px;
-  cursor: pointer;
   color: #888;
   font-size: 1em;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
 }
 
 .passwordHint {

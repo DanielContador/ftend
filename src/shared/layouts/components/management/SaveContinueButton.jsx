@@ -1,6 +1,6 @@
 import styles from "./SaveContinueButton.module.css";
-import Image from "next/image";
-import save from "../../../../../public/save.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSave } from "@fortawesome/free-solid-svg-icons";
 
 const SaveContinueButton = ({
   onClick,
@@ -8,7 +8,10 @@ const SaveContinueButton = ({
   ...props
 }) => (
   <button type="button" className={styles.saveBtn} onClick={onClick} {...props}>
-    <Image src={save} alt="Guardar" width={20} height={20} />
+    <FontAwesomeIcon
+      icon={faSave}
+      style={{ color: "#fff", fontSize: 20, marginRight: 8 }}
+    />
     <span>{text}</span>
   </button>
 );

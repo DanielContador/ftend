@@ -1,11 +1,14 @@
 import styles from "./Layout.module.css";
-import Image from "next/image";
-import mailIcon from "../../../../../public/mail.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
 
 const HelpEmailBox = () => (
   <div className={styles.emailBox}>
     <div className={styles.emailIcon}>
-      <Image src={mailIcon} alt="Email" width={28} height={28} />
+      <FontAwesomeIcon
+        icon={faEnvelope}
+        style={{ fontSize: 24, color: "#7d3cff" }}
+      />
     </div>
     <div>
       <div className={styles.emailLabel}>Email</div>

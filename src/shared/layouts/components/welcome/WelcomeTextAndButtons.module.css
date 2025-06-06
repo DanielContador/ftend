@@ -20,48 +20,69 @@
 
 .ctaButtonsRow {
   display: flex;
-  gap: 1rem;
+  gap: 1.2rem;
 }
 
 .ctaButton {
-  background: #7d3cff;
+  background: linear-gradient(90deg, #7d3cff 0%, #5f2eea 100%);
   color: #fff;
   border: none;
-  border-radius: 18px;
+  border-radius: 24px;
   font-size: 1rem;
   font-weight: 600;
-  padding: 10px 22px;
+  padding: 12px 0;
+  min-width: 200px; /* más ancho horizontalmente */
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   cursor: pointer;
-  transition: background 0.18s;
+  box-shadow: 0 2px 8px #eae6fa;
+  transition: 0.18s;
+  justify-content: center;
 }
 
 .ctaButton:hover {
-  background: #5f2eea;
+  background: linear-gradient(90deg, #5f2eea 0%, #7d3cff 100%);
 }
 
 .secondaryButton {
   background: #fff;
   color: #7d3cff;
-  border: 2px solid #7d3cff;
-  border-radius: 18px;
+  border: none;
+  border-radius: 24px;
   font-size: 1rem;
   font-weight: 600;
-  padding: 10px 22px;
+  padding: 12px 32px; /* tamaño normal */
+  min-width: 140px; /* tamaño más compacto */
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  border: 2px solid #fff;
   cursor: pointer;
-  transition: background 0.18s, color 0.18s;
+  box-shadow: 0 2px 8px #eae6fa;
+  transition: 0.18s, color 0.18s, border 0.18s;
+  justify-content: center;
 }
 
 .secondaryButton:hover {
   background: #f3f3f3;
   color: #5f2eea;
+  border: 2px solid #7d3cff;
 }
 
 .ctaIcon {
-  margin-left: 6px;
+  font-size: 1.2em;
+  margin-left: 8px;
+  vertical-align: middle;
+  width: 1em; /* Asegura ancho fijo para el icono */
+  height: 1.2em; /* Asegura alto fijo para el icono */
+  min-width: 1em; /* Previene colapso a 0px */
+  display: inline-block;
+  vertical-align: bottom;
+  flex-shrink: 0; /* Previene que el icono se reduzca */
+}
+
+.ctaButtonContent {
+  display: flex;
+  align-items: center;
 }

@@ -81,7 +81,7 @@
   padding: 12px 0;
   margin-bottom: 8px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: 0.2s;
 }
 
 .submitBtn:hover {
@@ -97,4 +97,13 @@
 .termsLink {
   color: #6c2bd7;
   text-decoration: underline;
+}
+
+.infoIcon {
+  margin-left: 6px;
+  color: #888;
+  font-size: 1em;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
 }

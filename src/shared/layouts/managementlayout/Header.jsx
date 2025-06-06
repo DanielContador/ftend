@@ -1,8 +1,9 @@
 import styles from "./Header.module.css";
 import Image from "next/image";
 import MentorIALogoBlanco from "../../../../public/MentorIALogoBlanco.png";
-import arrowLeft from "../../../../public/arrowleft.png";
 import { useRouter } from "next/router";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 const Header = ({ button }) => {
   const router = useRouter();
@@ -13,7 +14,10 @@ const Header = ({ button }) => {
       </div>
       <div className={styles.actions}>
         <button className={styles.actionBtn} onClick={() => router.back()}>
-          <Image src={arrowLeft} alt="Volver" width={20} height={20} />
+          <FontAwesomeIcon
+            icon={faArrowLeft}
+            style={{ fontSize: 20, color: "#fff" }}
+          />
           <span>Volver</span>
         </button>
         {button}
