@@ -1,14 +1,14 @@
 import SplitLayout from "../shared/layouts/splitlayout/SplitLayout";
-import CenterBrand from "../shared/layouts/components/password/CenterBrand";
-import RecoverPasswordPage from "../modules/Auth/pages/RecoverPasswordPage";
+import ChangeCenterBrand from "../shared/layouts/components/password/ChangeCenterBrand";
+import ChangePasswordPage from "../modules/Auth/pages/ChangePasswordPage";
 
-const ChangePasswordPage = () => {
+const ChangePassword = () => {
   return (
     <SplitLayout
-      centerComponent={<CenterBrand />}
-      children={<RecoverPasswordPage />}
+      children={<ChangePasswordPage />}
+      centerComponent={<ChangeCenterBrand />}
     ></SplitLayout>
   );
 };
 
-export default ChangePasswordPage;
+export default ChangePassword;
