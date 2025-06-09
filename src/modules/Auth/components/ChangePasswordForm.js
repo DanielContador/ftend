@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styles from "./ChangePasswordForm.module.css";
 import { useRouter } from "next/router";
+import ChangePasswordSuccessBrand from "./ChangePasswordSuccessBrand";
 
 const passwordRules = [
   "At least 8 characters",
@@ -16,6 +17,7 @@ const ChangePasswordForm = ({ onSubmit, loading, error }) => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [fieldError, setFieldError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
   const router = useRouter();
 
   const validate = () => {
@@ -40,12 +42,21 @@ const ChangePasswordForm = ({ onSubmit, loading, error }) => {
     setSubmitting(true);
     try {
       await onSubmit?.(password);
+      setSuccess(true);
     } catch (e) {
       setFieldError(e?.message || "Error al cambiar la contraseña.");
     } finally {
       setSubmitting(false);
     }
   };
+
+  if (success) {
+    return (
+      <div className={styles.container}>
+        <ChangePasswordSuccessBrand onHomeClick={() => router.push("/login")} />
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>

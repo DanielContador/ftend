@@ -1,0 +1,22 @@
+import React from "react";
+import styles from "./ChangePasswordSuccessBrand.module.css";
+
+const ChangePasswordSuccessBrand = ({ onHomeClick }) => (
+  <div className={styles.card}>
+    <div className={styles.title}>
+      Cambiaste tu
+      <br />
+      contraseña con éxito
+    </div>
+    <div className={styles.message}>
+      ¡Ahora puedes volver a crear recursos
+      <br />
+      educativos con estilo!
+    </div>
+    <button className={styles.homeButton} onClick={onHomeClick}>
+      Volver a home
+    </button>
+  </div>
+);
+
+export default ChangePasswordSuccessBrand;
