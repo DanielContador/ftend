@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import styles from "./RecoverPasswordForm.module.css";
 import { useRouter } from "next/router";
+import RecoverPasswordSendBrand from "./RecoverPasswordSendBrand";
 
 const RecoverPasswordForm = ({ onSubmit, loading, error }) => {
   const [email, setEmail] = useState("");
   const [fieldError, setFieldError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
   const router = useRouter();
 
   const validate = () => {
@@ -26,12 +28,21 @@ const RecoverPasswordForm = ({ onSubmit, loading, error }) => {
     setSubmitting(true);
     try {
       await onSubmit?.(email);
+      setSuccess(true);
     } catch (e) {
       setFieldError(e?.message || "Error al enviar el link.");
     } finally {
       setSubmitting(false);
     }
   };
+
+  if (success) {
+    return (
+      <div className={styles.container}>
+        <RecoverPasswordSendBrand onHomeClick={() => router.push("/login")} />
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
@@ -66,7 +77,7 @@ const RecoverPasswordForm = ({ onSubmit, loading, error }) => {
         <button
           type="button"
           className={styles.secondaryBtn}
-          onClick={() => router.push("/")}
+          onClick={() => router.push("/login")}
         >
           Volver a home
         </button>

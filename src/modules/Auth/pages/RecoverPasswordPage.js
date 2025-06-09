@@ -9,12 +9,8 @@ const RecoverPasswordPage = () => {
   const handleSubmit = async (email) => {
     setLoading(true);
     setError("");
-    setSuccessMsg("");
     try {
       await passwordService.requestRecoverPassword(email);
-      setSuccessMsg(
-        "Si el email existe, se ha enviado un link de recuperación."
-      );
     } catch (e) {
       setError(e.message || "Error al enviar el link.");
     } finally {
