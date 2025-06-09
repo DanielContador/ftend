@@ -5,7 +5,6 @@ import LogoBlanco from "../../../../../public/LogoBlanco.svg"; // Ajusta el path
 
 const CenterBrand = () => (
   <div className={styles.centerBrand}>
-    <Image src={LogoBlanco} alt="MentorIA" width={96} height={96} />
     <span className={styles.brandText}>MentorIA</span>
     <span className={styles.welcomeText}>
       Bienvenidos de nuevo

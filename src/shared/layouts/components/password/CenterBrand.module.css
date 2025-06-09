@@ -1,0 +1,24 @@
+.centerBrand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 10px; /* reducido el gap */
+}
+
+.brandText {
+  font-size: 2.8rem; /* más grande */
+  font-weight: bold;
+  color: #fff;
+}
+
+.welcomeText {
+  font-size: 1.25rem; /* agrandado */
+  color: #e0e0e0;
+  text-align: center;
+  margin-top: 4px; /* menos margen */
+  font-weight: 700; /* más grueso */
+  white-space: pre-line;
+  line-height: 1.4;
+}

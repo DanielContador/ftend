@@ -139,7 +139,7 @@ const LoginForm = ({ onLogin, loading, error }) => {
           <button
             type="button"
             className={styles.secondaryBtn}
-            onClick={() => router.push("/forgot-password")}
+            onClick={() => router.push("/change-password")}
             tabIndex={-1}
           >
             ¿Olvidaste tu contraseña?
