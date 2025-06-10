@@ -27,7 +27,8 @@ const RecoverPasswordForm = ({ onSubmit, loading, error }) => {
     }
     setSubmitting(true);
     try {
-      await onSubmit?.(email);
+      await onSubmit(7);
+      // await onSubmit?.(email);
       setSuccess(true);
     } catch (e) {
       setFieldError(e?.message || "Error al enviar el link.");

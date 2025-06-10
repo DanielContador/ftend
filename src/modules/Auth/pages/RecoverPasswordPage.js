@@ -6,11 +6,11 @@ const RecoverPasswordPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = async (email) => {
+  const handleSubmit = async (id) => {
     setLoading(true);
     setError("");
     try {
-      await passwordService.requestRecoverPassword(email);
+      await passwordService.requestRecoverPassword(id);
     } catch (e) {
       setError(e.message || "Error al enviar el link.");
     } finally {

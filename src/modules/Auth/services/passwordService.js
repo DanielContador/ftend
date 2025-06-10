@@ -1,20 +1,27 @@
 import { BaseService } from "../../../shared/services/baseService";
 
-const PASSWORD_ENDPOINT = "/api/auth/password";
+const PASSWORD_ENDPOINT = "User";
 
 class PasswordService extends BaseService {
   constructor() {
     super(PASSWORD_ENDPOINT);
   }
 
-  requestRecoverPassword = (email) => {
-    // Usa el método post heredado del BaseService
-    return this.add("/recover", { email });
-  };
+  // requestRecoverPassword = (email) => {
+  //   // Usa el método post heredado del BaseService
+  //   return this.add({ email }, "/recovery-password");
+  // };
 
-  changePassword = (password, token) => {
+  requestRecoverPassword = (id, partialUrl = "/recovery-password") =>
+    this.getById(id, partialUrl);
+
+  resetPassword = (password, token) => {
+    let data = {
+      token: token,
+      newPassword: password,
+    };
     // token puede venir por query param o body según tu backend
-    return this.add("/change", { password, token });
+    return this.add(data, "/reset-password");
   };
 }
 
