@@ -1,0 +1,51 @@
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 32px 0px 0px; /* aumenta el padding-bottom para pegarlo más al borde */
+  background: transparent;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 16px;
+}
+
+.backButton {
+  background: none;
+  border: none;
+  color: #6c6c6c;
+  font-size: 1rem;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.backButton:disabled {
+  color: #cccccc;
+  cursor: not-allowed;
+}
+
+.nextButton {
+  background: #6c3ef4;
+  color: #fff;
+  border: none;
+  font-size: 1rem;
+  padding: 8px 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s;
+  box-shadow: 0 2px 8px rgba(108, 62, 244, 0.08);
+}
+
+.nextButton:disabled {
+  background: #e5e5e5;
+  color: #bdbdbd;
+  cursor: not-allowed;
+}

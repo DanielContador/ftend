@@ -1,0 +1,142 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal {
+  background: #fff;
+  border-radius: 18px;
+  width: 700px;
+  max-width: 95vw;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  min-height: 400px;
+  position: relative;
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #eee;
+  padding: 1.2em 2em 0.5em 2em;
+}
+.tabs {
+  display: flex;
+  gap: 2em;
+}
+.tab {
+  font-size: 1.1em;
+  color: #888;
+  padding-bottom: 0.5em;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+}
+.activeTab {
+  color: #7c3aed;
+  border-bottom: 2px solid #7c3aed;
+  font-weight: bold;
+}
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+  color: #888;
+}
+.stepContent {
+  flex: 1;
+  padding: 2em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #eee;
+  padding: 1em 2em;
+  background: #fafbfc;
+}
+.backButton,
+.nextButton {
+  background: #fff;
+  border: 1px solid #7c3aed;
+  color: #7c3aed;
+  border-radius: 6px;
+  padding: 0.6em 1.5em;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.nextButton {
+  background: #7c3aed;
+  color: #fff;
+  border: none;
+}
+.nextButton:disabled {
+  background: #e5e7eb;
+  color: #aaa;
+  border: none;
+  cursor: not-allowed;
+}
+.stepResourceType {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.question {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 2em;
+  text-align: center;
+}
+.options {
+  display: flex;
+  gap: 2em;
+  margin-bottom: 2em;
+}
+.optionCard {
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 2em 2.5em;
+  cursor: pointer;
+  background: #fff;
+  transition: border 0.2s, box-shadow 0.2s;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5em;
+}
+.optionCard.selected {
+  border: 2px solid #7c3aed;
+  box-shadow: 0 2px 12px rgba(124, 58, 237, 0.08);
+}
+.iconCurso {
+  width: 32px;
+  height: 32px;
+  background: url('data:image/svg+xml;utf8,<svg fill="none" height="32" width="32" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="16" fill="%237c3aed"/><text x="8" y="22" font-size="16" fill="white">🎓</text></svg>')
+    no-repeat center/contain;
+  margin-bottom: 0.5em;
+}
+.iconMaterial {
+  width: 32px;
+  height: 32px;
+  background: url('data:image/svg+xml;utf8,<svg fill="none" height="32" width="32" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="16" fill="%23a3a3a3"/><text x="8" y="22" font-size="16" fill="white">📄</text></svg>')
+    no-repeat center/contain;
+  margin-bottom: 0.5em;
+}
+.stepFooter {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
