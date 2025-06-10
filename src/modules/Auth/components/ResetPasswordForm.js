@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import styles from "./ChangePasswordForm.module.css";
+import styles from "./ResetPasswordForm.module.css";
 import { useRouter } from "next/router";
-import ChangePasswordSuccessBrand from "./ChangePasswordSuccessBrand";
+import ResetPasswordSuccessBrand from "./ResetPasswordSuccessBrand";
 
 const passwordRules = [
   "At least 8 characters",
@@ -10,7 +10,7 @@ const passwordRules = [
   "At least one number",
 ];
 
-const ChangePasswordForm = ({ onSubmit, loading, error }) => {
+const ResetPasswordForm = ({ onSubmit, loading, error }) => {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -53,7 +53,7 @@ const ChangePasswordForm = ({ onSubmit, loading, error }) => {
   if (success) {
     return (
       <div className={styles.container}>
-        <ChangePasswordSuccessBrand onHomeClick={() => router.push("/login")} />
+        <ResetPasswordSuccessBrand onHomeClick={() => router.push("/login")} />
       </div>
     );
   }
@@ -160,4 +160,4 @@ const ChangePasswordForm = ({ onSubmit, loading, error }) => {
   );
 };
 
-export default ChangePasswordForm;
+export default ResetPasswordForm;

@@ -1,7 +1,7 @@
 import React from "react";
-import styles from "./ChangePasswordSuccessBrand.module.css";
+import styles from "./ResetPasswordSuccessBrand.module.css";
 
-const ChangePasswordSuccessBrand = ({ onHomeClick }) => (
+const ResetPasswordSuccessBrand = ({ onHomeClick }) => (
   <div className={styles.card}>
     <div className={styles.title}>
       Cambiaste tu
@@ -19,4 +19,4 @@ const ChangePasswordSuccessBrand = ({ onHomeClick }) => (
   </div>
 );
 
-export default ChangePasswordSuccessBrand;
+export default ResetPasswordSuccessBrand;

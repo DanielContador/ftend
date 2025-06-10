@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
-import ChangePasswordForm from "../components/ChangePasswordForm";
+import ResetPasswordForm from "../components/ResetPasswordForm";
 import passwordService from "../services/passwordService";
 
 const ChangePasswordPage = () => {
@@ -25,7 +25,7 @@ const ChangePasswordPage = () => {
   };
 
   return (
-    <ChangePasswordForm
+    <ResetPasswordForm
       onSubmit={handleSubmit}
       loading={loading}
       error={error}

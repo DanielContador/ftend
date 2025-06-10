@@ -4,15 +4,17 @@ import { getCookie } from "./shared/utils/session";
 export default async function middleware(req) {
   const token = getCookie("authToken", req);
   const { pathname } = req.nextUrl;
-  if (
-    !token &&
-    pathname !== "/login" &&
-    pathname !== "/welcome" &&
-    pathname !== "/" &&
-    pathname !== "/help" &&
-    pathname !== "/register" &&
-    pathname !== "/management" // Permitir acceso a /management sin login
-  ) {
+  let authorizedPaths = [
+    "/",
+    "/welcome",
+    "/login",
+    "/help",
+    "/register",
+    "/management",
+    "/recover-password",
+    "/reset-password",
+  ];
+  if (!token && !authorizedPaths.includes(pathname)) {
     return NextResponse.redirect(new URL("/login", req.url)); // Redirect to login page
   }
   if (!token && pathname === "/") {
