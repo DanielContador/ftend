@@ -1,6 +1,7 @@
 import { StepResourceType } from "./steps/StepResourceType";
 import { StepPublishType } from "./steps/StepPublishType";
 import { StepMaterialType } from "./steps/StepMaterialType";
+import { StepThemeType } from "./steps/StepThemeType";
 // ...otros imports de steps...
 
 export const courseWizardStepsConfig = [
@@ -28,5 +29,14 @@ export const courseWizardStepsConfig = [
     tabLabel: "Tipo de recurso",
     // Este step solo se debe mostrar si resourceType === "curso"
     condition: (formData) => formData.resourceType === "curso",
+  },
+  {
+    key: "themeType",
+    label: "Temática Scorm",
+    component: StepThemeType,
+    tabKey: "themeType", // Cambia el tabKey para que sea único y claro
+    tabLabel: "Formulario",
+    // Este step solo se debe mostrar si se selecciona "scorm" en el paso de publicación
+    condition: (formData) => formData.publishType === "scorm",
   },
 ];

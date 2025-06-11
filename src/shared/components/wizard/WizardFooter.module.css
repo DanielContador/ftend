@@ -24,12 +24,12 @@
 .backButton {
   background: none;
   border: none;
-  color: #6c3ef4;
+  color: #222; /* Flecha y texto en negro no tan oscuro */
   font-size: 1rem;
   padding: 8px 16px;
   border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition: 0.2s, color 0.2s;
   font-weight: 500;
 }
 
