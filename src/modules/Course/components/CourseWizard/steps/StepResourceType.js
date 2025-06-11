@@ -1,11 +1,23 @@
 import React from "react";
-import styles from "../CourseWizard.module.css";
+import styles from "./StepResourceType.module.css";
 
-export const StepResourceType = ({ formData, onChange }) => {
-  const selected = formData.resourceType || "";
+export const StepResourceType = ({
+  formData,
+  onChange,
+  handleNextDisabled,
+}) => {
+  // Asegúrate de que el valor sea null si no hay selección, no string vacío
+  const selected = formData.resourceType ?? null;
 
   const handleSelect = (type) => {
+    handleNextDisabled(false);
     onChange({ resourceType: type });
+  };
+
+  const handleKeyDown = (e, type) => {
+    if (e.key === "Enter" || e.key === " ") {
+      handleSelect(type);
+    }
   };
 
   return (
@@ -16,7 +28,11 @@ export const StepResourceType = ({ formData, onChange }) => {
           className={`${styles.optionCard} ${
             selected === "curso" ? styles.selected : ""
           }`}
+          tabIndex={0}
+          role="button"
+          aria-pressed={selected === "curso"}
           onClick={() => handleSelect("curso")}
+          onKeyDown={(e) => handleKeyDown(e, "curso")}
         >
           <div className={styles.iconCurso} />
           <div>
@@ -31,7 +47,11 @@ export const StepResourceType = ({ formData, onChange }) => {
           className={`${styles.optionCard} ${
             selected === "material" ? styles.selected : ""
           }`}
+          tabIndex={0}
+          role="button"
+          aria-pressed={selected === "material"}
           onClick={() => handleSelect("material")}
+          onKeyDown={(e) => handleKeyDown(e, "material")}
         >
           <div className={styles.iconMaterial} />
           <div>

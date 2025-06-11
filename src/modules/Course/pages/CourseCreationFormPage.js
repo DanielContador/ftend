@@ -1,12 +1,12 @@
 import React from "react";
 import { useRouter } from "next/router";
-import { CourseWizardOverlay } from "../components/CourseWizard/CourseWizardOverlay";
+import { CourseWizard } from "../components/CourseWizard/CourseWizard";
 
 const CourseCreationFormPage = ({ handleError }) => {
   const router = useRouter();
 
   return (
-    <CourseWizardOverlay
+    <CourseWizard
       onClose={() => {
         router.push("/");
       }}

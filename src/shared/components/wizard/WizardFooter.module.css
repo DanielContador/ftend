@@ -2,12 +2,18 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px 32px 0px 0px; /* aumenta el padding-bottom para pegarlo más al borde */
-  background: transparent;
+  padding: 16px 32px 16px 16px; /* Agrega padding-top para centrar verticalmente */
+  background: #faf9fd;
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
+  border-top: 1px solid #ece7fa;
+  min-height: 72px;
+  box-sizing: border-box;
+  margin-top: 0; /* Elimina cualquier margen superior */
 }
 
 .spacer {
-  flex: 1;
+  display: none;
 }
 
 .buttonGroup {
@@ -18,12 +24,13 @@
 .backButton {
   background: none;
   border: none;
-  color: #6c6c6c;
+  color: #6c3ef4;
   font-size: 1rem;
   padding: 8px 16px;
   border-radius: 8px;
   cursor: pointer;
-  transition: 0.2s;
+  transition: background 0.2s, color 0.2s;
+  font-weight: 500;
 }
 
 .backButton:disabled {
@@ -39,13 +46,13 @@
   padding: 8px 32px;
   border-radius: 8px;
   cursor: pointer;
-  font-weight: 500;
-  transition: 0.2s;
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s;
   box-shadow: 0 2px 8px rgba(108, 62, 244, 0.08);
 }
 
 .nextButton:disabled {
-  background: #e5e5e5;
+  background: #ece7fa;
   color: #bdbdbd;
   cursor: not-allowed;
 }

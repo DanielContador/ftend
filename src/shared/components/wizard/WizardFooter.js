@@ -16,15 +16,10 @@ export const WizardFooter = ({
     >
       ← Atrás
     </button>
-    <div className={styles.spacer} />
     <button
       className={styles.nextButton}
       onClick={onNext}
-      disabled={
-        typeof onNext !== "function" ||
-        isNextDisabled ||
-        currentStep === totalSteps - 1
-      }
+      disabled={isNextDisabled || currentStep === totalSteps - 1}
     >
       Continuar →
     </button>

@@ -1,4 +1,11 @@
-// ...existing code from wizardStepsConfig.js, but export as courseWizardStepsConfig...
+import { StepResourceType } from "./steps/StepResourceType";
+// ...otros imports de steps...
+
 export const courseWizardStepsConfig = [
-  // ...existing steps...
+  {
+    key: "resourceType",
+    label: "Tipo de recurso",
+    component: StepResourceType,
+  },
+  // ...otros steps...
 ];

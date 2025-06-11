@@ -1,11 +1,9 @@
 import React from "react";
-import { WizardHeader } from "../../../../shared/components/wizard/WizardHeader";
-import { WizardFooter } from "../../../../shared/components/wizard/WizardFooter";
 import { WizardManager } from "../../../../shared/components/wizard/WizardManager";
 import { courseWizardStepsConfig } from "./courseWizardStepsConfig";
 import styles from "./CourseWizard.module.css";
 
-export const CourseWizardOverlay = ({ onClose }) => {
+export const CourseWizard = ({ onClose }) => {
   const handleClose = () => {
     if (onClose) onClose();
   };
@@ -13,12 +11,7 @@ export const CourseWizardOverlay = ({ onClose }) => {
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
-        <WizardManager
-          steps={courseWizardStepsConfig}
-          HeaderComponent={WizardHeader}
-          FooterComponent={WizardFooter}
-          onClose={handleClose}
-        />
+        <WizardManager steps={courseWizardStepsConfig} onClose={handleClose} />
       </div>
     </div>
   );

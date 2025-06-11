@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { WizardHeader } from "./WizardHeader";
+import { WizardFooter } from "./WizardFooter";
 
 export const WizardManager = ({
   steps,
@@ -6,12 +8,11 @@ export const WizardManager = ({
   initialFormData = {},
   onFinish,
   validateStep,
-  headerProps = {},
-  footerProps = {},
   onClose,
 }) => {
   const [currentStep, setCurrentStep] = useState(initialStep);
   const [formData, setFormData] = useState(initialFormData);
+  const [isNextDisabled, setIsNextDisabled] = useState(true);
 
   const step = steps && steps.length > 0 ? steps[currentStep] : undefined;
 
@@ -20,13 +21,6 @@ export const WizardManager = ({
     StepComponent = step;
   } else if (step && step.component && typeof step.component === "function") {
     StepComponent = step.component;
-  }
-
-  let isNextDisabled = false;
-  if (typeof validateStep === "function") {
-    isNextDisabled = validateStep({ step, formData, currentStep });
-  } else if (step && step.key === "resourceType") {
-    isNextDisabled = !formData.resourceType;
   }
 
   const handleStepData = (stepData) => {
@@ -45,31 +39,36 @@ export const WizardManager = ({
     }
   };
 
+  const handleNextDisabled = (value) => {
+    setIsNextDisabled(value);
+  };
+
   return (
-    <div>
-      {HeaderComponent && (
-        <HeaderComponent
-          steps={steps}
-          currentStep={currentStep}
-          onClose={onClose}
-          {...headerProps}
-        />
-      )}
-      <div style={{ minHeight: 200 }}>
+    <>
+      <WizardHeader steps={steps} currentStep={currentStep} onClose={onClose} />
+      <div
+        style={{
+          minHeight: 200,
+          marginLeft: 20,
+          marginRight: 20,
+          height: "100%",
+        }}
+      >
         {StepComponent ? (
-          <StepComponent formData={formData} onChange={handleStepData} />
+          <StepComponent
+            formData={formData}
+            onChange={handleStepData}
+            handleNextDisabled={handleNextDisabled}
+          />
         ) : null}
       </div>
-      {FooterComponent && (
-        <FooterComponent
-          currentStep={currentStep}
-          totalSteps={steps ? steps.length : 1}
-          onBack={handleBack}
-          onNext={handleNext}
-          isNextDisabled={isNextDisabled}
-          {...footerProps}
-        />
-      )}
-    </div>
+      <WizardFooter
+        currentStep={currentStep}
+        totalSteps={steps ? steps.length : 1}
+        onBack={handleBack}
+        onNext={handleNext}
+        isNextDisabled={isNextDisabled}
+      />
+    </>
   );
 };
