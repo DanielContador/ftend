@@ -7,13 +7,8 @@ class PasswordService extends BaseService {
     super(PASSWORD_ENDPOINT);
   }
 
-  // requestRecoverPassword = (email) => {
-  //   // Usa el método post heredado del BaseService
-  //   return this.add({ email }, "/recovery-password");
-  // };
-
-  requestRecoverPassword = (id, partialUrl = "/recovery-password") =>
-    this.getById(id, partialUrl);
+  requestRecoverPassword = (email, partialUrl = "/recovery-password") =>
+    this.getById(email, partialUrl);
 
   resetPassword = (password, token) => {
     let data = {
