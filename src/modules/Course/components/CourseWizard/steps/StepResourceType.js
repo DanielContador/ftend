@@ -1,16 +1,11 @@
 import React from "react";
 import styles from "./StepResourceType.module.css";
 
-export const StepResourceType = ({
-  formData,
-  onChange,
-  handleNextDisabled,
-}) => {
+export const StepResourceType = ({ formData, onChange }) => {
   // Asegúrate de que el valor sea null si no hay selección, no string vacío
   const selected = formData.resourceType ?? null;
 
   const handleSelect = (type) => {
-    handleNextDisabled(false);
     onChange({ resourceType: type });
   };
 
