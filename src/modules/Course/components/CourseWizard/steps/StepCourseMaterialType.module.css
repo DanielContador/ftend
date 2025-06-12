@@ -1,0 +1,60 @@
+.stepCourseMaterialType {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding-top: 5%;
+  gap: 24px;
+}
+
+.question {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #22223b;
+  margin-bottom: 0;
+  margin-top: 0;
+  text-align: center;
+}
+
+.optionsBox {
+  border: 1.5px solid #e5e7eb;
+  border-radius: 16px;
+  background: #fff;
+  padding: 32px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 340px;
+  max-width: 420px;
+}
+
+.optionRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: #22223b;
+  cursor: pointer;
+  user-select: none;
+}
+
+.optionLabel {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #22223b;
+}
+
+.optionsBox input[type="checkbox"] {
+  accent-color: #7c3aed;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+}
+
+.creditCount {
+  margin-top: 24px;
+  font-size: 1.05rem;
+  color: #22223b;
+  font-weight: 500;
+}

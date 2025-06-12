@@ -12,6 +12,7 @@ export const WizardManager = ({
 }) => {
   const [currentStep, setCurrentStep] = useState(initialStep);
   const [formData, setFormData] = useState(initialFormData);
+  console.log(steps, "steps");
 
   // Filtra los steps según la condición (si existe)
   const filteredSteps = steps.filter(
@@ -30,22 +31,25 @@ export const WizardManager = ({
     StepComponent = step.component;
   }
 
-  // Header tabs únicos
+  // Header tabs únicos por tabLabel (no repite tabs con el mismo nombre)
   const headerTabs = [];
-  const seenKeys = new Set();
+  const seenLabels = new Set();
   filteredSteps.forEach((s) => {
-    const tabKey = s.tabKey || s.key || s.label;
-    if (!seenKeys.has(tabKey)) {
+    const tabLabel = s.tabLabel || s.label;
+    if (!seenLabels.has(tabLabel)) {
       headerTabs.push({
-        key: tabKey,
-        label: s.tabLabel || s.label,
+        key: tabLabel, // Usar tabLabel como key para unicidad visual
+        label: tabLabel,
       });
-      seenKeys.add(tabKey);
+      seenLabels.add(tabLabel);
     }
   });
 
-  const currentTabKey = step?.tabKey || step?.key || step?.label;
-  const currentTabIndex = headerTabs.findIndex((t) => t.key === currentTabKey);
+  // Determina el tab activo según el tabLabel del step actual
+  const currentTabLabel = step?.tabLabel || step?.label;
+  const currentTabIndex = headerTabs.findIndex(
+    (t) => t.label === currentTabLabel
+  );
 
   // Lógica para deshabilitar el botón siguiente
   let isNextDisabled = false;
