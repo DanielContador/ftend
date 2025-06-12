@@ -2,10 +2,14 @@ import React from "react";
 import styles from "./StepRequestEvaluation.module.css";
 
 export const StepRequestEvaluation = ({ formData, onChange }) => {
-  const selected = formData.evaluationType || "";
+  // Nuevo: usar un booleano en vez de string
+  const selected =
+    typeof formData.evaluationRequested === "boolean"
+      ? formData.evaluationRequested
+      : null;
 
-  const handleSelect = (type) => {
-    onChange({ evaluationType: type });
+  const handleSelect = (value) => {
+    onChange({ evaluationRequested: value });
   };
 
   return (
@@ -17,18 +21,18 @@ export const StepRequestEvaluation = ({ formData, onChange }) => {
         <button
           type="button"
           className={`${styles.optionBtn} ${
-            selected === "add" ? styles.selected : ""
+            selected === true ? styles.selected : ""
           }`}
-          onClick={() => handleSelect("add")}
+          onClick={() => handleSelect(true)}
         >
           Agregar evaluación <span className={styles.plus}>+</span>
         </button>
         <button
           type="button"
           className={`${styles.optionBtn} ${
-            selected === "noadd" ? styles.selected : ""
+            selected === false ? styles.selected : ""
           }`}
-          onClick={() => handleSelect("noadd")}
+          onClick={() => handleSelect(false)}
         >
           No agregar evaluación
         </button>

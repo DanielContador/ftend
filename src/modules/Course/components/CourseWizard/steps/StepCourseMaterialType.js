@@ -1,27 +1,39 @@
 import React from "react";
 import styles from "./StepCourseMaterialType.module.css";
 
-const options = [
-  { key: "videos", label: "Vídeos" },
-  { key: "ppt", label: "PPT" },
-  { key: "audios", label: "Audios" },
-  {
-    key: "archivos",
-    label: (
-      <>
-        Archivos de texto{" "}
-        <span style={{ color: "#888", fontWeight: 400 }}>
-          (word, excel, pdf, txt)
-        </span>
-      </>
-    ),
-  },
-];
-
+// El componente ahora recibe formData y decide la última opción según publishType
 export const StepCourseMaterialType = ({ formData, onChange }) => {
   const selected = Array.isArray(formData.courseMaterialType)
     ? formData.courseMaterialType
     : [];
+
+  // Opciones base
+  const baseOptions = [
+    { key: "videos", label: "Vídeos" },
+    { key: "ppt", label: "PPT" },
+    { key: "audios", label: "Audios" },
+  ];
+
+  // Opción condicional para la cuarta opción
+  const lastOption =
+    formData.publishType === "scorm"
+      ? {
+          key: "scormslide",
+          label: "Diapositiva con Texto de Scorm",
+        }
+      : {
+          key: "archivos",
+          label: (
+            <>
+              Archivos de texto{" "}
+              <span style={{ color: "#888", fontWeight: 400 }}>
+                (word, excel, pdf, txt)
+              </span>
+            </>
+          ),
+        };
+
+  const options = [...baseOptions, lastOption];
 
   const handleSelect = (type) => {
     let newSelected;

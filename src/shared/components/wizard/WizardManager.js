@@ -77,7 +77,66 @@ export const WizardManager = ({
   };
 
   const handleBack = () => {
-    if (currentStep > 0) setCurrentStep((prev) => prev - 1);
+    if (currentStep > 0) {
+      // Elimina del formData los campos agregados en el step actual antes de retroceder
+      const prevStep = filteredSteps[currentStep];
+      let keysToRemove = [];
+      if (prevStep && prevStep.component && prevStep.key) {
+        // Por convención, los campos suelen tener el key del step o variantes
+        // Puedes personalizar esto si tus componentes usan varios campos
+        switch (prevStep.key) {
+          case "resourceType":
+            keysToRemove = ["resourceType"];
+            break;
+          case "materialType":
+            keysToRemove = ["materialType"];
+            break;
+          case "themeMaterialType":
+            keysToRemove = ["themeMaterial", "themeMaterialFiles"];
+            break;
+          case "materialEstimatedTime":
+            keysToRemove = [
+              "materialEstimatedTime",
+              "materialStudentProfile",
+              "materialContext",
+            ];
+            break;
+          case "publishType":
+            keysToRemove = ["publishType"];
+            break;
+          case "themeType":
+            keysToRemove = ["themeType", "themeFiles"];
+            break;
+          case "topicType":
+            keysToRemove = ["courseObjective", "courseTime", "studentProfile"];
+            break;
+          case "styleType":
+            keysToRemove = ["courseStyle", "courseContext"];
+            break;
+          case "courseMaterialType":
+            keysToRemove = ["courseMaterialType", "creditsToUse"];
+            break;
+          case "requestEvaluation":
+            keysToRemove = ["evaluationType"];
+            break;
+          case "evaluationType":
+            keysToRemove = ["evaluationTypeList"];
+            break;
+          // Agrega más casos según tus steps y campos
+          default:
+            // Si no hay un caso específico, intenta borrar el campo con el mismo nombre que el key
+            keysToRemove = [prevStep.key];
+        }
+      }
+      setFormData((prev) => {
+        const newData = { ...prev };
+        keysToRemove.forEach((k) => {
+          delete newData[k];
+        });
+        return newData;
+      });
+      setCurrentStep((prev) => prev - 1);
+    }
   };
 
   const handleNext = () => {
