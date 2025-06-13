@@ -7,6 +7,7 @@ export const WizardManager = ({
   initialStep = 0,
   initialFormData = {},
   onFinish,
+  handleFormSubmit,
   validateStep,
   onClose,
 }) => {
@@ -162,7 +163,11 @@ export const WizardManager = ({
         }}
       >
         {StepComponent ? (
-          <StepComponent formData={formData} onChange={handleStepData} />
+          <StepComponent
+            formData={formData}
+            onChange={handleStepData}
+            handleFormSubmit={handleFormSubmit}
+          />
         ) : null}
       </div>
       <WizardFooter
