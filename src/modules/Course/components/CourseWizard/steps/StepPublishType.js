@@ -10,7 +10,7 @@ const options = [
       "Estandariza cursos e-learning para integrarse fácilmente a cualquier LMS compatible",
   },
   {
-    key: "independiente",
+    key: "internet", // Cambiado de "independiente" a "internet"
     label: "Recurso independiente",
     icon: <span style={{ fontSize: "2rem", display: "inline-block" }}>📖</span>,
     description:
@@ -26,10 +26,11 @@ const options = [
 ];
 
 export const StepPublishType = ({ formData, onChange }) => {
-  const selected = formData.publishType ?? null;
+  // Cambia publishType por courseGenerationType
+  const selected = formData.courseGenerationType ?? null;
 
   const handleSelect = (type) => {
-    onChange({ publishType: type });
+    onChange({ courseGenerationType: type });
   };
 
   const handleKeyDown = (e, type) => {

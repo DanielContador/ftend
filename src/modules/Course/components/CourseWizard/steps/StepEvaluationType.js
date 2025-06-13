@@ -7,17 +7,29 @@ const options = [
   { key: "final", label: "Evaluación final" },
 ];
 
+const keyToLabel = {
+  diagnostico: "Evaluación con diagnóstico",
+  modulo: "Evaluación por módulo",
+  final: "Evaluación final",
+};
+
 export const StepEvaluationType = ({ formData, onChange }) => {
-  const selected = formData.evaluationTypeList || [];
+  // evaluationMethods es un string separado por comas
+  const selected =
+    typeof formData.evaluationMethods === "string" && formData.evaluationMethods
+      ? formData.evaluationMethods.split(",").map((s) => s.trim())
+      : [];
 
   const handleSelect = (key) => {
+    const label = keyToLabel[key] || key;
     let newSelected;
-    if (selected.includes(key)) {
-      newSelected = selected.filter((item) => item !== key);
+    if (selected.includes(label)) {
+      newSelected = selected.filter((item) => item !== label);
     } else {
-      newSelected = [...selected, key];
+      newSelected = [...selected, label];
     }
-    onChange({ evaluationTypeList: newSelected });
+    const evaluationMethodsString = newSelected.join(", ");
+    onChange({ evaluationMethods: evaluationMethodsString });
   };
 
   return (
@@ -30,9 +42,9 @@ export const StepEvaluationType = ({ formData, onChange }) => {
           <label key={opt.key} className={styles.optionRow}>
             <input
               type="checkbox"
-              name="evaluationTypeList"
+              name="evaluationMethods"
               value={opt.key}
-              checked={selected.includes(opt.key)}
+              checked={selected.includes(keyToLabel[opt.key] || opt.key)}
               onChange={() => handleSelect(opt.key)}
             />
             <span className={styles.optionLabel}>{opt.label}</span>

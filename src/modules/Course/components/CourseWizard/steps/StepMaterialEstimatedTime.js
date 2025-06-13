@@ -13,9 +13,9 @@ export const StepMaterialEstimatedTime = ({ formData, onChange }) => {
         <input
           className={styles.input}
           type="text"
-          name="materialEstimatedTime"
+          name="estimatedTime"
           placeholder="Ej: 5 minutos de vídeo"
-          value={formData.materialEstimatedTime || ""}
+          value={formData.estimatedTime || ""}
           onChange={handleChange}
         />
       </div>
@@ -24,9 +24,9 @@ export const StepMaterialEstimatedTime = ({ formData, onChange }) => {
         <input
           className={styles.input}
           type="text"
-          name="materialStudentProfile"
+          name="participantProfile"
           placeholder="Ej: Usuario básico"
-          value={formData.materialStudentProfile || ""}
+          value={formData.participantProfile || ""}
           onChange={handleChange}
         />
       </div>
@@ -34,9 +34,9 @@ export const StepMaterialEstimatedTime = ({ formData, onChange }) => {
         <label className={styles.label}>¿Desea agregar más contexto?</label>
         <textarea
           className={styles.textarea}
-          name="materialContext"
+          name="additionalContext"
           placeholder="Ej: El curso debe ser claro y usar un lenguaje gentil y cordial para tratar temas sensibles para la Ley Karin, el contenido debe guiarse principalmente por el documento subido anteriormente."
-          value={formData.materialContext || ""}
+          value={formData.additionalContext || ""}
           onChange={handleChange}
           rows={4}
         />

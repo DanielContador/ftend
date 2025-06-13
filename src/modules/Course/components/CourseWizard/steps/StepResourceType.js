@@ -2,11 +2,11 @@ import React from "react";
 import styles from "./StepResourceType.module.css";
 
 export const StepResourceType = ({ formData, onChange }) => {
-  // Asegúrate de que el valor sea null si no hay selección, no string vacío
-  const selected = formData.resourceType ?? null;
+  // Usa courseType como key en formData
+  const selected = formData.courseType ?? null;
 
   const handleSelect = (type) => {
-    onChange({ resourceType: type });
+    onChange({ courseType: type });
   };
 
   const handleKeyDown = (e, type) => {
@@ -21,13 +21,13 @@ export const StepResourceType = ({ formData, onChange }) => {
       <div className={styles.options}>
         <div
           className={`${styles.optionCard} ${
-            selected === "curso" ? styles.selected : ""
+            selected === "Curso" ? styles.selected : ""
           }`}
           tabIndex={0}
           role="button"
-          aria-pressed={selected === "curso"}
-          onClick={() => handleSelect("curso")}
-          onKeyDown={(e) => handleKeyDown(e, "curso")}
+          aria-pressed={selected === "Curso"}
+          onClick={() => handleSelect("Curso")}
+          onKeyDown={(e) => handleKeyDown(e, "Curso")}
         >
           <div className={styles.iconCurso} />
           <div>
@@ -40,13 +40,13 @@ export const StepResourceType = ({ formData, onChange }) => {
         </div>
         <div
           className={`${styles.optionCard} ${
-            selected === "material" ? styles.selected : ""
+            selected === "Material" ? styles.selected : ""
           }`}
           tabIndex={0}
           role="button"
-          aria-pressed={selected === "material"}
-          onClick={() => handleSelect("material")}
-          onKeyDown={(e) => handleKeyDown(e, "material")}
+          aria-pressed={selected === "Material"}
+          onClick={() => handleSelect("Material")}
+          onKeyDown={(e) => handleKeyDown(e, "Material")}
         >
           <div className={styles.iconMaterial} />
           <div>

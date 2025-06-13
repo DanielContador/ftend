@@ -7,8 +7,9 @@ import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
 export const StepThemeType = ({ formData, onChange }) => {
   const fileInputRef = useRef();
 
+  // Cambia themeType por courseName en el formulario
   const handleInputChange = (e) => {
-    onChange({ themeType: e.target.value });
+    onChange({ courseName: e.target.value });
   };
 
   const handleFileChange = (e) => {
@@ -31,7 +32,7 @@ export const StepThemeType = ({ formData, onChange }) => {
         className={styles.input}
         type="text"
         placeholder="Ej: Fundamentos sobre la Ley Karin en Chile"
-        value={formData.themeType || ""}
+        value={formData.courseName || ""}
         onChange={handleInputChange}
       />
       <div

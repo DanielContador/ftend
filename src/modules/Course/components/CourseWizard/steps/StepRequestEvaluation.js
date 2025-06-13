@@ -2,14 +2,12 @@ import React from "react";
 import styles from "./StepRequestEvaluation.module.css";
 
 export const StepRequestEvaluation = ({ formData, onChange }) => {
-  // Nuevo: usar un booleano en vez de string
+  // Usar addActivities como key
   const selected =
-    typeof formData.evaluationRequested === "boolean"
-      ? formData.evaluationRequested
-      : null;
+    typeof formData.addActivities === "boolean" ? formData.addActivities : null;
 
   const handleSelect = (value) => {
-    onChange({ evaluationRequested: value });
+    onChange({ addActivities: value });
   };
 
   return (

@@ -12,7 +12,6 @@ export const WizardManager = ({
 }) => {
   const [currentStep, setCurrentStep] = useState(initialStep);
   const [formData, setFormData] = useState(initialFormData);
-  console.log(steps, "steps");
 
   // Filtra los steps según la condición (si existe)
   const filteredSteps = steps.filter(
@@ -55,16 +54,17 @@ export const WizardManager = ({
   let isNextDisabled = false;
   if (typeof validateStep === "function") {
     isNextDisabled = validateStep({ step, formData, currentStep });
-  } else if (step && step.key === "resourceType") {
+  } else if (step && step.key === "courseType") {
     isNextDisabled =
-      formData.resourceType === undefined ||
-      formData.resourceType === null ||
-      formData.resourceType === "";
+      formData.courseType === undefined ||
+      formData.courseType === null ||
+      formData.courseType === "";
   } else if (step && step.key === "publishType") {
+    // Cambia publishType por courseGenerationType
     isNextDisabled =
-      formData.publishType === undefined ||
-      formData.publishType === null ||
-      formData.publishType === "";
+      formData.courseGenerationType === undefined ||
+      formData.courseGenerationType === null ||
+      formData.courseGenerationType === "";
   } else if (step && step.key === "materialType") {
     isNextDisabled =
       formData.materialType === undefined ||
@@ -78,53 +78,52 @@ export const WizardManager = ({
 
   const handleBack = () => {
     if (currentStep > 0) {
-      // Elimina del formData los campos agregados en el step actual antes de retroceder
       const prevStep = filteredSteps[currentStep];
       let keysToRemove = [];
       if (prevStep && prevStep.component && prevStep.key) {
-        // Por convención, los campos suelen tener el key del step o variantes
-        // Puedes personalizar esto si tus componentes usan varios campos
         switch (prevStep.key) {
-          case "resourceType":
-            keysToRemove = ["resourceType"];
+          case "courseType":
+            keysToRemove = ["courseType"];
             break;
           case "materialType":
-            keysToRemove = ["materialType"];
+            keysToRemove = ["resourceTypes"];
             break;
           case "themeMaterialType":
-            keysToRemove = ["themeMaterial", "themeMaterialFiles"];
+            keysToRemove = ["courseName", "themeMaterialFiles"];
             break;
           case "materialEstimatedTime":
             keysToRemove = [
-              "materialEstimatedTime",
-              "materialStudentProfile",
-              "materialContext",
+              "estimatedTime",
+              "participantProfile",
+              "additionalContext",
             ];
             break;
           case "publishType":
-            keysToRemove = ["publishType"];
+            keysToRemove = ["courseGenerationType"];
             break;
           case "themeType":
-            keysToRemove = ["themeType", "themeFiles"];
+            keysToRemove = ["courseName", "themeFiles"];
             break;
           case "topicType":
-            keysToRemove = ["courseObjective", "courseTime", "studentProfile"];
+            keysToRemove = [
+              "courseObjective",
+              "estimatedTime",
+              "participantProfile",
+            ];
             break;
           case "styleType":
-            keysToRemove = ["courseStyle", "courseContext"];
+            keysToRemove = ["toneStyle", "additionalContext"];
             break;
           case "courseMaterialType":
-            keysToRemove = ["courseMaterialType", "creditsToUse"];
+            keysToRemove = ["resourceTypes", "creditsToUse"];
             break;
           case "requestEvaluation":
-            keysToRemove = ["evaluationType"];
+            keysToRemove = ["addActivities"];
             break;
           case "evaluationType":
-            keysToRemove = ["evaluationTypeList"];
+            keysToRemove = ["evaluationMethods"];
             break;
-          // Agrega más casos según tus steps y campos
           default:
-            // Si no hay un caso específico, intenta borrar el campo con el mismo nombre que el key
             keysToRemove = [prevStep.key];
         }
       }

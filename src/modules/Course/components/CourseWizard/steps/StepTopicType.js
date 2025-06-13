@@ -26,9 +26,9 @@ export const StepTopicType = ({ formData, onChange }) => {
         <input
           className={styles.input}
           type="text"
-          name="courseTime"
-          placeholder="Ej: Capacitar a un equipo de una empresa para cumplir con la normativa"
-          value={formData.courseTime || ""}
+          name="estimatedTime"
+          placeholder="Ej: 5 horas"
+          value={formData.estimatedTime || ""}
           onChange={handleChange}
         />
       </div>
@@ -37,9 +37,9 @@ export const StepTopicType = ({ formData, onChange }) => {
         <input
           className={styles.input}
           type="text"
-          name="studentProfile"
+          name="participantProfile"
           placeholder="Ej: Ingeniero comercial de una empresa de capacitación"
-          value={formData.studentProfile || ""}
+          value={formData.participantProfile || ""}
           onChange={handleChange}
         />
       </div>

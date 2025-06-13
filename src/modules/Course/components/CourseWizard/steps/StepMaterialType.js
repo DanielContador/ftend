@@ -18,11 +18,23 @@ const options = [
   },
 ];
 
+const keyToLabel = {
+  videos: "Video",
+  ppt: "PPT",
+  audios: "Audio",
+  archivos: "Archivos de texto (Word, Excel, txt y PDF)",
+};
+
 export const StepMaterialType = ({ formData, onChange }) => {
-  const selected = formData.materialType || "";
+  // El valor guardado es el label, no el key
+  const selected =
+    typeof formData.resourceTypes === "string" && formData.resourceTypes
+      ? formData.resourceTypes
+      : "";
 
   const handleSelect = (type) => {
-    onChange({ materialType: type });
+    const resourceTypesString = keyToLabel[type] || type;
+    onChange({ resourceTypes: resourceTypesString, materialType: type });
   };
 
   return (
@@ -33,9 +45,9 @@ export const StepMaterialType = ({ formData, onChange }) => {
           <label key={opt.key} className={styles.optionRow}>
             <input
               type="radio"
-              name="materialType"
+              name="resourceTypes"
               value={opt.key}
-              checked={selected === opt.key}
+              checked={selected === (keyToLabel[opt.key] || opt.key)}
               onChange={() => handleSelect(opt.key)}
             />
             <span className={styles.optionLabel}>{opt.label}</span>

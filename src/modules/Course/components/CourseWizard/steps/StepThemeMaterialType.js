@@ -6,8 +6,9 @@ import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
 export const StepThemeMaterialType = ({ formData, onChange }) => {
   const fileInputRef = useRef();
 
+  // Cambia themeMaterial por courseName
   const handleInputChange = (e) => {
-    onChange({ themeMaterial: e.target.value });
+    onChange({ courseName: e.target.value });
   };
 
   const handleFileChange = (e) => {
@@ -32,7 +33,7 @@ export const StepThemeMaterialType = ({ formData, onChange }) => {
         className={styles.input}
         type="text"
         placeholder="Ej: Fundamentos sobre la Ley Karin en Chile"
-        value={formData.themeMaterial || ""}
+        value={formData.courseName || ""}
         onChange={handleInputChange}
       />
       <div

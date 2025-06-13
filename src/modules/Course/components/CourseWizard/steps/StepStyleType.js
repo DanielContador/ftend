@@ -13,9 +13,9 @@ export const StepStyleType = ({ formData, onChange }) => {
         <input
           className={styles.input}
           type="text"
-          name="courseStyle"
+          name="toneStyle"
           placeholder="Ej: Cercano y simple para el alumno"
-          value={formData.courseStyle || ""}
+          value={formData.toneStyle || ""}
           onChange={handleChange}
         />
       </div>
@@ -23,9 +23,9 @@ export const StepStyleType = ({ formData, onChange }) => {
         <label className={styles.label}>¿Desea agregar más contexto?</label>
         <textarea
           className={styles.textarea}
-          name="courseContext"
+          name="additionalContext"
           placeholder="Ej: El curso debe ser claro y usar un lenguaje gentil y cordial para tratar temas sensibles para la Ley Karin, el contenido debe guiarse principalmente por el documento subido anteriormente."
-          value={formData.courseContext || ""}
+          value={formData.additionalContext || ""}
           onChange={handleChange}
           rows={4}
         />

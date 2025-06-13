@@ -13,19 +13,20 @@ import { StepMaterialEstimatedTime } from "./steps/StepMaterialEstimatedTime";
 
 export const courseWizardStepsConfig = [
   {
-    key: "resourceType",
+    key: "courseType",
     label: "Tipo de recurso",
     component: StepResourceType,
-    tabKey: "resource", // Tab agrupador
+    tabKey: "resource",
     tabLabel: "Tipo de recurso",
   },
   {
     key: "materialType",
     label: "Tipo de material",
     component: StepMaterialType,
-    tabKey: "formulario", // Nuevo tab para el step de material
+    tabKey: "formulario",
     tabLabel: "Formulario",
-    condition: (formData) => formData.resourceType === "material",
+    // Cambia la condición a courseType
+    condition: (formData) => formData.courseType === "Material",
   },
   {
     key: "themeMaterialType",
@@ -33,8 +34,9 @@ export const courseWizardStepsConfig = [
     component: StepThemeMaterialType,
     tabKey: "formulario",
     tabLabel: "Formulario",
+    // Cambia themeMaterial por courseName en la condición
     condition: (formData) =>
-      formData.resourceType === "material" &&
+      formData.courseType === "Material" &&
       typeof formData.materialType === "string" &&
       formData.materialType.trim() !== "",
   },
@@ -44,11 +46,11 @@ export const courseWizardStepsConfig = [
     component: StepMaterialEstimatedTime,
     tabKey: "formulario",
     tabLabel: "Formulario",
-    // Solo mostrar después de themeMaterialType y si hay temática ingresada
+    // Ahora depende de courseName en vez de themeMaterial
     condition: (formData) =>
-      formData.resourceType === "material" &&
-      typeof formData.themeMaterial === "string" &&
-      formData.themeMaterial.trim() !== "",
+      formData.courseType === "Material" &&
+      typeof formData.courseName === "string" &&
+      formData.courseName.trim() !== "",
   },
   {
     key: "courseGeneration",
@@ -56,11 +58,11 @@ export const courseWizardStepsConfig = [
     component: StepCourseGeneration,
     tabKey: "crear",
     tabLabel: "Crear",
-    // Mostrar después de materialEstimatedTime si es material y se llenó el campo materialEstimatedTime
+    // Cambia materialEstimatedTime por estimatedTime
     condition: (formData) =>
-      formData.resourceType === "material" &&
-      typeof formData.materialEstimatedTime === "string" &&
-      formData.materialEstimatedTime.trim() !== "",
+      formData.courseType === "Material" &&
+      typeof formData.estimatedTime === "string" &&
+      formData.estimatedTime.trim() !== "",
   },
   {
     key: "publishType",
@@ -68,7 +70,8 @@ export const courseWizardStepsConfig = [
     component: StepPublishType,
     tabKey: "resource",
     tabLabel: "Tipo de recurso",
-    condition: (formData) => formData.resourceType === "curso",
+    // Cambia la condición a courseGenerationType
+    condition: (formData) => formData.courseType === "Curso",
   },
   {
     key: "themeType",
@@ -76,8 +79,9 @@ export const courseWizardStepsConfig = [
     component: StepThemeType,
     tabKey: "themeType",
     tabLabel: "Formulario",
+    // Ahora la condición depende de courseName en vez de themeType
     condition: (formData) =>
-      ["scorm", "independiente", "moodle"].includes(formData.publishType),
+      ["scorm", "internet", "moodle"].includes(formData.courseGenerationType),
   },
   {
     key: "topicType",
@@ -85,11 +89,11 @@ export const courseWizardStepsConfig = [
     component: StepTopicType,
     tabKey: "formulario",
     tabLabel: "Formulario",
-    // Se muestra si publishType es "scorm", "independiente" o "moodle" y ya se llenó el campo themeType
+    // Ajusta la condición para los nuevos nombres de campos
     condition: (formData) =>
-      ["scorm", "independiente", "moodle"].includes(formData.publishType) &&
-      typeof formData.themeType === "string" &&
-      formData.themeType.trim() !== "",
+      ["scorm", "internet", "moodle"].includes(formData.courseGenerationType) &&
+      typeof formData.courseName === "string" &&
+      formData.courseName.trim() !== "",
   },
   {
     key: "styleType",
@@ -97,15 +101,15 @@ export const courseWizardStepsConfig = [
     component: StepStyleType,
     tabKey: "formulario",
     tabLabel: "Formulario",
-    // Se muestra si publishType es "scorm", "independiente" o "moodle" y ya se llenó algún campo de topicType
+    // Se muestra si alguno de los campos de topicType está lleno (con los nuevos nombres)
     condition: (formData) =>
-      ["scorm", "independiente", "moodle"].includes(formData.publishType) &&
+      ["scorm", "internet", "moodle"].includes(formData.courseGenerationType) &&
       ((typeof formData.courseObjective === "string" &&
         formData.courseObjective.trim() !== "") ||
-        (typeof formData.courseTime === "string" &&
-          formData.courseTime.trim() !== "") ||
-        (typeof formData.studentProfile === "string" &&
-          formData.studentProfile.trim() !== "")),
+        (typeof formData.estimatedTime === "string" &&
+          formData.estimatedTime.trim() !== "") ||
+        (typeof formData.participantProfile === "string" &&
+          formData.participantProfile.trim() !== "")),
   },
   {
     key: "courseMaterialType",
@@ -113,11 +117,12 @@ export const courseWizardStepsConfig = [
     component: StepCourseMaterialType,
     tabKey: "formulario",
     tabLabel: "Formulario",
-    // Se muestra si publishType es "scorm", "independiente" o "moodle" y ya se llenó el campo courseStyle
+    // Cambia courseStyle por toneStyle
+    // Ya no depende de courseMaterialType, sino de toneStyle
     condition: (formData) =>
-      ["scorm", "independiente", "moodle"].includes(formData.publishType) &&
-      typeof formData.courseStyle === "string" &&
-      formData.courseStyle.trim() !== "",
+      ["scorm", "internet", "moodle"].includes(formData.courseGenerationType) &&
+      typeof formData.toneStyle === "string" &&
+      formData.toneStyle.trim() !== "",
   },
   {
     key: "requestEvaluation",
@@ -125,11 +130,11 @@ export const courseWizardStepsConfig = [
     component: StepRequestEvaluation,
     tabKey: "evaluacion",
     tabLabel: "Evaluación",
-    // Se muestra si publishType es "scorm", "independiente" o "moodle" y ya se seleccionó al menos un tipo de material
+    // Ahora depende de resourceTypes para ambos flujos
     condition: (formData) =>
-      ["scorm", "independiente", "moodle"].includes(formData.publishType) &&
-      Array.isArray(formData.courseMaterialType) &&
-      formData.courseMaterialType.length > 0,
+      ["scorm", "internet", "moodle"].includes(formData.courseGenerationType) &&
+      typeof formData.resourceTypes === "string" &&
+      formData.resourceTypes.trim() !== "",
   },
   {
     key: "evaluationType",
@@ -137,10 +142,10 @@ export const courseWizardStepsConfig = [
     component: StepEvaluationType,
     tabKey: "evaluacion",
     tabLabel: "Evaluación",
-    // Solo mostrar si evaluationRequested es true
+    // Cambia evaluationTypeList por evaluationMethods
     condition: (formData) =>
-      ["scorm", "independiente", "moodle"].includes(formData.publishType) &&
-      formData.evaluationRequested === true,
+      ["scorm", "internet", "moodle"].includes(formData.courseGenerationType) &&
+      formData.addActivities === true,
   },
   {
     key: "courseGeneration",
@@ -148,14 +153,15 @@ export const courseWizardStepsConfig = [
     component: StepCourseGeneration,
     tabKey: "crear",
     tabLabel: "Crear",
-    // Mostrar si NO se quiere evaluación o si ya se seleccionó al menos un tipo de evaluación
+    // Cambia evaluationTypeList por evaluationMethods
     condition: (formData) =>
-      (["scorm", "independiente", "moodle"].includes(formData.publishType) &&
-        (formData.evaluationRequested === false ||
-          (Array.isArray(formData.evaluationTypeList) &&
-            formData.evaluationTypeList.length > 0))) ||
-      // ...mantén la condición para resourceType === "material"
-      (formData.resourceType === "material" &&
+      (["scorm", "internet", "moodle"].includes(
+        formData.courseGenerationType
+      ) &&
+        (formData.addActivities === false ||
+          (typeof formData.evaluationMethods === "string" &&
+            formData.evaluationMethods.trim() !== ""))) ||
+      (formData.courseType === "Material" &&
         typeof formData.materialEstimatedTime === "string" &&
         formData.materialEstimatedTime.trim() !== ""),
   },
