@@ -12,19 +12,33 @@ export const StepThemeType = ({
   const fileInputRef = useRef();
 
   const handleInputChange = (e) => {
-    handleStepFormData({ courseName: e.target.value });
+    handleStepFormData({
+      courseName: e.target.value,
+      courseGenerationType: "Internet",
+    });
     handleStepFlowData({
-      themeType: { value: e.target.value, formkeys: ["courseName", "files"] },
+      themeType: {
+        value: e.target.value,
+        formkeys: ["courseName", "files", "courseGenerationType"],
+      },
     });
   };
 
   const handleFileChange = (e) => {
-    handleStepFormData({ files: Array.from(e.target.files) });
+    handleStepFormData({
+      courseName: flow?.themeType?.value || "",
+      courseGenerationType: "Documents",
+      files: Array.from(e.target.files),
+    });
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
-    handleStepFormData({ files: Array.from(e.dataTransfer.files) });
+    handleStepFormData({
+      courseName: flow?.themeType?.value || "",
+      courseGenerationType: "Documents",
+      files: Array.from(e.dataTransfer.files),
+    });
   };
 
   const handleDragOver = (e) => {

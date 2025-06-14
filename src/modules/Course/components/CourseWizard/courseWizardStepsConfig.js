@@ -33,7 +33,9 @@ export const courseWizardStepsConfig = [
     component: StepThemeMaterialType,
     tabKey: "formulario",
     tabLabel: "Formulario",
-    condition: (flow) => flow?.materialType?.value !== null,
+    condition: (flow) =>
+      flow?.materialType?.value !== null &&
+      flow?.materialType?.value !== undefined,
   },
   {
     key: "materialEstimatedTime",
@@ -41,18 +43,9 @@ export const courseWizardStepsConfig = [
     component: StepMaterialEstimatedTime,
     tabKey: "formulario",
     tabLabel: "Formulario",
-    condition: (flow) => flow?.themeMaterialType?.value !== null,
-  },
-  {
-    key: "courseGeneration",
-    label: "Crear",
-    component: StepCourseGeneration,
-    tabKey: "crear",
-    tabLabel: "Crear",
-    condition: (formData) =>
-      formData.courseType === "Material" &&
-      typeof formData.estimatedTime === "string" &&
-      formData.estimatedTime.trim() !== "",
+    condition: (flow) =>
+      flow?.themeMaterialType?.value !== null &&
+      flow?.themeMaterialType?.value !== undefined,
   },
   {
     key: "publishType",
@@ -68,7 +61,9 @@ export const courseWizardStepsConfig = [
     component: StepThemeType,
     tabKey: "themeType",
     tabLabel: "Formulario",
-    condition: (flow) => flow?.publishType?.value !== null,
+    condition: (flow) =>
+      flow?.publishType?.value !== null &&
+      flow?.publishType?.value !== undefined,
   },
   {
     key: "topicType",
@@ -76,7 +71,8 @@ export const courseWizardStepsConfig = [
     component: StepTopicType,
     tabKey: "formulario",
     tabLabel: "Formulario",
-    condition: (flow) => flow?.themeType?.value !== null,
+    condition: (flow) =>
+      flow?.themeType?.value !== null && flow?.themeType?.value !== undefined,
   },
   {
     key: "styleType",
@@ -84,7 +80,8 @@ export const courseWizardStepsConfig = [
     component: StepStyleType,
     tabKey: "formulario",
     tabLabel: "Formulario",
-    condition: (flow) => flow?.topicType?.value !== null,
+    condition: (flow) =>
+      flow?.topicType?.value !== null && flow?.topicType?.value !== undefined,
   },
   {
     key: "courseMaterialType",
@@ -92,7 +89,8 @@ export const courseWizardStepsConfig = [
     component: StepCourseMaterialType,
     tabKey: "formulario",
     tabLabel: "Formulario",
-    condition: (flow) => flow?.styleType?.value !== null,
+    condition: (flow) =>
+      flow?.styleType?.value !== null && flow?.styleType?.value !== undefined,
   },
   {
     key: "requestEvaluation",
@@ -100,7 +98,9 @@ export const courseWizardStepsConfig = [
     component: StepRequestEvaluation,
     tabKey: "evaluacion",
     tabLabel: "Evaluación",
-    condition: (flow) => flow?.courseMaterialType?.value !== null,
+    condition: (flow) =>
+      flow?.courseMaterialType?.value !== null &&
+      flow?.courseMaterialType?.value !== undefined,
   },
   {
     key: "evaluationType",
@@ -117,8 +117,10 @@ export const courseWizardStepsConfig = [
     tabKey: "crear",
     tabLabel: "Crear",
     condition: (flow) =>
-      flow?.evaluationType?.value !== null ||
+      (flow?.evaluationType?.value !== null &&
+        flow?.evaluationType?.value !== undefined) ||
       flow?.requestEvaluation?.value === false ||
-      flow?.materialEstimatedTime?.value !== null,
+      (flow?.materialEstimatedTime?.value !== null &&
+        flow?.materialEstimatedTime?.value !== undefined),
   },
 ];

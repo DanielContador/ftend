@@ -12,22 +12,33 @@ export const StepThemeMaterialType = ({
 
   // Cambia themeMaterial por courseName
   const handleInputChange = (e) => {
-    handleStepFormData({ courseName: e.target.value });
+    handleStepFormData({
+      courseName: e.target.value,
+      courseGenerationType: "Internet",
+    });
     handleStepFlowData({
       themeMaterialType: {
         value: e.target.value,
-        formkeys: ["courseName", "files"],
+        formkeys: ["courseName", "courseGenerationType", "files"],
       },
     });
   };
 
   const handleFileChange = (e) => {
-    handleStepFormData({ files: Array.from(e.target.files) });
+    handleStepFormData({
+      courseName: flow?.themeMaterialType?.value || "",
+      courseGenerationType: "Documents",
+      files: Array.from(e.target.files),
+    });
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
-    handleStepFormData({ files: Array.from(e.dataTransfer.files) });
+    handleStepFormData({
+      courseName: flow?.themeMaterialType?.value || "",
+      courseGenerationType: "Documents",
+      files: Array.from(e.dataTransfer.files),
+    });
   };
 
   const handleDragOver = (e) => {
