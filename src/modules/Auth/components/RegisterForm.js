@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import styles from "./RegisterForm.module.css";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faCircleInfo } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEye as faEyeSolid,
+  faCircleInfo,
+} from "@fortawesome/free-solid-svg-icons";
+import { faEye as faEyeRegular } from "@fortawesome/free-regular-svg-icons";
 
 const RegisterForm = ({ onRegister, loading, error }) => {
   const [fullName, setFullName] = useState("");
@@ -94,7 +98,11 @@ const RegisterForm = ({ onRegister, loading, error }) => {
               className={styles.eyeIcon}
               style={{ cursor: "pointer" }}
             >
-              <FontAwesomeIcon icon={faEye} />
+              {showPassword ? (
+                <FontAwesomeIcon icon={faEyeRegular} />
+              ) : (
+                <FontAwesomeIcon icon={faEyeSolid} />
+              )}
             </span>
           </div>
           <div className={styles.passwordHint}>
@@ -116,7 +124,11 @@ const RegisterForm = ({ onRegister, loading, error }) => {
               className={styles.eyeIcon}
               style={{ cursor: "pointer" }}
             >
-              <FontAwesomeIcon icon={faEye} />
+              {showConfirmPassword ? (
+                <FontAwesomeIcon icon={faEyeRegular} />
+              ) : (
+                <FontAwesomeIcon icon={faEyeSolid} />
+              )}
             </span>
           </div>
         </div>

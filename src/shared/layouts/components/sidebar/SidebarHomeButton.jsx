@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 const SidebarHomeButton = ({ className }) => {
   const router = useRouter();
   return (
-    <button className={className} onClick={() => router.back()}>
+    <button className={className} onClick={() => router.push(`/`)}>
       <FontAwesomeIcon
         icon={faHome}
         style={{ fontSize: 22, color: "#fff", marginRight: 8 }}

@@ -4,7 +4,8 @@ import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
 import styles from "./LoginForm.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { faEye as faEyeSolid } from "@fortawesome/free-solid-svg-icons";
+import { faEye as faEyeRegular } from "@fortawesome/free-regular-svg-icons";
 
 const LoginForm = ({ onLogin, loading, error }) => {
   const { t } = useTranslation();
@@ -96,14 +97,18 @@ const LoginForm = ({ onLogin, loading, error }) => {
               className={styles.eyeIcon}
               title="Pulsar para mostrar/ocultar contraseña"
             >
-              <FontAwesomeIcon icon={faEye} />
+              {showPassword ? (
+                <FontAwesomeIcon icon={faEyeRegular} />
+              ) : (
+                <FontAwesomeIcon icon={faEyeSolid} />
+              )}
             </span>
           </div>
           {fieldErrors.password && (
             <div className={styles.fieldError}>{fieldErrors.password}</div>
           )}
           <div className={styles.passwordHintRow}>
-            <FontAwesomeIcon icon={faEye} className={styles.infoIcon} />
+            <FontAwesomeIcon icon={faEyeSolid} className={styles.infoIcon} />
             <span className={styles.passwordHintText}>
               Pulsa para mostrar/ocultar contraseña
             </span>

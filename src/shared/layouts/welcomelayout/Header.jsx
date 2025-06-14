@@ -14,11 +14,11 @@ const Header = () => {
         />
       </div>
       <nav className={styles.nav}>
-        <Link href="/">Home</Link>
-        <Link href="/about">About Us</Link>
-        <Link href="/help">Contact</Link>
+        <Link href="/">Inicio</Link>
+        <Link href="https://www.dl.cl/">Sobre Nosotros</Link>
+        <Link href="/help">Contacto</Link>
         <Link href="/login" className={styles.loginButton}>
-          Login
+          Iniciar Sesión
         </Link>
       </nav>
     </header>

@@ -13,6 +13,7 @@ import {
   faKeyboard,
   faRocket,
 } from "@fortawesome/free-solid-svg-icons";
+import { useRouter } from "next/router";
 
 const features = [
   {
@@ -39,76 +40,82 @@ const steps = [
   { icon: faKeyboard, label: "¡Listo para usar!" },
 ];
 
-const WelcomeBottomSection = () => (
-  <div className={styles.bottomSection}>
-    <section className={styles.whatIs}>
-      <div className={styles.iconBox}>
-        <Image
-          src={robotPurple}
-          alt="¿Qué es MentorIA?"
-          width={80}
-          height={80}
-        />
-      </div>
-      <div>
-        <h2>¿Qué es el MentorIA?</h2>
-        <p className={styles.description}>
-          MentorIA es una herramienta desarrollada por DL Group que te ayuda a
-          crear materiales didácticos de forma rápida, intuitiva y asistida por
-          inteligencia artificial. Ideal para docentes, diseñadores
-          instruccionales y equipos de formación que buscan ahorrar tiempo y
-          mantener la calidad.
-        </p>
-      </div>
-    </section>
-    <section className={styles.features}>
-      {features.map((f, i) => (
-        <div className={styles.featureCard} key={i}>
-          <div className={styles.featureIcon}>
-            <Image src={f.icon} alt={f.title} width={48} height={48} />
-          </div>
-          <h3>{f.title}</h3>
-          <p>{f.desc}</p>
+const WelcomeBottomSection = () => {
+  const router = useRouter();
+  return (
+    <div className={styles.bottomSection}>
+      <section className={styles.whatIs}>
+        <div className={styles.iconBox}>
+          <Image
+            src={robotPurple}
+            alt="¿Qué es MentorIA?"
+            width={80}
+            height={80}
+          />
         </div>
-      ))}
-    </section>
-    <section className={styles.howItWorks}>
-      <h2>¿Cómo funciona?</h2>
-      <div className={styles.steps}>
-        {steps.map((s, i) => (
-          <React.Fragment key={i}>
-            <div className={styles.step}>
-              <div className={styles.stepIcon}>
-                <FontAwesomeIcon
-                  icon={s.icon}
-                  className={styles.ctaIcon}
-                  style={{
-                    fontSize: "1em",
-                    width: "1em",
-                    height: "1em",
-                    minWidth: "1em",
-                    flexShrink: 0,
-                  }}
-                />
-              </div>
-              <span>{s.label}</span>
+        <div>
+          <h2>¿Qué es el MentorIA?</h2>
+          <p className={styles.description}>
+            MentorIA es una herramienta desarrollada por DL Group que te ayuda a
+            crear materiales didácticos de forma rápida, intuitiva y asistida
+            por inteligencia artificial. Ideal para docentes, diseñadores
+            instruccionales y equipos de formación que buscan ahorrar tiempo y
+            mantener la calidad.
+          </p>
+        </div>
+      </section>
+      <section className={styles.features}>
+        {features.map((f, i) => (
+          <div className={styles.featureCard} key={i}>
+            <div className={styles.featureIcon}>
+              <Image src={f.icon} alt={f.title} width={48} height={48} />
             </div>
-            {i < steps.length - 1 && <span className={styles.dash}>—</span>}
-          </React.Fragment>
+            <h3>{f.title}</h3>
+            <p>{f.desc}</p>
+          </div>
         ))}
-      </div>
-    </section>
-    <section className={styles.ctaSection}>
-      <h2>¿Listo para probarlo?</h2>
-      <p>Empieza a crear con inteligencia artificial hoy mismo.</p>
-      <div className={styles.ctaButtonsRow}>
-        <button className={styles.ctaButton}>
-          Comenzar ahora
-          <FontAwesomeIcon icon={faRocket} className={styles.ctaIcon} />
-        </button>
-      </div>
-    </section>
-  </div>
-);
+      </section>
+      <section className={styles.howItWorks}>
+        <h2>¿Cómo funciona?</h2>
+        <div className={styles.steps}>
+          {steps.map((s, i) => (
+            <React.Fragment key={i}>
+              <div className={styles.step}>
+                <div className={styles.stepIcon}>
+                  <FontAwesomeIcon
+                    icon={s.icon}
+                    className={styles.ctaIcon}
+                    style={{
+                      fontSize: "1em",
+                      width: "1em",
+                      height: "1em",
+                      minWidth: "1em",
+                      flexShrink: 0,
+                    }}
+                  />
+                </div>
+                <span>{s.label}</span>
+              </div>
+              {i < steps.length - 1 && <span className={styles.dash}>—</span>}
+            </React.Fragment>
+          ))}
+        </div>
+      </section>
+      <section className={styles.ctaSection}>
+        <h2>¿Listo para probarlo?</h2>
+        <p>Empieza a crear con inteligencia artificial hoy mismo.</p>
+        <div className={styles.ctaButtonsRow}>
+          <button
+            onClick={() => router.push(`/register`)}
+            className={styles.ctaButton}
+          >
+            Comenzar ahora
+            <FontAwesomeIcon icon={faRocket} className={styles.ctaIcon} />
+          </button>
+        </div>
+      </section>
+    </div>
+  );
+};
 
 export default WelcomeBottomSection;
