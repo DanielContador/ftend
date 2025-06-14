@@ -107,7 +107,6 @@ export const WizardManager = ({
             handleStepFormData={handleStepFormData}
             handleStepFlowData={handleStepFlowData}
             handleFormSubmit={handleFormSubmit}
-            onClose={onClose}
           />
         ) : null}
       </div>

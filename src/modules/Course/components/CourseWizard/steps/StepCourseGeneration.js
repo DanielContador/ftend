@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./StepCourseGeneration.module.css";
 
-export const StepCourseGeneration = ({
-  formData,
-  handleFormSubmit,
-  onClose,
-}) => {
+export const StepCourseGeneration = ({ formData, handleFormSubmit }) => {
   const [done, setDone] = useState(false);
 
   useEffect(() => {
@@ -17,7 +13,7 @@ export const StepCourseGeneration = ({
         // Simula un tiempo de espera para la generación del curso
         setTimeout(() => {
           setDone(true);
-        }, 3000); // Ajusta el tiempo según sea necesario
+        }, 3000); // Adjust the time as necessary
       })
       .catch((error) => {
         console.error("Error al generar el curso:", error);
