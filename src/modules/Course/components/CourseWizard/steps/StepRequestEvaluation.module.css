@@ -53,3 +53,14 @@
   margin-left: 8px;
   color: #6c3ef4;
 }
+
+.customIcon {
+  width: 1rem !important;
+  height: 1rem !important;
+  min-width: 2.5rem !important;
+  max-width: 2.5rem !important;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-left: 8px;
+  color: #6c3ef4;
+}

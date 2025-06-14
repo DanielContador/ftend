@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import styles from "./StepRequestEvaluation.module.css";
 
 export const StepRequestEvaluation = ({
@@ -34,7 +36,8 @@ export const StepRequestEvaluation = ({
           }`}
           onClick={() => handleSelect(true)}
         >
-          Agregar evaluación <span className={styles.plus}>+</span>
+          Agregar evaluación{" "}
+          <FontAwesomeIcon className={styles.customIcon} icon={faPlus} />
         </button>
         <button
           type="button"

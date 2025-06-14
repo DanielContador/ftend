@@ -1,25 +1,33 @@
 import React, { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faWifi,
+  faBookOpen,
+  faGraduationCap,
+} from "@fortawesome/free-solid-svg-icons";
 import styles from "./StepPublishType.module.css";
 
 const options = [
   {
     key: "scorm",
     label: "Scorm",
-    icon: <span style={{ fontSize: "2rem", display: "inline-block" }}>📡</span>,
+    icon: <FontAwesomeIcon className={styles.customIcon} icon={faWifi} />,
     description:
       "Estandariza cursos e-learning para integrarse fácilmente a cualquier LMS compatible",
   },
   {
     key: "material", // Cambiado de "independiente" a "internet"
     label: "Recurso independiente",
-    icon: <span style={{ fontSize: "2rem", display: "inline-block" }}>📖</span>,
+    icon: <FontAwesomeIcon className={styles.customIcon} icon={faBookOpen} />,
     description:
       "Material autónomo que se usa sin depender de otros contenidos.",
   },
   {
     key: "standard",
     label: "Moodle",
-    icon: <span style={{ fontSize: "2rem", display: "inline-block" }}>🎓</span>,
+    icon: (
+      <FontAwesomeIcon className={styles.customIcon} icon={faGraduationCap} />
+    ),
     description:
       "Archivo con estructura, diseño, que organiza contenido dentro de cursos Moodle",
   },
@@ -64,7 +72,7 @@ export const StepPublishType = ({
             onClick={() => handleSelect(opt.key)}
             onKeyDown={(e) => handleKeyDown(e, opt.key)}
           >
-            <div>{opt.icon}</div>
+            <div className={styles.roundBackground}>{opt.icon}</div>
             <div>
               <strong>{opt.label}</strong>
               <div>{opt.description}</div>

@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGraduationCap, faFile } from "@fortawesome/free-solid-svg-icons"; // Import for Curso icon
 import styles from "./StepResourceType.module.css";
 
 export const StepResourceType = ({
@@ -41,7 +43,12 @@ export const StepResourceType = ({
           onClick={() => handleSelect("Curso")}
           onKeyDown={(e) => handleKeyDown(e, "Curso")}
         >
-          <div className={styles.iconCurso} />
+          <div className={styles.roundBackground}>
+            <FontAwesomeIcon
+              className={styles.customIcon}
+              icon={faGraduationCap}
+            />
+          </div>
           <div>
             <strong>Curso</strong>
             <div>
@@ -60,7 +67,9 @@ export const StepResourceType = ({
           onClick={() => handleSelect("Material")}
           onKeyDown={(e) => handleKeyDown(e, "Material")}
         >
-          <div className={styles.iconMaterial} />
+          <div className={styles.roundBackground}>
+            <FontAwesomeIcon className={styles.customIcon} icon={faFile} />
+          </div>
           <div>
             <strong>Material de apoyo</strong>
             <div>

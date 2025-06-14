@@ -2,14 +2,13 @@ import React from "react";
 import { useRouter } from "next/router";
 import { CourseWizard } from "../components/CourseWizard/CourseWizard";
 import courseContentAIService from "../services/courseContentAIService";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 const CourseCreationFormPage = ({ handleError }) => {
   const router = useRouter();
   const { t } = useTranslation();
 
   const handleFormSubmit = async (formData) => {
-    console.log("Form data:", formData);
     try {
       const response = await courseContentAIService.generateCourseStructure(
         formData,

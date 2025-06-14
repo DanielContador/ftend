@@ -63,18 +63,19 @@ export const WizardManager = ({
   const handleBack = () => {
     if (currentStep > 0) {
       const prevStep = filteredSteps[currentStep];
-      let keysToRemove = flow[prevStep.key].formkeys;
-      console.log("Keys to remove:", keysToRemove);
-      if (flow && prevStep) {
-        flow[prevStep.key] = { value: null, formkeys: [] };
-      }
-      setFormData((prev) => {
-        const newData = { ...prev };
-        keysToRemove.forEach((k) => {
-          delete newData[k];
+      if (flow[prevStep.key]) {
+        let keysToRemove = flow[prevStep.key].formkeys;
+        if (flow && prevStep) {
+          flow[prevStep.key] = { value: null, formkeys: [] };
+        }
+        setFormData((prev) => {
+          const newData = { ...prev };
+          keysToRemove.forEach((k) => {
+            delete newData[k];
+          });
+          return newData;
         });
-        return newData;
-      });
+      }
       setCurrentStep((prev) => prev - 1);
     }
   };

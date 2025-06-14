@@ -25,11 +25,11 @@ body {
 .fal,
 .fab,
 svg[data-icon] {
-  width: 1rem !important;
-  min-width: 1rem !important;
-  max-width: 1rem !important;
-  height: 1rem !important;
-  font-size: 1rem !important;
+  width: 1rem;
+  min-width: 1rem;
+  max-width: 1rem;
+  height: 1rem;
+  font-size: 1rem;
   vertical-align: middle;
   box-sizing: content-box;
 }
