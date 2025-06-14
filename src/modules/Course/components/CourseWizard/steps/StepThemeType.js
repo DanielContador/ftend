@@ -4,21 +4,27 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
 // Asegúrate de tener FontAwesome importado globalmente o en tu layout
 
-export const StepThemeType = ({ formData, onChange }) => {
+export const StepThemeType = ({
+  flow,
+  handleStepFormData,
+  handleStepFlowData,
+}) => {
   const fileInputRef = useRef();
 
-  // Cambia themeType por courseName en el formulario
   const handleInputChange = (e) => {
-    onChange({ courseName: e.target.value });
+    handleStepFormData({ courseName: e.target.value });
+    handleStepFlowData({
+      themeType: { value: e.target.value, formkeys: ["courseName", "files"] },
+    });
   };
 
   const handleFileChange = (e) => {
-    onChange({ themeFiles: Array.from(e.target.files) });
+    handleStepFormData({ files: Array.from(e.target.files) });
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
-    onChange({ themeFiles: Array.from(e.dataTransfer.files) });
+    handleStepFormData({ files: Array.from(e.dataTransfer.files) });
   };
 
   const handleDragOver = (e) => {
@@ -32,7 +38,7 @@ export const StepThemeType = ({ formData, onChange }) => {
         className={styles.input}
         type="text"
         placeholder="Ej: Fundamentos sobre la Ley Karin en Chile"
-        value={formData.courseName || ""}
+        value={flow?.themeType?.value || ""}
         onChange={handleInputChange}
       />
       <div

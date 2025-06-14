@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./StepCourseMaterialType.module.css";
 
 // Map keys to backend labels
@@ -10,13 +10,14 @@ const keyToLabel = {
   scormslide: "HTML5 (diapositivas interactivas)",
 };
 
-export const StepCourseMaterialType = ({ formData, onChange }) => {
-  // resourceTypes es un string separado por comas
-  const selected =
-    typeof formData.resourceTypes === "string" && formData.resourceTypes
-      ? formData.resourceTypes.split(",").map((s) => s.trim())
-      : [];
-
+export const StepCourseMaterialType = ({
+  flow,
+  handleStepFormData,
+  handleStepFlowData,
+}) => {
+  const [selected, setSelected] = useState(
+    flow?.courseMaterialType?.value ?? null
+  );
   // Opciones base
   const baseOptions = [
     { key: "videos", label: "Vídeos" },
@@ -26,7 +27,7 @@ export const StepCourseMaterialType = ({ formData, onChange }) => {
 
   // Opción condicional para la cuarta opción
   const lastOption =
-    formData.courseGenerationType === "scorm"
+    flow?.publishType?.value === "scorm"
       ? {
           key: "scormslide",
           label: "Diapositiva con Texto de Scorm",
@@ -39,20 +40,49 @@ export const StepCourseMaterialType = ({ formData, onChange }) => {
   const options = [...baseOptions, lastOption];
 
   const handleSelect = (type) => {
-    const label = keyToLabel[type] || type;
-    let newSelected;
-    if (selected.includes(label)) {
-      newSelected = selected.filter((item) => item !== label);
+    if (selected && selected.includes(type)) {
+      // If already selected, remove it
+      const newSelected = selected
+        .split(",")
+        .filter((item) => item !== type)
+        .join(",");
+      setSelected(newSelected);
+      // Update flow data to remove the type
+      handleStepFlowData({
+        courseMaterialType: {
+          value: newSelected,
+          formkeys: ["resourceTypes"],
+        },
+      });
+      // Update handleStepFormData to include selected keys and type
+      const updatedResourceTypes = newSelected.split(",");
+      const stringsList = updatedResourceTypes.map(
+        (key) => keyToLabel[key] || key
+      );
+      const result = stringsList.join(",");
+      handleStepFormData({ resourceTypes: result });
     } else {
-      newSelected = [...selected, label];
+      setSelected(selected ? selected + "," + type : type);
+      handleStepFlowData({
+        courseMaterialType: {
+          value: selected ? selected + "," + type : type,
+          formkeys: ["resourceTypes"],
+        },
+      });
+      // Update handleStepFormData to include selected keys and type
+      const updatedResourceTypes = selected
+        ? selected.split(",").concat(type)
+        : [type];
+      const stringsList = updatedResourceTypes.map(
+        (key) => keyToLabel[key] || key
+      );
+      const result = stringsList.join(",");
+      handleStepFormData({ resourceTypes: result });
     }
-    const resourceTypesString = newSelected.join(", ");
-    onChange({ resourceTypes: resourceTypesString });
   };
 
   // El número de créditos a utilizar vendrá de una variable futura, aquí solo muestra el valor si existe
-  const creditCount =
-    typeof formData.creditsToUse === "number" ? formData.creditsToUse : 0;
+  const creditCount = 0;
 
   return (
     <div className={styles.stepCourseMaterialType}>
@@ -61,8 +91,7 @@ export const StepCourseMaterialType = ({ formData, onChange }) => {
       </h2>
       <div className={styles.optionsBox}>
         {options.map((opt) => {
-          const labelString = keyToLabel[opt.key] || opt.label;
-          const isChecked = selected.includes(labelString);
+          const isChecked = selected?.includes(opt.key);
           return (
             <label key={opt.key} className={styles.optionRow}>
               <input

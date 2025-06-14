@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./StepPublishType.module.css";
 
 const options = [
@@ -10,14 +10,14 @@ const options = [
       "Estandariza cursos e-learning para integrarse fácilmente a cualquier LMS compatible",
   },
   {
-    key: "internet", // Cambiado de "independiente" a "internet"
+    key: "material", // Cambiado de "independiente" a "internet"
     label: "Recurso independiente",
     icon: <span style={{ fontSize: "2rem", display: "inline-block" }}>📖</span>,
     description:
       "Material autónomo que se usa sin depender de otros contenidos.",
   },
   {
-    key: "moodle",
+    key: "standard",
     label: "Moodle",
     icon: <span style={{ fontSize: "2rem", display: "inline-block" }}>🎓</span>,
     description:
@@ -25,12 +25,21 @@ const options = [
   },
 ];
 
-export const StepPublishType = ({ formData, onChange }) => {
+export const StepPublishType = ({
+  flow,
+  handleStepFormData,
+  handleStepFlowData,
+}) => {
   // Cambia publishType por courseGenerationType
-  const selected = formData.courseGenerationType ?? null;
+  const [selected, setSelected] = useState(flow?.publishType?.value ?? null);
 
   const handleSelect = (type) => {
-    onChange({ courseGenerationType: type });
+    handleStepFormData({ courseType: type });
+    //update the flow
+    handleStepFlowData({
+      publishType: { value: type, formkeys: ["courseType"] },
+    });
+    setSelected(type);
   };
 
   const handleKeyDown = (e, type) => {

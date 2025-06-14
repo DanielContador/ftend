@@ -3,7 +3,7 @@ import { WizardManager } from "../../../../shared/components/wizard/WizardManage
 import { courseWizardStepsConfig } from "./courseWizardStepsConfig";
 import styles from "./CourseWizard.module.css";
 
-export const CourseWizard = ({ onClose }) => {
+export const CourseWizard = ({ onClose, handleFormSubmit }) => {
   const handleClose = () => {
     if (onClose) onClose();
   };
@@ -11,7 +11,11 @@ export const CourseWizard = ({ onClose }) => {
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
-        <WizardManager steps={courseWizardStepsConfig} onClose={handleClose} />
+        <WizardManager
+          steps={courseWizardStepsConfig}
+          onClose={handleClose}
+          handleFormSubmit={handleFormSubmit}
+        />
       </div>
     </div>
   );

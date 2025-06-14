@@ -1,13 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./StepRequestEvaluation.module.css";
 
-export const StepRequestEvaluation = ({ formData, onChange }) => {
-  // Usar addActivities como key
-  const selected =
-    typeof formData.addActivities === "boolean" ? formData.addActivities : null;
+export const StepRequestEvaluation = ({
+  flow,
+  handleStepFormData,
+  handleStepFlowData,
+}) => {
+  const [selected, setSelected] = useState(
+    flow?.requestEvaluation?.value ?? null
+  );
 
   const handleSelect = (value) => {
-    onChange({ addActivities: value });
+    handleStepFormData({ addActivities: value });
+    setSelected(value);
+    handleStepFlowData({
+      requestEvaluation: {
+        value: value,
+        formkeys: ["addActivities"],
+      },
+    });
   };
 
   return (

@@ -1,9 +1,28 @@
 import React from "react";
 import styles from "./StepTopicType.module.css";
 
-export const StepTopicType = ({ formData, onChange }) => {
+export const StepTopicType = ({
+  flow,
+  handleStepFormData,
+  handleStepFlowData,
+}) => {
   const handleChange = (e) => {
-    onChange({ [e.target.name]: e.target.value });
+    const newValue = e.target.value;
+    const fieldName = e.target.name;
+
+    handleStepFlowData({
+      topicType: {
+        ...flow.topicType,
+        value: e.target.value,
+        formkeys: ["courseObjective", "estimatedTime", "participantProfile"],
+        [fieldName]: newValue,
+      },
+    });
+
+    handleStepFormData((prevForm) => ({
+      ...prevForm,
+      [fieldName]: newValue,
+    }));
   };
 
   return (
@@ -15,7 +34,7 @@ export const StepTopicType = ({ formData, onChange }) => {
           type="text"
           name="courseObjective"
           placeholder="Ej: Capacitar a un equipo de una empresa para cumplir con la normativa"
-          value={formData.courseObjective || ""}
+          value={flow?.topicType?.courseObjective || ""}
           onChange={handleChange}
         />
       </div>
@@ -28,7 +47,7 @@ export const StepTopicType = ({ formData, onChange }) => {
           type="text"
           name="estimatedTime"
           placeholder="Ej: 5 horas"
-          value={formData.estimatedTime || ""}
+          value={flow?.topicType?.estimatedTime || ""}
           onChange={handleChange}
         />
       </div>
@@ -39,7 +58,7 @@ export const StepTopicType = ({ formData, onChange }) => {
           type="text"
           name="participantProfile"
           placeholder="Ej: Ingeniero comercial de una empresa de capacitación"
-          value={formData.participantProfile || ""}
+          value={flow?.topicType?.participantProfile || ""}
           onChange={handleChange}
         />
       </div>

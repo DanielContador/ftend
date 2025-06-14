@@ -1,9 +1,21 @@
 import React from "react";
 import styles from "./StepStyleType.module.css";
 
-export const StepStyleType = ({ formData, onChange }) => {
+export const StepStyleType = ({
+  flow,
+  handleStepFormData,
+  handleStepFlowData,
+}) => {
   const handleChange = (e) => {
-    onChange({ [e.target.name]: e.target.value });
+    handleStepFormData({ [e.target.name]: e.target.value });
+    handleStepFlowData({
+      styleType: {
+        ...flow.styleType,
+        value: e.target.value,
+        formkeys: ["toneStyle", "additionalContext"],
+        [e.target.name]: e.target.value,
+      },
+    });
   };
 
   return (
@@ -15,7 +27,7 @@ export const StepStyleType = ({ formData, onChange }) => {
           type="text"
           name="toneStyle"
           placeholder="Ej: Cercano y simple para el alumno"
-          value={formData.toneStyle || ""}
+          value={flow?.styleType?.toneStyle || ""}
           onChange={handleChange}
         />
       </div>
@@ -25,7 +37,7 @@ export const StepStyleType = ({ formData, onChange }) => {
           className={styles.textarea}
           name="additionalContext"
           placeholder="Ej: El curso debe ser claro y usar un lenguaje gentil y cordial para tratar temas sensibles para la Ley Karin, el contenido debe guiarse principalmente por el documento subido anteriormente."
-          value={formData.additionalContext || ""}
+          value={flow?.styleType?.additionalContext || ""}
           onChange={handleChange}
           rows={4}
         />

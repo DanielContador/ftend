@@ -13,7 +13,7 @@ import { StepMaterialEstimatedTime } from "./steps/StepMaterialEstimatedTime";
 
 export const courseWizardStepsConfig = [
   {
-    key: "courseType",
+    key: "resourceType",
     label: "Tipo de recurso",
     component: StepResourceType,
     tabKey: "resource",
@@ -25,8 +25,7 @@ export const courseWizardStepsConfig = [
     component: StepMaterialType,
     tabKey: "formulario",
     tabLabel: "Formulario",
-    // Cambia la condición a courseType
-    condition: (formData) => formData.courseType === "Material",
+    condition: (flow) => flow?.resourceType?.value === "Material",
   },
   {
     key: "themeMaterialType",
@@ -34,11 +33,7 @@ export const courseWizardStepsConfig = [
     component: StepThemeMaterialType,
     tabKey: "formulario",
     tabLabel: "Formulario",
-    // Cambia themeMaterial por courseName en la condición
-    condition: (formData) =>
-      formData.courseType === "Material" &&
-      typeof formData.materialType === "string" &&
-      formData.materialType.trim() !== "",
+    condition: (flow) => flow?.materialType?.value !== null,
   },
   {
     key: "materialEstimatedTime",
@@ -46,11 +41,7 @@ export const courseWizardStepsConfig = [
     component: StepMaterialEstimatedTime,
     tabKey: "formulario",
     tabLabel: "Formulario",
-    // Ahora depende de courseName en vez de themeMaterial
-    condition: (formData) =>
-      formData.courseType === "Material" &&
-      typeof formData.courseName === "string" &&
-      formData.courseName.trim() !== "",
+    condition: (flow) => flow?.themeMaterialType?.value !== null,
   },
   {
     key: "courseGeneration",
@@ -58,7 +49,6 @@ export const courseWizardStepsConfig = [
     component: StepCourseGeneration,
     tabKey: "crear",
     tabLabel: "Crear",
-    // Cambia materialEstimatedTime por estimatedTime
     condition: (formData) =>
       formData.courseType === "Material" &&
       typeof formData.estimatedTime === "string" &&
@@ -70,8 +60,7 @@ export const courseWizardStepsConfig = [
     component: StepPublishType,
     tabKey: "resource",
     tabLabel: "Tipo de recurso",
-    // Cambia la condición a courseGenerationType
-    condition: (formData) => formData.courseType === "Curso",
+    condition: (flow) => flow?.resourceType?.value === "Curso",
   },
   {
     key: "themeType",
@@ -79,9 +68,7 @@ export const courseWizardStepsConfig = [
     component: StepThemeType,
     tabKey: "themeType",
     tabLabel: "Formulario",
-    // Ahora la condición depende de courseName en vez de themeType
-    condition: (formData) =>
-      ["scorm", "internet", "moodle"].includes(formData.courseGenerationType),
+    condition: (flow) => flow?.publishType?.value !== null,
   },
   {
     key: "topicType",
@@ -89,11 +76,7 @@ export const courseWizardStepsConfig = [
     component: StepTopicType,
     tabKey: "formulario",
     tabLabel: "Formulario",
-    // Ajusta la condición para los nuevos nombres de campos
-    condition: (formData) =>
-      ["scorm", "internet", "moodle"].includes(formData.courseGenerationType) &&
-      typeof formData.courseName === "string" &&
-      formData.courseName.trim() !== "",
+    condition: (flow) => flow?.themeType?.value !== null,
   },
   {
     key: "styleType",
@@ -101,15 +84,7 @@ export const courseWizardStepsConfig = [
     component: StepStyleType,
     tabKey: "formulario",
     tabLabel: "Formulario",
-    // Se muestra si alguno de los campos de topicType está lleno (con los nuevos nombres)
-    condition: (formData) =>
-      ["scorm", "internet", "moodle"].includes(formData.courseGenerationType) &&
-      ((typeof formData.courseObjective === "string" &&
-        formData.courseObjective.trim() !== "") ||
-        (typeof formData.estimatedTime === "string" &&
-          formData.estimatedTime.trim() !== "") ||
-        (typeof formData.participantProfile === "string" &&
-          formData.participantProfile.trim() !== "")),
+    condition: (flow) => flow?.topicType?.value !== null,
   },
   {
     key: "courseMaterialType",
@@ -117,12 +92,7 @@ export const courseWizardStepsConfig = [
     component: StepCourseMaterialType,
     tabKey: "formulario",
     tabLabel: "Formulario",
-    // Cambia courseStyle por toneStyle
-    // Ya no depende de courseMaterialType, sino de toneStyle
-    condition: (formData) =>
-      ["scorm", "internet", "moodle"].includes(formData.courseGenerationType) &&
-      typeof formData.toneStyle === "string" &&
-      formData.toneStyle.trim() !== "",
+    condition: (flow) => flow?.styleType?.value !== null,
   },
   {
     key: "requestEvaluation",
@@ -130,11 +100,7 @@ export const courseWizardStepsConfig = [
     component: StepRequestEvaluation,
     tabKey: "evaluacion",
     tabLabel: "Evaluación",
-    // Ahora depende de resourceTypes para ambos flujos
-    condition: (formData) =>
-      ["scorm", "internet", "moodle"].includes(formData.courseGenerationType) &&
-      typeof formData.resourceTypes === "string" &&
-      formData.resourceTypes.trim() !== "",
+    condition: (flow) => flow?.courseMaterialType?.value !== null,
   },
   {
     key: "evaluationType",
@@ -142,10 +108,7 @@ export const courseWizardStepsConfig = [
     component: StepEvaluationType,
     tabKey: "evaluacion",
     tabLabel: "Evaluación",
-    // Cambia evaluationTypeList por evaluationMethods
-    condition: (formData) =>
-      ["scorm", "internet", "moodle"].includes(formData.courseGenerationType) &&
-      formData.addActivities === true,
+    condition: (flow) => flow?.requestEvaluation?.value === true,
   },
   {
     key: "courseGeneration",
@@ -153,16 +116,9 @@ export const courseWizardStepsConfig = [
     component: StepCourseGeneration,
     tabKey: "crear",
     tabLabel: "Crear",
-    // Cambia evaluationTypeList por evaluationMethods
-    condition: (formData) =>
-      (["scorm", "internet", "moodle"].includes(
-        formData.courseGenerationType
-      ) &&
-        (formData.addActivities === false ||
-          (typeof formData.evaluationMethods === "string" &&
-            formData.evaluationMethods.trim() !== ""))) ||
-      (formData.courseType === "Material" &&
-        typeof formData.materialEstimatedTime === "string" &&
-        formData.materialEstimatedTime.trim() !== ""),
+    condition: (flow) =>
+      flow?.evaluationType?.value !== null ||
+      flow?.requestEvaluation?.value === false ||
+      flow?.materialEstimatedTime?.value !== null,
   },
 ];

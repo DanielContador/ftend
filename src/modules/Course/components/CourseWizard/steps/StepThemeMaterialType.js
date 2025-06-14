@@ -3,21 +3,31 @@ import styles from "./StepThemeMaterialType.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
 
-export const StepThemeMaterialType = ({ formData, onChange }) => {
+export const StepThemeMaterialType = ({
+  flow,
+  handleStepFormData,
+  handleStepFlowData,
+}) => {
   const fileInputRef = useRef();
 
   // Cambia themeMaterial por courseName
   const handleInputChange = (e) => {
-    onChange({ courseName: e.target.value });
+    handleStepFormData({ courseName: e.target.value });
+    handleStepFlowData({
+      themeMaterialType: {
+        value: e.target.value,
+        formkeys: ["courseName", "files"],
+      },
+    });
   };
 
   const handleFileChange = (e) => {
-    onChange({ themeMaterialFiles: Array.from(e.target.files) });
+    handleStepFormData({ files: Array.from(e.target.files) });
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
-    onChange({ themeMaterialFiles: Array.from(e.dataTransfer.files) });
+    handleStepFormData({ files: Array.from(e.dataTransfer.files) });
   };
 
   const handleDragOver = (e) => {
@@ -33,7 +43,7 @@ export const StepThemeMaterialType = ({ formData, onChange }) => {
         className={styles.input}
         type="text"
         placeholder="Ej: Fundamentos sobre la Ley Karin en Chile"
-        value={formData.courseName || ""}
+        value={flow?.themeMaterialType?.value || ""}
         onChange={handleInputChange}
       />
       <div

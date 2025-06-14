@@ -1,12 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./StepResourceType.module.css";
 
-export const StepResourceType = ({ formData, onChange }) => {
+export const StepResourceType = ({
+  flow,
+  handleStepFormData,
+  handleStepFlowData,
+}) => {
   // Usa courseType como key en formData
-  const selected = formData.courseType ?? null;
+  const [selected, setSelected] = useState(flow?.resourceType?.value ?? null);
 
   const handleSelect = (type) => {
-    onChange({ courseType: type });
+    //Update the form
+    if (type === "Material") {
+      handleStepFormData({ courseType: type });
+    }
+    //update the flow
+    handleStepFlowData({
+      resourceType: { value: type, formkeys: ["courseType"] },
+    });
+    setSelected(type);
   };
 
   const handleKeyDown = (e, type) => {

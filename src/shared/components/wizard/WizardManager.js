@@ -6,18 +6,15 @@ export const WizardManager = ({
   steps,
   initialStep = 0,
   initialFormData = {},
-  onFinish,
   handleFormSubmit,
-  validateStep,
   onClose,
 }) => {
   const [currentStep, setCurrentStep] = useState(initialStep);
   const [formData, setFormData] = useState(initialFormData);
+  const [flow, setFlow] = useState(initialFormData);
 
   // Filtra los steps según la condición (si existe)
-  const filteredSteps = steps.filter(
-    (s) => !s.condition || s.condition(formData)
-  );
+  const filteredSteps = steps.filter((s) => !s.condition || s.condition(flow));
 
   const step =
     filteredSteps && filteredSteps.length > 0
@@ -25,9 +22,7 @@ export const WizardManager = ({
       : undefined;
 
   let StepComponent = null;
-  if (typeof step === "function") {
-    StepComponent = step;
-  } else if (step && step.component && typeof step.component === "function") {
+  if (step && step.component && typeof step.component === "function") {
     StepComponent = step.component;
   }
 
@@ -35,7 +30,7 @@ export const WizardManager = ({
   const headerTabs = [];
   const seenLabels = new Set();
   filteredSteps.forEach((s) => {
-    const tabLabel = s.tabLabel || s.label;
+    const tabLabel = s.tabLabel;
     if (!seenLabels.has(tabLabel)) {
       headerTabs.push({
         key: tabLabel, // Usar tabLabel como key para unicidad visual
@@ -46,87 +41,32 @@ export const WizardManager = ({
   });
 
   // Determina el tab activo según el tabLabel del step actual
-  const currentTabLabel = step?.tabLabel || step?.label;
+  const currentTabLabel = step?.tabLabel;
   const currentTabIndex = headerTabs.findIndex(
     (t) => t.label === currentTabLabel
   );
 
   // Lógica para deshabilitar el botón siguiente
-  let isNextDisabled = false;
-  if (typeof validateStep === "function") {
-    isNextDisabled = validateStep({ step, formData, currentStep });
-  } else if (step && step.key === "courseType") {
-    isNextDisabled =
-      formData.courseType === undefined ||
-      formData.courseType === null ||
-      formData.courseType === "";
-  } else if (step && step.key === "publishType") {
-    // Cambia publishType por courseGenerationType
-    isNextDisabled =
-      formData.courseGenerationType === undefined ||
-      formData.courseGenerationType === null ||
-      formData.courseGenerationType === "";
-  } else if (step && step.key === "materialType") {
-    isNextDisabled =
-      formData.materialType === undefined ||
-      formData.materialType === null ||
-      formData.materialType === "";
+  let isNextDisabled = true;
+  if (step && flow && step.key in flow && flow[step.key].value !== null) {
+    isNextDisabled = false;
   }
 
-  const handleStepData = (stepData) => {
+  const handleStepFormData = (stepData) => {
     setFormData((prev) => ({ ...prev, ...stepData }));
+  };
+
+  const handleStepFlowData = (stepData) => {
+    setFlow((prev) => ({ ...prev, ...stepData }));
   };
 
   const handleBack = () => {
     if (currentStep > 0) {
       const prevStep = filteredSteps[currentStep];
-      let keysToRemove = [];
-      if (prevStep && prevStep.component && prevStep.key) {
-        switch (prevStep.key) {
-          case "courseType":
-            keysToRemove = ["courseType"];
-            break;
-          case "materialType":
-            keysToRemove = ["resourceTypes"];
-            break;
-          case "themeMaterialType":
-            keysToRemove = ["courseName", "themeMaterialFiles"];
-            break;
-          case "materialEstimatedTime":
-            keysToRemove = [
-              "estimatedTime",
-              "participantProfile",
-              "additionalContext",
-            ];
-            break;
-          case "publishType":
-            keysToRemove = ["courseGenerationType"];
-            break;
-          case "themeType":
-            keysToRemove = ["courseName", "themeFiles"];
-            break;
-          case "topicType":
-            keysToRemove = [
-              "courseObjective",
-              "estimatedTime",
-              "participantProfile",
-            ];
-            break;
-          case "styleType":
-            keysToRemove = ["toneStyle", "additionalContext"];
-            break;
-          case "courseMaterialType":
-            keysToRemove = ["resourceTypes", "creditsToUse"];
-            break;
-          case "requestEvaluation":
-            keysToRemove = ["addActivities"];
-            break;
-          case "evaluationType":
-            keysToRemove = ["evaluationMethods"];
-            break;
-          default:
-            keysToRemove = [prevStep.key];
-        }
+      let keysToRemove = flow[prevStep.key].formkeys;
+      console.log("Keys to remove:", keysToRemove);
+      if (flow && prevStep) {
+        flow[prevStep.key] = { value: null, formkeys: [] };
       }
       setFormData((prev) => {
         const newData = { ...prev };
@@ -142,8 +82,6 @@ export const WizardManager = ({
   const handleNext = () => {
     if (filteredSteps && currentStep < filteredSteps.length - 1) {
       setCurrentStep((prev) => prev + 1);
-    } else if (onFinish) {
-      onFinish(formData);
     }
   };
 
@@ -164,8 +102,10 @@ export const WizardManager = ({
       >
         {StepComponent ? (
           <StepComponent
+            flow={flow}
             formData={formData}
-            onChange={handleStepData}
+            handleStepFormData={handleStepFormData}
+            handleStepFlowData={handleStepFlowData}
             handleFormSubmit={handleFormSubmit}
           />
         ) : null}

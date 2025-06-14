@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./StepEvaluationType.module.css";
 
 const options = [
@@ -13,23 +13,53 @@ const keyToLabel = {
   final: "Evaluación final",
 };
 
-export const StepEvaluationType = ({ formData, onChange }) => {
-  // evaluationMethods es un string separado por comas
-  const selected =
-    typeof formData.evaluationMethods === "string" && formData.evaluationMethods
-      ? formData.evaluationMethods.split(",").map((s) => s.trim())
-      : [];
+export const StepEvaluationType = ({
+  flow,
+  handleStepFormData,
+  handleStepFlowData,
+}) => {
+  const [selected, setSelected] = useState(flow?.evaluationType?.value ?? null);
 
-  const handleSelect = (key) => {
-    const label = keyToLabel[key] || key;
-    let newSelected;
-    if (selected.includes(label)) {
-      newSelected = selected.filter((item) => item !== label);
+  const handleSelect = (type) => {
+    if (selected && selected.includes(type)) {
+      // If already selected, remove it
+      const newSelected = selected
+        .split(",")
+        .filter((item) => item !== type)
+        .join(",");
+      setSelected(newSelected);
+      // Update flow data to remove the type
+      handleStepFlowData({
+        evaluationType: {
+          value: newSelected,
+          formkeys: ["evaluationMethods"],
+        },
+      });
+      // Update handleStepFormData to include selected keys and type
+      const updatedResourceTypes = newSelected.split(",");
+      const stringsList = updatedResourceTypes.map(
+        (key) => keyToLabel[key] || key
+      );
+      const result = stringsList.join(",");
+      handleStepFormData({ evaluationMethods: result });
     } else {
-      newSelected = [...selected, label];
+      setSelected(selected ? selected + "," + type : type);
+      handleStepFlowData({
+        evaluationType: {
+          value: selected ? selected + "," + type : type,
+          formkeys: ["evaluationMethods"],
+        },
+      });
+      // Update handleStepFormData to include selected keys and type
+      const updatedResourceTypes = selected
+        ? selected.split(",").concat(type)
+        : [type];
+      const stringsList = updatedResourceTypes.map(
+        (key) => keyToLabel[key] || key
+      );
+      const result = stringsList.join(",");
+      handleStepFormData({ evaluationMethods: result });
     }
-    const evaluationMethodsString = newSelected.join(", ");
-    onChange({ evaluationMethods: evaluationMethodsString });
   };
 
   return (
@@ -44,7 +74,7 @@ export const StepEvaluationType = ({ formData, onChange }) => {
               type="checkbox"
               name="evaluationMethods"
               value={opt.key}
-              checked={selected.includes(keyToLabel[opt.key] || opt.key)}
+              checked={selected?.includes(opt.key)}
               onChange={() => handleSelect(opt.key)}
             />
             <span className={styles.optionLabel}>{opt.label}</span>

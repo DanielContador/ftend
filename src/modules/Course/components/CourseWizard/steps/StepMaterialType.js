@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./StepMaterialType.module.css";
 
 const options = [
@@ -25,16 +25,21 @@ const keyToLabel = {
   archivos: "Archivos de texto (Word, Excel, txt y PDF)",
 };
 
-export const StepMaterialType = ({ formData, onChange }) => {
+export const StepMaterialType = ({
+  flow,
+  handleStepFormData,
+  handleStepFlowData,
+}) => {
   // El valor guardado es el label, no el key
-  const selected =
-    typeof formData.resourceTypes === "string" && formData.resourceTypes
-      ? formData.resourceTypes
-      : "";
+  const [selected, setSelected] = useState(flow?.materialType?.value ?? null);
 
   const handleSelect = (type) => {
     const resourceTypesString = keyToLabel[type] || type;
-    onChange({ resourceTypes: resourceTypesString, materialType: type });
+    handleStepFormData({ resourceTypes: resourceTypesString });
+    handleStepFlowData({
+      materialType: { value: type, formkeys: ["resourceTypes"] },
+    });
+    setSelected(type);
   };
 
   return (
@@ -47,7 +52,7 @@ export const StepMaterialType = ({ formData, onChange }) => {
               type="radio"
               name="resourceTypes"
               value={opt.key}
-              checked={selected === (keyToLabel[opt.key] || opt.key)}
+              checked={selected === opt.key}
               onChange={() => handleSelect(opt.key)}
             />
             <span className={styles.optionLabel}>{opt.label}</span>
