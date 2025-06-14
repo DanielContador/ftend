@@ -1,5 +1,5 @@
 import SplitLayout from "../shared/layouts/splitlayout/SplitLayout";
-import RecoverCenterBrand from "../shared/layouts/components/password/RecoverCenterBrand";
+import RecoverCenterBrand from "../modules/Auth/components/recover/RecoverCenterBrand";
 import RecoverPasswordPage from "../modules/Auth/pages/RecoverPasswordPage";
 
 const RecoverPassword = () => {

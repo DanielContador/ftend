@@ -1,7 +1,7 @@
 import RegisterPage from "../modules/Auth/pages/RegisterPage";
 import SplitLayout from "../shared/layouts/splitlayout/SplitLayout";
 import LogoBlanco from "../../public/LogoBlanco.svg"; // Ajusta el path si es necesario
-import CenterBrand from "../shared/layouts/components/register/CenterBrand";
+import CenterBrand from "../modules/Auth/components/register/CenterBrand";
 
 const Register = () => {
   return (

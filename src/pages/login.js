@@ -1,6 +1,6 @@
 import LoginPage from "../modules/Auth/pages/LoginPage";
 import SplitLayout from "../shared/layouts/splitlayout/SplitLayout";
-import CenterBrand from "../shared/layouts/components/login/CenterBrand";
+import CenterBrand from "../modules/Auth/components/login/CenterBrand";
 
 const Login = () => {
   return (
