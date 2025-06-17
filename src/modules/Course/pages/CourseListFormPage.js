@@ -38,7 +38,7 @@ const CourseListPage = ({ handleError }) => {
         </div>
       )}
       {!crud.loading && (
-        <CourseListForm />
+        <CourseListForm courses={crud.items} />
         // <div className={styles.courseListPage}>
         //   <div
         //     style={{

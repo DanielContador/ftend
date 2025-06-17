@@ -1,6 +1,6 @@
 .container {
   padding: 2rem;
-  background-color: #f8f9fb;
+  background-color: #ffffff; /* Updated to match the design */
   font-family: "Segoe UI", sans-serif;
   color: #111;
 }
@@ -45,10 +45,12 @@
 
 .orderBtn {
   padding: 0.5rem 1rem;
-  border-radius: 12px;
-  background-color: white;
-  border: 1px solid #ccc;
+  border-radius: 16px; /* Match the card's border radius */
+  background-color: #ffffff; /* White background */
+  color: black; /* Text color */
+  border: none;
   cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow for card effect */
 }
 
 .stats {
@@ -60,12 +62,11 @@
 .card {
   display: flex;
   align-items: center;
-  background: white;
   border-radius: 16px;
   padding: 1rem;
   gap: 1rem;
   flex: 1;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .icon {
@@ -76,23 +77,34 @@
 .number {
   font-weight: bold;
   font-size: 1.25rem;
+  margin: 0;
+}
+.resourcesWrapper {
+  overflow-x: auto;
+  padding-bottom: 1rem; /* opcional, para evitar que el scroll tape */
 }
 
 .resources {
-  display: flex;
   gap: 2rem;
-  flex-wrap: wrap;
+  display: flex;
+  flex-wrap: nowrap;
+  min-width: 100%;
+  align-items: stretch;
 }
 
 .resourceCard {
-  background: white;
+  background: #ffffff;
   border-radius: 16px;
   padding: 1rem;
-  width: 30%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  align-items: stretch;
+  justify-content: space-between;
+  flex: 0 0 300px;
+  min-width: 400px;
+  max-width: 400px;
 }
 
 .typeLabel {
@@ -106,6 +118,12 @@
 .date {
   font-size: 0.875rem;
   color: #6b7280;
+}
+
+.cardSubInfo {
+  font-size: 1rem;
+  color: #6b7280;
+  margin: 2px 0 0 0;
 }
 
 .tags {
@@ -141,18 +159,21 @@
   color: #6b7280;
   font-size: 1rem;
   cursor: pointer;
+  gap: 0.5rem;
   margin-top: 5px;
 }
+
 .actionCard {
   display: flex;
   align-items: center;
-  background: white;
+  background: #ffffff; /* Updated to match the design */
   border-radius: 16px;
   padding: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Updated shadow */
 }
+
 .actionCard:hover {
-  background-color: #f3f4f6e9;
+  background-color: #f3f4f6; /* Updated hover effect */
 }
 
 .iconWrapper {
@@ -164,11 +185,36 @@
 }
 
 .iconVideo {
-  background-color: #e0e7ff;
-  color: #4338ca;
+  background-color: #d1fae5; /* Light green for video icon background */
+  color: #10b981; /* Green for video icon */
 }
 
-.iconCurso {
-  background-color: #ede9fe;
-  color: #7c3aed;
+.iconLayerGroup {
+  background-color: #e0e7ff; /* Light purple for layer group icon background */
+  color: #6f44ee; /* Purple for layer group icon */
+}
+
+.iconCoins {
+  background-color: #fef3c7; /* Light orange for coins icon background */
+  color: #b45309; /* Orange for coins icon */
+}
+
+.courseName {
+  font-weight: bold;
+  font-size: 1.15rem;
+}
+
+.wordCard {
+  display: inline-block;
+  padding: 0.5rem 0.5rem 0rem 0.6rem;
+  border-radius: 45%; /* Estilo pill */
+  font-size: 0.875rem;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  line-height: 1; /* Asegura altura controlada */
+  vertical-align: middle; /* Centrado con otros elementos */
+}
+
+.textType {
+  font-size: 0.7rem;
 }

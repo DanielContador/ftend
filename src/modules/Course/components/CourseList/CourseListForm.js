@@ -12,28 +12,8 @@ import {
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 
-const CourseListForm = () => {
-  const resources = [
-    {
-      type: "Video",
-      title: "Bases de la Ley Karin",
-      date: "mayo 15",
-      tags: ["Video"],
-    },
-    {
-      type: "Curso",
-      title: "Bases de la Ley Karin",
-      date: "mayo 15",
-      tags: ["Curso", "Duplicado"],
-    },
-    {
-      type: "Video",
-      title: "Bases de la Ley Karin",
-      date: "mayo 15",
-      tags: ["Video"],
-    },
-  ];
-
+const CourseListForm = ({ courses }) => {
+  console.log("Courses:", courses);
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -54,64 +34,82 @@ const CourseListForm = () => {
 
       <div className={styles.stats}>
         <div className={styles.card}>
-          <FontAwesomeIcon icon={faLayerGroup} />
+          <div className={`${styles.actionCard} ${styles.iconLayerGroup}`}>
+            <FontAwesomeIcon icon={faLayerGroup} />
+          </div>
           <div>
             <p className={styles.number}>24</p>
-            <p>Recursos creados</p>
+            <p className={styles.cardSubInfo}>Recursos creados</p>
           </div>
         </div>
         <div className={styles.card}>
-          <div className={`${styles.iconWrapper}`}>
+          <div className={`${styles.actionCard} ${styles.iconVideo}`}>
             <FontAwesomeIcon icon={faVideo} />
           </div>
           <div>
             <p className={styles.number}>Video</p>
-            <p>Mayor generado</p>
+            <p className={styles.cardSubInfo}>Mayor generado</p>
           </div>
         </div>
         <div className={styles.card}>
-          <FontAwesomeIcon icon={faCoins} />
+          <div className={`${styles.actionCard} ${styles.iconCoins}`}>
+            <FontAwesomeIcon icon={faCoins} />
+          </div>
           <div>
             <p className={styles.number}>55</p>
-            <p>Créditos restantes</p>
+            <p className={styles.cardSubInfo}>Créditos restantes</p>
           </div>
         </div>
       </div>
 
-      <div className={styles.resources}>
-        {resources.map((res, idx) => (
-          <div key={idx} className={styles.resourceCard}>
-            <div className={styles.typeLabel}>
-              <FontAwesomeIcon icon={faVideo} /> {res.type}
+      <div className={styles.resourcesWrapper}>
+        <div className={styles.resources}>
+          {courses.map((course) => (
+            <div key={course.id} className={styles.resourceCard}>
+              <div>
+                <div className={styles.typeLabel}>
+                  <div className={`${styles.actionCard} ${styles.iconVideo}`}>
+                    <FontAwesomeIcon icon={faVideo} />
+                  </div>
+                  {course.resourceTypes}
+                </div>
+                <div className="mt-2">
+                  <h3 className={styles.courseName}>{course.name}</h3>
+                  <p className={styles.date}>
+                    Creado en{" "}
+                    {new Date(course.timeCreated).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+              <div>
+                <div className={styles.actions}>
+                  <div className={`${styles.wordCard} ${styles.iconVideo}`}>
+                    <p className={styles.textType}>{course.courseType}</p>
+                  </div>
+                  {course.courseType == null && (
+                    <div className={`${styles.wordCard} ${styles.iconCoins}`}>
+                      <p className={styles.textType}>Duplicado</p>
+                    </div>
+                  )}
+                </div>
+                <div className={styles.actions}>
+                  <div className={styles.actionCard}>
+                    <FontAwesomeIcon icon={faEdit} />
+                  </div>
+                  <div className={styles.actionCard}>
+                    <FontAwesomeIcon icon={faEye} />
+                  </div>
+                  <div className={styles.actionCard}>
+                    <FontAwesomeIcon icon={faTrash} />
+                  </div>
+                  <div className={styles.actionCard}>
+                    <FontAwesomeIcon icon={faCopy} />
+                  </div>
+                </div>
+              </div>
             </div>
-            <h3>{res.title}</h3>
-            <p className={styles.date}>Creado en {res.date}</p>
-            <div className={styles.tags}>
-              {res.tags.map((tag, i) => (
-                <span
-                  key={i}
-                  className={`${styles.tag} ${styles[`tag${tag}`]}`}
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-            <div className={styles.actions}>
-              <div className={styles.actionCard}>
-                <FontAwesomeIcon icon={faEdit} />
-              </div>
-              <div className={styles.actionCard}>
-                <FontAwesomeIcon icon={faEye} />
-              </div>
-              <div className={styles.actionCard}>
-                <FontAwesomeIcon icon={faTrash} />
-              </div>
-              <div className={styles.actionCard}>
-                <FontAwesomeIcon icon={faCopy} />
-              </div>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
