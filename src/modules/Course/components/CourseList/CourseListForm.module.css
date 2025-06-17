@@ -1,0 +1,174 @@
+.container {
+  padding: 2rem;
+  background-color: #f8f9fb;
+  font-family: "Segoe UI", sans-serif;
+  color: #111;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.createBtn {
+  background: linear-gradient(to right, #7c3aed, #6366f1);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  border: none;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  margin: 1.5rem 0;
+}
+
+.searchInput {
+  width: 300px;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+}
+
+.orderBtn {
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  background-color: white;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.stats {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 16px;
+  padding: 1rem;
+  gap: 1rem;
+  flex: 1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.icon {
+  font-size: 1.5rem;
+  color: #6366f1;
+}
+
+.number {
+  font-weight: bold;
+  font-size: 1.25rem;
+}
+
+.resources {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.resourceCard {
+  background: white;
+  border-radius: 16px;
+  padding: 1rem;
+  width: 30%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.typeLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: bold;
+  color: #4b5563;
+}
+
+.date {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.tags {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-weight: 500;
+}
+
+.tagVideo {
+  background-color: #e0e7ff;
+  color: #4338ca;
+}
+
+.tagCurso {
+  background-color: #e0e7ff;
+  color: #7c3aed;
+}
+
+.tagDuplicado {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+.actions {
+  display: flex;
+  color: #6b7280;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 5px;
+}
+.actionCard {
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+.actionCard:hover {
+  background-color: #f3f4f6e9;
+}
+
+.iconWrapper {
+  padding: 0.5rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconVideo {
+  background-color: #e0e7ff;
+  color: #4338ca;
+}
+
+.iconCurso {
+  background-color: #ede9fe;
+  color: #7c3aed;
+}

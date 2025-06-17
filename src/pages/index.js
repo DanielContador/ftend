@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useAuth } from "../shared/utils/authProvider";
-import CourseListPage from "../modules/Course/pages/CourseListPage";
+// import CourseListPage from "../modules/Course/pages/CourseListPage";
+import CourseListFormPage from "../modules/Course/pages/CourseListFormPage";
 import ErrorMessage from "../shared/layouts/components/ErrorMessage";
 import SidebarLayout from "../shared/layouts/sidebarlayout/SidebarLayout";
 import { useTranslation } from "react-i18next"; // Importing useTranslation
@@ -32,7 +33,8 @@ const HomePage = () => {
     <SidebarLayout menuButtons={[SidebarHomeButton, SidebarHelpButton]}>
       {error && <ErrorMessage error={error} />}{" "}
       {/* Display error message if exists */}
-      <CourseListPage handleError={handleError} />
+      {/* <CourseListPage handleError={handleError} /> */}
+      <CourseListFormPage handleError={handleError} />
     </SidebarLayout>
   );
 };
