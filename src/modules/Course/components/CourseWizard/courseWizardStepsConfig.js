@@ -81,7 +81,14 @@ export const courseWizardStepsConfig = [
     tabKey: "formulario",
     tabLabel: "Formulario",
     condition: (flow) =>
-      flow?.topicType?.value !== null && flow?.topicType?.value !== undefined,
+      flow?.topicType?.value !== null &&
+      flow?.topicType?.value !== undefined &&
+      flow?.topicType?.estimatedTime !== null &&
+      flow?.topicType?.estimatedTime !== undefined &&
+      flow?.topicType?.courseObjective !== null &&
+      flow?.topicType?.courseObjective !== undefined &&
+      flow?.topicType?.participantProfile !== null &&
+      flow?.topicType?.participantProfile !== undefined,
   },
   {
     key: "courseMaterialType",
@@ -121,6 +128,10 @@ export const courseWizardStepsConfig = [
         flow?.evaluationType?.value !== undefined) ||
       flow?.requestEvaluation?.value === false ||
       (flow?.materialEstimatedTime?.value !== null &&
-        flow?.materialEstimatedTime?.value !== undefined),
+        flow?.materialEstimatedTime?.value !== undefined &&
+        flow?.materialEstimatedTime?.estimatedTime !== null &&
+        flow?.materialEstimatedTime?.estimatedTime !== undefined &&
+        flow?.materialEstimatedTime?.participantProfile !== null &&
+        flow?.materialEstimatedTime?.participantProfile !== undefined),
   },
 ];

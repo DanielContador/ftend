@@ -15,13 +15,6 @@ const NewCoursePage = () => {
     setError(errorMessage);
   };
 
-  // return (
-  //   <CourseLayout currentPage="NewCoursePage">
-  //     {error && <ErrorMessage error={error} />}{" "}
-  //     {/* Display error message if exists */}
-  //     <CourseFormPage handleError={handleError} />
-  //   </CourseLayout>
-  // );
   return (
     <SidebarLayout menuButtons={[SidebarHomeButton, SidebarHelpButton]}>
       {error && <ErrorMessage error={error} />}{" "}

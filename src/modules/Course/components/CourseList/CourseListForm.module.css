@@ -18,7 +18,7 @@
 }
 
 .createBtn {
-  background: linear-gradient(to right, #7c3aed, #6366f1);
+  background: linear-gradient(to right, #6230ed, #af63f1);
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 12px;
@@ -154,6 +154,10 @@
   color: #b45309;
 }
 
+.iconAngle {
+  color: #6b7280;
+}
+
 .actions {
   display: flex;
   color: #6b7280;
@@ -197,6 +201,21 @@
 .iconCoins {
   background-color: #fef3c7; /* Light orange for coins icon background */
   color: #b45309; /* Orange for coins icon */
+}
+
+.iconBook {
+  background-color: #e0e7ff;
+  color: #4338ca;
+}
+
+.iconAudio {
+  background-color: #f7f8e0f8;
+  color: #e1ed04;
+}
+
+.iconPPT {
+  background-color: #f8efe0f8;
+  color: #ed8804;
 }
 
 .courseName {

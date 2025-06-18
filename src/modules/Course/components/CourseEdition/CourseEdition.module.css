@@ -1,0 +1,104 @@
+.container {
+  font-family: "Segoe UI", sans-serif;
+  color: #111;
+  background-color: #fff;
+}
+
+.main {
+  padding: 2rem;
+  margin-left: 15%;
+  margin-right: 15%;
+  margin-top: 2%;
+}
+
+.editSection {
+  background-color: #f4f4f7;
+  padding: 1rem 1.5rem 1.5rem 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+}
+
+.title {
+  color: #7f56d9;
+}
+
+.aiBox {
+  display: flex;
+  margin-top: 1rem;
+  gap: 1rem;
+}
+
+.input {
+  flex: 1;
+  padding: 0.75rem;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.generateButton {
+  background-color: #7f56d9;
+  color: white;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.courseDescription {
+  margin-top: 2rem;
+}
+
+.module {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  background-color: #fafafa;
+}
+
+.module h4 {
+  margin-bottom: 1rem;
+}
+
+.module ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 1rem;
+}
+
+.module li {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.resourceInfo {
+  color: #777;
+  font-size: 0.9rem;
+}
+
+.addResource {
+  background: none;
+  border: none;
+  color: #7f56d9;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.addModule {
+  border: 2px dashed #ccc;
+  padding: 2rem;
+  text-align: center;
+  border-radius: 12px;
+  background-color: #fcfcfd;
+}
+
+.addModule button {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  color: #7f56d9;
+  font-weight: bold;
+  cursor: pointer;
+}

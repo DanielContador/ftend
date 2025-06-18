@@ -11,8 +11,11 @@ export function useCrudManager(service, handleError, t, options = {}) {
     setLoading(true);
     try {
       const data = await service.getAll();
-      if (Array.isArray(data)) {
-        setItems(data);
+      if (
+        Array.isArray(data) ||
+        (data.success && data.data && data.data != null)
+      ) {
+        setItems(Array.isArray(data) ? data : data.data);
       } else {
         throw new Error(t("invalidDataFormat"));
       }

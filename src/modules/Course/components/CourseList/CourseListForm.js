@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./CourseListForm.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faVideo,
+  faHeadphones,
+  faBookOpen,
   faEye,
   faTrash,
+  faAngleDown,
+  faAngleUp,
+  faFilePowerpoint,
   faCopy,
   faEdit,
   faCoins,
@@ -12,14 +17,79 @@ import {
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 
-const CourseListForm = ({ courses }) => {
+const resourceData = [
+  {
+    key: "Audio",
+    text: "Audio",
+    icon: <FontAwesomeIcon icon={faHeadphones} />,
+    style: styles.iconAudio,
+  },
+  {
+    key: "Video",
+    text: "Video",
+    icon: <FontAwesomeIcon icon={faVideo} />,
+    style: styles.iconVideo,
+  },
+  {
+    key: "course",
+    text: "Curso",
+    icon: <FontAwesomeIcon icon={faBookOpen} />,
+    style: styles.iconBook,
+  },
+  {
+    key: "PPT",
+    text: "Presentación PPT",
+    icon: <FontAwesomeIcon icon={faFilePowerpoint} />,
+    style: styles.iconPPT,
+  },
+  {
+    key: "PDF",
+    text: "PDF",
+    icon: <FontAwesomeIcon icon={faFilePowerpoint} />,
+    style: styles.iconPPT,
+  },
+  {
+    key: "Word",
+    text: "Word",
+    icon: <FontAwesomeIcon icon={faFilePowerpoint} />,
+    style: styles.iconPPT,
+  },
+  {
+    key: "Txt",
+    text: "Txt",
+    icon: <FontAwesomeIcon icon={faFilePowerpoint} />,
+    style: styles.iconPPT,
+  },
+];
+
+const CourseListForm = ({
+  courses,
+  handleCreate,
+  handleEdit,
+  handleDelete,
+}) => {
   console.log("Courses:", courses);
+  const [order, setOrder] = useState(true);
+  const handleButtonOrder = () => {
+    courses.sort((a, b) => {
+      return order
+        ? b.name.localeCompare(a.name, "es") // Z → A
+        : a.name.localeCompare(b.name, "es"); // A → Z
+    });
+    setOrder(!order);
+  };
+  const handleButtonEdit = (id) => {
+    handleEdit(id);
+  };
+  const handleButtonDelete = (id) => {
+    handleDelete(id);
+  };
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <h1 className={styles.title}>Recursos Generados</h1>
-        <button className={styles.createBtn}>
-          <FontAwesomeIcon icon={faPlus} /> Crear recurso
+        <button onClick={handleCreate} className={styles.createBtn}>
+          <FontAwesomeIcon icon={faPlus} /> Crear recurso +
         </button>
       </div>
 
@@ -29,7 +99,14 @@ const CourseListForm = ({ courses }) => {
           placeholder="Buscar recurso..."
           className={styles.searchInput}
         />
-        <button className={styles.orderBtn}>Orden</button>
+        <button onClick={handleButtonOrder} className={styles.orderBtn}>
+          Orden
+          {order ? (
+            <FontAwesomeIcon className={styles.iconAngle} icon={faAngleDown} />
+          ) : (
+            <FontAwesomeIcon className={styles.iconAngle} icon={faAngleUp} />
+          )}
+        </button>
       </div>
 
       <div className={styles.stats}>
@@ -38,7 +115,7 @@ const CourseListForm = ({ courses }) => {
             <FontAwesomeIcon icon={faLayerGroup} />
           </div>
           <div>
-            <p className={styles.number}>24</p>
+            <p className={styles.number}>{courses.length}</p>
             <p className={styles.cardSubInfo}>Recursos creados</p>
           </div>
         </div>
@@ -67,39 +144,67 @@ const CourseListForm = ({ courses }) => {
           {courses.map((course) => (
             <div key={course.id} className={styles.resourceCard}>
               <div>
-                <div className={styles.typeLabel}>
-                  <div className={`${styles.actionCard} ${styles.iconVideo}`}>
-                    <FontAwesomeIcon icon={faVideo} />
+                {course?.resource != null && (
+                  <div className={styles.typeLabel}>
+                    <div
+                      className={`${styles.actionCard} ${
+                        resourceData.find((f) => f.key === course.resource)
+                          ?.style
+                      }`}
+                    >
+                      {
+                        resourceData.find((f) => f.key === course.resource)
+                          ?.icon
+                      }
+                    </div>
+                    {resourceData.find((f) => f.key === course.resource)?.text}
                   </div>
-                  {course.resourceTypes}
-                </div>
+                )}
                 <div className="mt-2">
                   <h3 className={styles.courseName}>{course.name}</h3>
                   <p className={styles.date}>
                     Creado en{" "}
-                    {new Date(course.timeCreated).toLocaleDateString()}
+                    {new Date(course.timeCreated).toLocaleDateString("es-ES", {
+                      month: "long",
+                      day: "numeric",
+                    })}
                   </p>
                 </div>
               </div>
               <div>
                 <div className={styles.actions}>
-                  <div className={`${styles.wordCard} ${styles.iconVideo}`}>
-                    <p className={styles.textType}>{course.courseType}</p>
-                  </div>
-                  {course.courseType == null && (
-                    <div className={`${styles.wordCard} ${styles.iconCoins}`}>
-                      <p className={styles.textType}>Duplicado</p>
+                  {course?.courseType && (
+                    <div className={`${styles.wordCard} ${styles.tagVideo}`}>
+                      <p className={styles.textType}>
+                        {course.courseType == "SCORM"
+                          ? resourceData.find((f) => f.key === course.resource)
+                              ?.text
+                          : course.resource}
+                      </p>
+                    </div>
+                  )}
+                  {course?.tag != null && (
+                    <div
+                      className={`${styles.wordCard} ${styles.tagDuplicado}`}
+                    >
+                      <p className={styles.textType}>{course?.tag}</p>
                     </div>
                   )}
                 </div>
                 <div className={styles.actions}>
-                  <div className={styles.actionCard}>
+                  <div
+                    onClick={() => handleButtonEdit(course.id)}
+                    className={styles.actionCard}
+                  >
                     <FontAwesomeIcon icon={faEdit} />
                   </div>
                   <div className={styles.actionCard}>
                     <FontAwesomeIcon icon={faEye} />
                   </div>
-                  <div className={styles.actionCard}>
+                  <div
+                    onClick={() => handleButtonDelete(course.id)}
+                    className={styles.actionCard}
+                  >
                     <FontAwesomeIcon icon={faTrash} />
                   </div>
                   <div className={styles.actionCard}>
