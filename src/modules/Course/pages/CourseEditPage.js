@@ -56,7 +56,7 @@ const CourseEditPage = ({ handleError }) => {
     }
   }, [courseId]);
 
-  if (loading && courseStructure == null) return <LoadingSpinner />;
+  if (loading || courseStructure == null) return <LoadingSpinner />;
 
   return (
     <CourseEdition

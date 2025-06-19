@@ -11,6 +11,17 @@
   margin-top: 2%;
 }
 
+.pageTitle {
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+}
+
+.pageSubtitle {
+  color: #444;
+  margin-bottom: 24px;
+}
+
 .editSection {
   background-color: #f4f4f7;
   padding: 1rem 1.5rem 1.5rem 1.5rem;
@@ -20,6 +31,8 @@
 
 .title {
   color: #7f56d9;
+  font-weight: 600;
+  font-size: 1.1rem;
 }
 
 .aiBox {
@@ -49,41 +62,188 @@
   margin-top: 2rem;
 }
 
+.courseDescTitle {
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+}
+
+.courseDescTitleStrong {
+  color: #111;
+}
+
+.courseDescSubtitle {
+  color: #444;
+  margin-bottom: 24px;
+}
+
 .module {
-  border: 1px solid #eee;
-  border-radius: 12px;
-  padding: 1.25rem;
-  margin-bottom: 1.5rem;
-  background-color: #fafafa;
+  box-shadow: 0 2px 8px 0 rgba(127, 86, 217, 0.04);
+  border: 1.5px solid #f3f0fd;
+  background: #fff;
+  padding: 1.5rem 1.5rem 1.25rem 1.5rem;
+  border-radius: 16px;
+  margin-bottom: 28px;
 }
 
-.module h4 {
-  margin-bottom: 1rem;
-}
-
-.module ul {
-  list-style: none;
-  padding: 0;
-  margin-bottom: 1rem;
-}
-
-.module li {
+.moduleHeader {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 0.75rem;
+  align-items: center;
+  margin-bottom: 8px;
 }
 
-.resourceInfo {
-  color: #777;
-  font-size: 0.9rem;
+.moduleTitle {
+  margin: 0;
+  font-weight: 600;
+  font-size: 1.08rem;
+  flex: 1;
+  color: #22223b;
+  letter-spacing: 0.1px;
+  display: flex;
+  align-items: center;
 }
 
-.addResource {
+.moduleTitleBar {
+  border-left: 3px solid #7f56d9;
+  padding-left: 8px;
+  margin-right: 8px;
+  height: 22px;
+  display: inline-block;
+}
+
+.moduleOptionsBtn {
+  background: none;
+  border: none;
+  color: #bdbdbd;
+  font-size: 22px;
+  margin-left: 8px;
+  cursor: pointer;
+}
+
+.moduleList {
+  padding: 0;
+  margin: 0;
+}
+
+.moduleListItem {
+  display: flex;
+  align-items: center;
+  background: #faf9fd;
+  border-radius: 10px;
+  padding: 0.7rem 1rem;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 2px 0 rgba(127, 86, 217, 0.03);
+}
+
+.iconVideo,
+.iconPDF,
+.iconAudio {
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-right: 12px;
+}
+
+.iconVideo {
+  background: #ede9fe;
+  color: #7f56d9;
+}
+
+.iconPDF {
+  background: #fef2f2;
+  color: #e53e3e;
+}
+
+.iconAudio {
+  background: #eff6ff;
+  color: #3b82f6;
+}
+
+.resourceInfoBox {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.resourceName {
+  font-weight: 500;
+  color: #22223b;
+}
+
+.resourceBadgeRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.resourceDuration {
+  color: #888;
+  font-size: 0.97em;
+}
+
+.badgeVideo,
+.badgePDF,
+.badgeAudio {
+  font-weight: 600;
+  font-size: 0.97em;
+  border-radius: 8px;
+  padding: 2px 12px;
+  min-width: 54px;
+  text-align: center;
+  display: inline-block;
+  margin: 0;
+}
+
+.badgeVideo {
+  background: #ede9fe;
+  color: #7f56d9;
+}
+
+.badgePDF {
+  background: #fef2f2;
+  color: #e53e3e;
+}
+
+.badgeAudio {
+  background: #eff6ff;
+  color: #3b82f6;
+}
+
+.editBtn {
   background: none;
   border: none;
   color: #7f56d9;
+  font-size: 18px;
+  margin-left: 8px;
   cursor: pointer;
-  font-weight: bold;
+}
+
+.deleteBtn {
+  background: none;
+  border: none;
+  color: #e53e3e;
+  font-size: 18px;
+  margin-left: 2px;
+  cursor: pointer;
+}
+
+.addResource {
+  width: 100%;
+  border: 1.5px dashed #d6bbfb;
+  border-radius: 8px;
+  background: #faf9fd;
+  color: #7f56d9;
+  font-weight: 600;
+  margin-top: 10px;
+  padding: 0.7rem 0;
+  font-size: 1.05rem;
+  cursor: pointer;
 }
 
 .addModule {

@@ -34,66 +34,108 @@ const tempData = [
         id: 4,
         name: "Fundamentos básicos",
         type: "Video",
-        duration: "3 minutos",
+        duration: "2 minutos",
       },
     ],
   },
 ];
 
+const iconByType = {
+  Video: <span className={styles.iconVideo}>🎥</span>,
+  PDF: <span className={styles.iconPDF}>📄</span>,
+  Audio: <span className={styles.iconAudio}>🎧</span>,
+};
+
+const badgeClassByType = {
+  Video: styles.badgeVideo,
+  PDF: styles.badgePDF,
+  Audio: styles.badgeAudio,
+};
+
 const CourseEdition = ({ courseData, courseStructure }) => {
   const [modules, setModules] = useState(null);
 
   useEffect(() => {
-    console.log("courseData");
-    console.log(courseData);
-    console.log("courseStructure");
-    console.log(courseStructure);
+    console.log("courseData", courseData);
+    console.log("courseStructure", courseStructure);
     setModules(tempData);
-    // fetch("/api/modules")
-    //   .then((res) => res.json())
-    //   .then((data) => setModules(data));
   }, []);
 
   return (
     <>
       {modules != null && (
         <main className={styles.main}>
-          <h2>Editar la estructura del curso</h2>
-          <p>
-            Usa las herramientas de IA para reordenar o modificar los módulos
-            del curso según tus necesidades.
-          </p>
-          <section className={styles.editSection}>
-            <h4 className={styles.title}>Modificar estructura del curso</h4>
-            <div className={styles.aiBox}>
-              <input
-                className={styles.input}
-                placeholder="Describe cómo quieres reestructurar tu curso..."
-              />
-              <button className={styles.generateButton}>
-                🔁 Regenerar estructura
-              </button>
-            </div>
-          </section>
+          <div>
+            <h2 className={styles.pageTitle}>Editar la estructura del curso</h2>
+            <p className={styles.pageSubtitle}>
+              Usa las herramientas de IA para reordenar o modificar los módulos
+              del curso según tus necesidades.
+            </p>
+            <section className={styles.editSection}>
+              <h4 className={styles.title}>Modificar estructura del curso</h4>
+              <div className={styles.aiBox}>
+                <input
+                  className={styles.input}
+                  placeholder="Describe cómo quieres reestructurar tu curso..."
+                />
+                <button className={styles.generateButton}>
+                  🔁 Regenerar estructura
+                </button>
+              </div>
+            </section>
+          </div>
 
-          <section className={styles.courseDescription}>
-            {modules.map((module) => (
+          <div className={styles.courseDescription}>
+            <h3 className={styles.courseDescTitle}>
+              Descripción del curso:{" "}
+              <span className={styles.courseDescTitleStrong}>
+                {courseStructure.course_title}
+              </span>
+            </h3>
+            <p className={styles.courseDescSubtitle}>
+              Ampliar o modificar los módulos a continuación:
+            </p>
+            {courseStructure.modules.map((module) => (
               <div key={module.id} className={styles.module}>
-                <h3>Descripción del curso: {courseStructure.course_title}</h3>
-                <p>Ampliar o modificar los módulos a continuación:</p>
-                <h4>{module.title}</h4>
-                <ul>
-                  {module.resources.map((res) => (
-                    <li key={res.id}>
-                      <span>
-                        {res.type === "Video" && "📹 "}
-                        {res.type === "PDF" && "📄 "}
-                        {res.type === "Audio" && "🎧 "}
-                        {res.name}
-                      </span>
-                      <span className={styles.resourceInfo}>
-                        {res.type} • {res.duration}
-                      </span>
+                <div className={styles.moduleHeader}>
+                  <h4 className={styles.moduleTitle}>
+                    <span className={styles.moduleTitleBar} />
+                    {module.module_title}
+                  </h4>
+                  <button
+                    className={styles.moduleOptionsBtn}
+                    title="Más opciones"
+                  >
+                    ⋮
+                  </button>
+                </div>
+                <ul className={styles.moduleList}>
+                  {module.learning_objects.map((res) => (
+                    <li key={res.id} className={styles.moduleListItem}>
+                      {iconByType[res.format]}
+                      <div className={styles.resourceInfoBox}>
+                        <div className={styles.resourceName}>
+                          {res.object_title}
+                        </div>
+                        <div className={styles.resourceBadgeRow}>
+                          <span className={badgeClassByType[res.type]}>
+                            {res.format}
+                          </span>
+                          <span className={styles.resourceDuration}>
+                            {res.estimated_time}
+                          </span>
+                        </div>
+                      </div>
+                      <button className={styles.editBtn} title="Editar">
+                        <span role="img" aria-label="edit">
+                          ✏️
+                        </span>
+                      </button>
+                      <button className={styles.deleteBtn} title="Eliminar">
+                        <span role="img" aria-label="delete">
+                          🗑️
+                        </span>
+                      </button>
                     </li>
                   ))}
                 </ul>
@@ -102,11 +144,10 @@ const CourseEdition = ({ courseData, courseStructure }) => {
                 </button>
               </div>
             ))}
-
             <div className={styles.addModule}>
               <button>+ Agregar nuevo módulo</button>
             </div>
-          </section>
+          </div>
         </main>
       )}
     </>
