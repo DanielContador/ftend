@@ -69,6 +69,7 @@ const CourseListForm = ({
   handleDelete,
   handleFilterData,
 }) => {
+  console.log("Data", data);
   const [courses, setCourses] = useState(data);
   const [order, setOrder] = useState(true);
   const [filterValue, setFilterValue] = useState("");
@@ -198,11 +199,11 @@ const CourseListForm = ({
                       </p>
                     </div>
                   )}
-                  {course?.tag != null && (
+                  {course?.duplicate && (
                     <div
                       className={`${styles.wordCard} ${styles.tagDuplicado}`}
                     >
-                      <p className={styles.textType}>{course?.tag}</p>
+                      <p className={styles.textType}>Duplicado</p>
                     </div>
                   )}
                 </div>
