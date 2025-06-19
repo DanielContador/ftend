@@ -40,12 +40,14 @@ const tempData = [
   },
 ];
 
-const CourseEdition = ({ courseData }) => {
+const CourseEdition = ({ courseData, courseStructure }) => {
   const [modules, setModules] = useState(null);
 
   useEffect(() => {
-    console.log("crud");
+    console.log("courseData");
     console.log(courseData);
+    console.log("courseStructure");
+    console.log(courseStructure);
     setModules(tempData);
     // fetch("/api/modules")
     //   .then((res) => res.json())
@@ -77,9 +79,7 @@ const CourseEdition = ({ courseData }) => {
           <section className={styles.courseDescription}>
             {modules.map((module) => (
               <div key={module.id} className={styles.module}>
-                <h3>
-                  Descripción del curso: Fundamentos de la Ley Karin en Chile
-                </h3>
+                <h3>Descripción del curso: {courseStructure.course_title}</h3>
                 <p>Ampliar o modificar los módulos a continuación:</p>
                 <h4>{module.title}</h4>
                 <ul>

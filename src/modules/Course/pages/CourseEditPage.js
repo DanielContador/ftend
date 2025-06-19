@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
 import LoadingSpinner from "../../../shared/components/LoadingSpinner"; // Import a loading spinner component
 import courseService from "../services/courseService";
+import courseContentAIService from "../services/courseContentAIService";
 import { useCrudManager } from "../../../shared/hooks/useCrudManager";
 
 const CourseEditPage = ({ handleError }) => {
@@ -12,6 +13,7 @@ const CourseEditPage = ({ handleError }) => {
   const { t } = useTranslation();
   const { courseId } = router.query;
   const [courseData, setCourseData] = useState(null);
+  const [courseStructure, setCourseStructure] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const crud = useCrudManager(courseService, handleError, t, {
@@ -26,13 +28,7 @@ const CourseEditPage = ({ handleError }) => {
           courseId,
           "/course-structure"
         ); // Replace with actual endpoint
-        console.log("Course structure:", data);
-        setStructure(data.courseStructure);
-        setCourseTitle(data.courseStructure.course_title); // Set initial course title
-        // Set all modules to expanded by default
-        setExpandedModules(
-          data.courseStructure.modules.map((_, index) => index)
-        );
+        setCourseStructure(data.courseStructure);
       } catch (error) {
         console.error("Error fetching course structure:", error);
         handleError(t("fetchCourseStructureError")); // Handle error with translation
@@ -42,30 +38,32 @@ const CourseEditPage = ({ handleError }) => {
     }
   };
 
-  useEffect(() => {
-    const fetchCourseDetails = async () => {
-      try {
-        const response = await crud.getItemById(courseId);
-        setCourseData(response);
-      } catch (error) {
-        setError("Error fetching course details");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchCourseDetails = async () => {
+    try {
+      const response = await crud.getItemById(courseId);
+      setCourseData(response);
+    } catch (error) {
+      setError("Error fetching course details");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     if (courseId) {
       fetchCourseDetails();
+      fetchCourseStructure();
     }
   }, [courseId]);
 
-  if (loading) return <LoadingSpinner />;
+  if (loading && courseStructure == null) return <LoadingSpinner />;
 
   return (
     <CourseEdition
       handleError={handleError}
       courseId={courseId}
       courseData={courseData}
+      courseStructure={courseStructure}
     />
   );
 };
