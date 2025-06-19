@@ -137,7 +137,8 @@
 
 .iconVideo,
 .iconPDF,
-.iconAudio {
+.iconAudio,
+.iconPPT {
   border-radius: 50%;
   width: 32px;
   height: 32px;
@@ -161,6 +162,11 @@
 .iconAudio {
   background: #eff6ff;
   color: #3b82f6;
+}
+
+.iconPPT {
+  background: #f3f0fd;
+  color: #7c3aed;
 }
 
 .resourceInfoBox {
@@ -189,7 +195,8 @@
 
 .badgeVideo,
 .badgePDF,
-.badgeAudio {
+.badgeAudio,
+.badgePPT {
   font-weight: 600;
   font-size: 0.97em;
   border-radius: 8px;
@@ -215,6 +222,11 @@
   color: #3b82f6;
 }
 
+.badgePPT {
+  background: #f3f0fd;
+  color: #7c3aed;
+}
+
 .editBtn {
   background: none;
   border: none;
@@ -229,7 +241,7 @@
   border: none;
   color: #e53e3e;
   font-size: 18px;
-  margin-left: 2px;
+  margin-left: 10px;
   cursor: pointer;
 }
 
