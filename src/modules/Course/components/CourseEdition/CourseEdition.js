@@ -8,6 +8,7 @@ import {
   faFilePowerpoint,
   faPencil,
   faTrash,
+  faArrowsRotate,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Mapea el formato del backend a los iconos y badges
@@ -33,7 +34,7 @@ const formatLabel = (format) => {
   return format;
 };
 
-const CourseEdition = ({ courseData, courseStructure }) => {
+const CourseEdition = ({ courseStructure }) => {
   const modules = courseStructure?.modules || [];
 
   return (
@@ -53,7 +54,8 @@ const CourseEdition = ({ courseData, courseStructure }) => {
                 placeholder="Describe cómo quieres reestructurar tu curso..."
               />
               <button className={styles.generateButton}>
-                🔁 Regenerar estructura
+                <FontAwesomeIcon className="me-2" icon={faArrowsRotate} />
+                Regenerar estructura
               </button>
             </div>
           </section>
@@ -122,7 +124,10 @@ const CourseEdition = ({ courseData, courseStructure }) => {
             </div>
           ))}
           <div className={styles.addModule}>
-            <button>+ Agregar nuevo módulo</button>
+            <button>
+              <span className={styles.addModuleIcon}>+</span>
+              <span className={styles.addModuleText}>Agregar nuevo módulo</span>
+            </button>
           </div>
         </div>
       </main>

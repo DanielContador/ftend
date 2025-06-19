@@ -16,7 +16,7 @@ const CourseCreationFormPage = ({ handleError }) => {
       );
       const generatedCourseId = response.courseId; // Assuming the response contains the courseId
       // Redirect to the new course structure page with generatedCourseId
-      router.push(`/course/${generatedCourseId}/edit/course-structure`);
+      router.push(`/course/${generatedCourseId}/edit`);
     } catch (error) {
       console.error("Error generating course structure:", error);
       handleError(t("generateCourseStructureError")); // Using translation key for error message
