@@ -63,13 +63,15 @@ const resourceData = [
 ];
 
 const CourseListForm = ({
-  courses,
+  data,
   handleCreate,
   handleEdit,
   handleDelete,
+  handleFilterData,
 }) => {
-  console.log("Courses:", courses);
+  const [courses, setCourses] = useState(data);
   const [order, setOrder] = useState(true);
+  const [filterValue, setFilterValue] = useState("");
   const handleButtonOrder = () => {
     courses.sort((a, b) => {
       return order
@@ -84,6 +86,16 @@ const CourseListForm = ({
   const handleButtonDelete = (id) => {
     handleDelete(id);
   };
+  const handleOnKey = async (e) => {
+    if (e.key === "Enter") {
+      let result = await handleFilterData("?name=", filterValue);
+      setCourses(result?.resources);
+    }
+  };
+  const handleOnChangeInput = async (e) => {
+    setFilterValue(e.target.value);
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -95,9 +107,12 @@ const CourseListForm = ({
 
       <div className={styles.controls}>
         <input
-          type="text"
+          onChange={handleOnChangeInput}
+          value={filterValue}
+          type="search"
           placeholder="Buscar recurso..."
           className={styles.searchInput}
+          onKeyDown={handleOnKey}
         />
         <button onClick={handleButtonOrder} className={styles.orderBtn}>
           Orden

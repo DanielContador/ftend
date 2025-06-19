@@ -6,6 +6,8 @@ class ResourceService extends BaseService {
   constructor(resourceModuleUrl) {
     super(resourceModuleUrl);
   }
+
+  filteredResources = (partialUrl) => this.getAll(partialUrl);
 }
 
 const resourceService = new ResourceService(Resource_ENDPOINT);

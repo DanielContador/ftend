@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import courseService from "../services/courseService";
 import resourceService from "../services/resourceService"; // Importing the service
 import { useCrudManager } from "../../../shared/hooks/useCrudManager";
+import { useResourceManager } from "../hooks/useResourceManager";
 // import CourseList from "../components/CourseList"; // Importing the new CourseList component
 import LoadingSpinner from "../../../shared/components/LoadingSpinner"; // Importing the loading spinner
 import styles from "./CourseListFormPage.module.css"; // Assuming we will create a CSS file for styles
@@ -17,6 +18,7 @@ const CourseListPage = ({ handleError }) => {
   const crudResources = useCrudManager(resourceService, handleError, t, {
     fetchOnMount: true,
   });
+  const filteredResources = useResourceManager(resourceService, handleError, t);
   const router = useRouter();
   const handleDelete = async (id) => {
     crud.deleteItem(id);
@@ -42,10 +44,11 @@ const CourseListPage = ({ handleError }) => {
       )}
       {!crudResources.loading && (
         <CourseListForm
-          courses={crudResources?.items?.resources}
+          data={crudResources?.items?.resources}
           handleCreate={handleCreate}
           handleEdit={handleEdit}
           handleDelete={handleDelete}
+          handleFilterData={filteredResources.getFilteredResources}
         />
       )}
     </>
