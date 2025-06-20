@@ -139,7 +139,7 @@
 .iconVideo,
 .iconPDF,
 .iconAudio,
-.iconPPT {
+.iconPPT .iconFile {
   border-radius: 50%;
   width: 32px;
   height: 32px;
@@ -153,6 +153,11 @@
 .iconVideo {
   background: #ede9fe;
   color: #7f56d9;
+}
+
+.iconFile {
+  background: #ede9fe;
+  color: #0cd06b;
 }
 
 .iconPDF {

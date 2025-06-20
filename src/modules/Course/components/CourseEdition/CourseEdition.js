@@ -9,6 +9,7 @@ import {
   faPencil,
   faTrash,
   faArrowsRotate,
+  faFile,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Mapea el formato del backend a los iconos y badges
@@ -90,7 +91,10 @@ const CourseEdition = ({ courseStructure }) => {
                   module.learning_objects.map((res) => (
                     <li key={res.id} className={styles.moduleListItem}>
                       {iconByType[res.format] || (
-                        <span className={styles.iconPPT}>📄</span>
+                        <FontAwesomeIcon
+                          className={styles.iconFile}
+                          icon={faFile}
+                        />
                       )}
                       <div className={styles.resourceInfoBox}>
                         <div className={styles.resourceName}>
