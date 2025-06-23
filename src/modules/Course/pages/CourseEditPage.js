@@ -1,15 +1,15 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import CourseEdition from "../components/CourseEdition/CourseEdition";
+import CourseSectionActivity from "../components/CourseEdition/CourseSectionActivity";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
-import { useState, useEffect } from "react";
-import LoadingSpinner from "../../../shared/components/LoadingSpinner"; // Import a loading spinner component
+import LoadingSpinner from "../../../shared/components/LoadingSpinner";
 import courseService from "../services/courseService";
 import courseContentAIService from "../services/courseContentAIService";
 import { useCrudManager } from "../../../shared/hooks/useCrudManager";
 import { updateActivityTitle } from "../services/courseStructureService";
 
-const CourseEditPage = ({ handleError }) => {
+const CourseEditPage = ({ handleError, showSection, onContinue }) => {
   const router = useRouter();
   const { t } = useTranslation();
   const { courseId } = router.query;
@@ -21,7 +21,7 @@ const CourseEditPage = ({ handleError }) => {
   });
 
   const handleRegenerate = async (instructions, courseId) => {
-    setLoading(true); // Set loading to true at the beginning
+    setLoading(true);
     try {
       const promptInstructionsData = {
         prompt: instructions,
@@ -30,14 +30,13 @@ const CourseEditPage = ({ handleError }) => {
       await courseContentAIService.reGenerateCourseStructure(
         promptInstructionsData,
         "/regenerate-course-structure"
-      ); // Replace with actual endpoint
-      console.log("Regeneration successful");
-      fetchCourseStructure(); // Call fetchCourseStructure instead of setting structure directly
+      );
+      fetchCourseStructure();
     } catch (error) {
       console.error("Error regenerating course structure:", error);
-      handleError(t("regenerateCourseStructureError")); // Handle error with translation
+      handleError(t("regenerateCourseStructureError"));
     } finally {
-      setLoading(false); // Set loading to false at the end
+      setLoading(false);
     }
   };
 
@@ -48,13 +47,13 @@ const CourseEditPage = ({ handleError }) => {
         const data = await courseContentAIService.getCourseStructure(
           courseId,
           "/course-structure"
-        ); // Replace with actual endpoint
+        );
         setCourseStructure(data.courseStructure);
       } catch (error) {
         console.error("Error fetching course structure:", error);
-        handleError(t("fetchCourseStructureError")); // Handle error with translation
+        handleError(t("fetchCourseStructureError"));
       } finally {
-        setLoading(false); // Set loading to false after fetching or error
+        setLoading(false);
       }
     }
   };
@@ -65,13 +64,13 @@ const CourseEditPage = ({ handleError }) => {
       const activityData = {
         name: text,
       };
-      await updateActivityTitle("activity", activityId, activityData); // Call the updateModuleTitle function with the endpoint, activityId, and new title
+      await updateActivityTitle("activity", activityId, activityData);
       fetchCourseStructure();
     } catch (error) {
       console.error("Error updating activity title:", error);
-      handleError(t("updateActivityTitleError")); // Handle error with translation
+      handleError(t("updateActivityTitleError"));
     } finally {
-      setLoading(false); // Set loading to false at the end
+      setLoading(false);
     }
   };
 
@@ -84,13 +83,26 @@ const CourseEditPage = ({ handleError }) => {
   if (loading || courseStructure == null) return <LoadingSpinner />;
 
   return (
-    <CourseEdition
-      handleError={handleError}
-      courseId={courseId}
-      courseStructure={courseStructure}
-      handleRegenerate={handleRegenerate}
-      handleUpdateActivityTitle={handleUpdateActivityTitle}
-    />
+    <>
+      {showSection == "CourseSectionActivity" && (
+        <CourseSectionActivity
+          handleError={handleError}
+          courseId={courseId}
+          courseStructure={courseStructure}
+          handleRegenerate={handleRegenerate}
+          handleUpdateActivityTitle={handleUpdateActivityTitle}
+        />
+      )}
+      {showSection == "CourseEdition" && (
+        <CourseEdition
+          handleError={handleError}
+          courseId={courseId}
+          courseStructure={courseStructure}
+          handleRegenerate={handleRegenerate}
+          handleUpdateActivityTitle={handleUpdateActivityTitle}
+        />
+      )}
+    </>
   );
 };
 
