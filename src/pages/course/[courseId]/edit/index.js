@@ -13,7 +13,9 @@ const EditCoursePage = () => {
   };
 
   return (
-    <ManagementLayout button={<SaveContinueButton text={"Guardar"} />}>
+    <ManagementLayout
+      button={<SaveContinueButton text={"Continuar"} displayIcon={false} />}
+    >
       {error && <ErrorMessage error={error} />}
       {/* Display error message if exists */}
       <CourseEditPage handleError={handleError} />

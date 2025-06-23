@@ -5,13 +5,16 @@ import { faSave } from "@fortawesome/free-solid-svg-icons";
 const SaveContinueButton = ({
   onClick,
   text = "Guardar y continuar",
+  displayIcon = true,
   ...props
 }) => (
   <button type="button" className={styles.saveBtn} onClick={onClick} {...props}>
-    <FontAwesomeIcon
-      icon={faSave}
-      style={{ color: "#fff", fontSize: 20, marginRight: 8 }}
-    />
+    {displayIcon && (
+      <FontAwesomeIcon
+        icon={faSave}
+        style={{ color: "#fff", fontSize: 20, marginRight: 8 }}
+      />
+    )}
     <span>{text}</span>
   </button>
 );
