@@ -7,6 +7,8 @@ import {
   faDownload,
   faWandMagicSparkles,
   faPen,
+  faFloppyDisk,
+  faXmark,
   faPlus,
   faChevronDown,
   faChevronUp,
@@ -37,7 +39,6 @@ const CourseSectionActivity = ({
   handleRegenerate,
   handleUpdateActivityTitle,
 }) => {
-  console.log(courseStructure);
   const modules = courseStructure?.modules || [];
   const [selectedModuleId, setSelectedModuleId] = useState(
     modules.length > 0 ? modules[0].id : null
@@ -47,11 +48,59 @@ const CourseSectionActivity = ({
   const [expandedResource, setExpandedResource] = useState(null);
   const [selectedTab, setSelectedTab] = useState(tabs[0].key);
 
+  // Edición de título de recurso (card)
+  const [editingResource, setEditingResource] = useState({});
+
   const selectedModule =
     modules.find((mod) => mod.id === selectedModuleId) || modules[0];
 
   const handleCardToggle = (resourceId) => {
     setExpandedResource((prev) => (prev === resourceId ? null : resourceId));
+  };
+
+  // Iniciar edición de un recurso
+  const handleEditClick = (objectId, currentValue) => {
+    setEditingResource((prev) => ({
+      ...prev,
+      [objectId]: {
+        editing: true,
+        value: currentValue,
+        original: currentValue,
+      },
+    }));
+  };
+
+  // Manejar cambio en el input de edición de object_title
+  const handleResourceTitleChange = (objectId, e) => {
+    const value = e.target.value;
+    setEditingResource((prev) => ({
+      ...prev,
+      [objectId]: { ...prev[objectId], value },
+    }));
+  };
+
+  // Guardar el cambio (llamar backend)
+  const handleSaveClick = async (moduleId, objectId) => {
+    const newTitle = editingResource[objectId]?.value;
+    if (newTitle && newTitle.trim() !== "") {
+      await handleUpdateActivityTitle(newTitle, objectId);
+    }
+    setEditingResource((prev) => ({
+      ...prev,
+      [objectId]: { editing: false, value: newTitle, original: newTitle },
+    }));
+  };
+
+  // Cancelar edición
+  const handleCancelClick = (objectId) => {
+    setEditingResource((prev) => ({
+      ...prev,
+      [objectId]: {
+        editing: false,
+        value: prev[objectId].original,
+        original: prev[objectId].original,
+      },
+    }));
   };
 
   return (
@@ -124,6 +173,9 @@ const CourseSectionActivity = ({
                 {selectedModule?.learning_objects &&
                   selectedModule.learning_objects.map((res) => {
                     const expanded = expandedResource === res.id;
+                    const isEditing = editingResource[res.id]?.editing;
+                    const editValue =
+                      editingResource[res.id]?.value ?? res.object_title;
                     return (
                       <div
                         key={res.id}
@@ -144,15 +196,82 @@ const CourseSectionActivity = ({
                               />
                             )}
                             <div className={styles.resourceCardTitle}>
-                              <span className={styles.resourceTitleText}>
-                                {res.object_title}
-                              </span>
-                              <FontAwesomeIcon
-                                icon={faPen}
-                                className={styles.editIcon}
-                                title="Editar"
-                                onClick={(e) => e.stopPropagation()}
-                              />
+                              {isEditing ? (
+                                <>
+                                  <input
+                                    type="text"
+                                    value={editValue}
+                                    onChange={(e) =>
+                                      handleResourceTitleChange(res.id, e)
+                                    }
+                                    className={styles.input}
+                                    style={{
+                                      fontWeight: 600,
+                                      fontSize: "1.09rem",
+                                      padding: "4px 8px",
+                                      minWidth: 120,
+                                      maxWidth: 400,
+                                      marginRight: 8,
+                                    }}
+                                    autoFocus
+                                    onClick={(e) => e.stopPropagation()}
+                                  />
+                                  <button
+                                    className={styles.editIcon}
+                                    title="Guardar"
+                                    style={{
+                                      background: "none",
+                                      border: "none",
+                                      color: "#7c3aed",
+                                      marginLeft: 2,
+                                      fontSize: 18,
+                                      cursor: "pointer",
+                                    }}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleSaveClick(
+                                        selectedModule.id,
+                                        res.id
+                                      );
+                                    }}
+                                  >
+                                    <FontAwesomeIcon icon={faFloppyDisk} />
+                                  </button>
+                                  <button
+                                    className={styles.editIcon}
+                                    title="Cancelar"
+                                    style={{
+                                      background: "none",
+                                      border: "none",
+                                      color: "#e53e3e",
+                                      marginLeft: 2,
+                                      fontSize: 18,
+                                      cursor: "pointer",
+                                    }}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleCancelClick(res.id);
+                                    }}
+                                  >
+                                    <FontAwesomeIcon icon={faXmark} />
+                                  </button>
+                                </>
+                              ) : (
+                                <>
+                                  <span className={styles.resourceTitleText}>
+                                    {res.object_title}
+                                  </span>
+                                  <FontAwesomeIcon
+                                    icon={faPen}
+                                    className={styles.editIcon}
+                                    title="Editar"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleEditClick(res.id, res.object_title);
+                                    }}
+                                  />
+                                </>
+                              )}
                             </div>
                           </div>
                           <div className={styles.resourceCardActions}>
