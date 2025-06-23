@@ -1,26 +1,30 @@
 .loadingSpinner {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    min-width: 100vw;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background: rgba(255,255,255,0.7);
-    z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  min-width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(255, 255, 255, 0.7);
+  z-index: 9999;
 }
 
 .spinner {
-    border: 0.6em solid rgba(0, 0, 0, 0.1);
-    border-left-color: var(--secondary-color, #7c3aed);
-    border-radius: 50%;
-    width: 4em;
-    height: 4em;
-    animation: spin 1s linear infinite;
+  border: 0.6em solid rgba(0, 0, 0, 0.1);
+  border-left-color: var(--secondary-color, #7c3aed);
+  border-radius: 50%;
+  width: 4em;
+  height: 4em;
+  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
