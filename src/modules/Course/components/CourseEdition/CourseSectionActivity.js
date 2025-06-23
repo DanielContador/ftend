@@ -37,6 +37,7 @@ const CourseSectionActivity = ({
   handleRegenerate,
   handleUpdateActivityTitle,
 }) => {
+  console.log(courseStructure);
   const modules = courseStructure?.modules || [];
   const [selectedModuleId, setSelectedModuleId] = useState(
     modules.length > 0 ? modules[0].id : null
@@ -103,7 +104,7 @@ const CourseSectionActivity = ({
           ))}
         </div>
         <main className={styles.sectionMain}>
-          {selectedTab === "estructura" && (
+          {selectedTab === "contenido" && (
             <>
               <div className={styles.sectionHeader}>
                 <div>
@@ -256,12 +257,6 @@ const CourseSectionActivity = ({
                 </div>
               </div>
             </>
-          )}
-          {selectedTab === "contenido" && (
-            <div style={{ padding: "2rem", color: "#888" }}>
-              <h3>Creación de contenido</h3>
-              <p>Aquí irá la funcionalidad para crear contenido.</p>
-            </div>
           )}
           {selectedTab === "evaluacion" && (
             <div style={{ padding: "2rem", color: "#888" }}>
