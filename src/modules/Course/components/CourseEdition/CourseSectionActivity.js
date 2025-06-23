@@ -136,22 +136,24 @@ const CourseSectionActivity = ({
                         style={{ cursor: "pointer" }}
                       >
                         <div className={styles.resourceCardHeader}>
-                          <div className={styles.resourceCardTitle}>
+                          <div className="d-flex">
                             {iconByType[res.format] || (
                               <FontAwesomeIcon
                                 className={styles.iconPPT}
                                 icon={faFilePowerpoint}
                               />
                             )}
-                            <span className={styles.resourceTitleText}>
-                              {res.object_title}
-                            </span>
-                            <FontAwesomeIcon
-                              icon={faPen}
-                              className={styles.editIcon}
-                              title="Editar"
-                              onClick={(e) => e.stopPropagation()}
-                            />
+                            <div className={styles.resourceCardTitle}>
+                              <span className={styles.resourceTitleText}>
+                                {res.object_title}
+                              </span>
+                              <FontAwesomeIcon
+                                icon={faPen}
+                                className={styles.editIcon}
+                                title="Editar"
+                                onClick={(e) => e.stopPropagation()}
+                              />
+                            </div>
                           </div>
                           <div className={styles.resourceCardActions}>
                             <button
@@ -168,19 +170,6 @@ const CourseSectionActivity = ({
                               <FontAwesomeIcon icon={faWandMagicSparkles} />
                               <span>Generar</span>
                             </button>
-                            <FontAwesomeIcon
-                              icon={expanded ? faChevronUp : faChevronDown}
-                              className={styles.expandIcon}
-                              style={{
-                                marginLeft: 16,
-                                color: "#bdbdbd",
-                                fontSize: 18,
-                              }}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleCardToggle(res.id);
-                              }}
-                            />
                           </div>
                         </div>
                         <div className={styles.resourceCardBody}>
@@ -199,27 +188,52 @@ const CourseSectionActivity = ({
                                   {res.format}
                                 </div>
                               )}
-                              {res.content && Array.isArray(res.content) && (
-                                <>
-                                  <div className={styles.resourceDetail}>
-                                    <span
-                                      className={styles.resourceDetailLabel}
-                                    >
-                                      Resumen de contenido:
-                                    </span>
-                                  </div>
-                                  <ul className={styles.resourceSummaryList}>
-                                    {res.content.map((item, idx) => (
-                                      <li
-                                        key={idx}
-                                        className={styles.resourceSummaryItem}
+                              {/* Arreglo para parsear correctamente el contenido */}
+                              {res.content &&
+                                Array.isArray(res.content) &&
+                                (() => {
+                                  let parsedContent = [];
+                                  try {
+                                    // El backend envía un array con un string JSON adentro
+                                    if (
+                                      res.content.length === 1 &&
+                                      typeof res.content[0] === "string"
+                                    ) {
+                                      parsedContent = JSON.parse(
+                                        res.content[0]
+                                      );
+                                    } else {
+                                      parsedContent = res.content;
+                                    }
+                                  } catch (e) {
+                                    parsedContent = [];
+                                  }
+                                  return parsedContent.length > 0 ? (
+                                    <>
+                                      <div className={styles.resourceDetail}>
+                                        <span
+                                          className={styles.resourceDetailLabel}
+                                        >
+                                          Resumen de contenido:
+                                        </span>
+                                      </div>
+                                      <ul
+                                        className={styles.resourceSummaryList}
                                       >
-                                        {item}
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </>
-                              )}
+                                        {parsedContent.map((item, idx) => (
+                                          <li
+                                            key={idx}
+                                            className={
+                                              styles.resourceSummaryItem
+                                            }
+                                          >
+                                            {item}
+                                          </li>
+                                        ))}
+                                      </ul>
+                                    </>
+                                  ) : null;
+                                })()}
                             </>
                           ) : (
                             res.format && (
