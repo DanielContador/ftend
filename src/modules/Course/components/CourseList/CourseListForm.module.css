@@ -150,8 +150,8 @@
 }
 
 .tagDuplicado {
-  background-color: #fef3c7;
-  color: #b45309;
+  background: #fef7ec;
+  color: #f59e42;
 }
 
 .iconAngle {
@@ -225,15 +225,22 @@
 
 .wordCard {
   display: inline-block;
-  padding: 0.5rem 0.5rem 0rem 0.6rem;
-  border-radius: 45%; /* Estilo pill */
-  font-size: 0.875rem;
-  font-weight: 600;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  line-height: 1; /* Asegura altura controlada */
-  vertical-align: middle; /* Centrado con otros elementos */
+  padding: 0.38rem 1.2rem 0.38rem 1.2rem;
+  border-radius: 999px; /* Oval shape */
+  font-size: 1rem;
+  font-weight: 700;
+  box-shadow: none;
+  line-height: 1.1;
+  vertical-align: middle;
+  background: #e0e7ff;
+  color: #4f46e5;
+  margin-right: 0.5rem;
+  margin-bottom: 0.2rem;
 }
 
 .textType {
-  font-size: 0.7rem;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0;
+  margin: 0;
 }

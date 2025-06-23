@@ -187,183 +187,200 @@ const CourseSectionActivity = ({
                         onClick={() => handleCardToggle(res.id)}
                         style={{ cursor: "pointer" }}
                       >
-                        <div className={styles.resourceCardHeader}>
-                          <div className="d-flex">
+                        <div className="d-flex align-items-center">
+                          <div>
                             {iconByType[res.format] || (
                               <FontAwesomeIcon
                                 className={styles.iconPPT}
                                 icon={faFilePowerpoint}
                               />
                             )}
-                            <div className={styles.resourceCardTitle}>
-                              {isEditing ? (
+                          </div>
+                          <div className="w-100">
+                            <div className={styles.resourceCardHeader}>
+                              <div className={styles.resourceCardTitle}>
+                                {isEditing ? (
+                                  <>
+                                    <input
+                                      type="text"
+                                      value={editValue}
+                                      onChange={(e) =>
+                                        handleResourceTitleChange(res.id, e)
+                                      }
+                                      className={styles.input}
+                                      style={{
+                                        fontWeight: 600,
+                                        fontSize: "1.09rem",
+                                        padding: "4px 8px",
+                                        minWidth: 120,
+                                        maxWidth: 400,
+                                        marginRight: 8,
+                                      }}
+                                      autoFocus
+                                      onClick={(e) => e.stopPropagation()}
+                                    />
+                                    <button
+                                      className={styles.editIcon}
+                                      title="Guardar"
+                                      style={{
+                                        background: "none",
+                                        border: "none",
+                                        color: "#7c3aed",
+                                        marginLeft: 2,
+                                        fontSize: 18,
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleSaveClick(
+                                          selectedModule.id,
+                                          res.id
+                                        );
+                                      }}
+                                    >
+                                      <FontAwesomeIcon icon={faFloppyDisk} />
+                                    </button>
+                                    <button
+                                      className={styles.editIcon}
+                                      title="Cancelar"
+                                      style={{
+                                        background: "none",
+                                        border: "none",
+                                        color: "#e53e3e",
+                                        marginLeft: 2,
+                                        fontSize: 18,
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleCancelClick(res.id);
+                                      }}
+                                    >
+                                      <FontAwesomeIcon icon={faXmark} />
+                                    </button>
+                                  </>
+                                ) : (
+                                  <>
+                                    <span className={styles.resourceTitleText}>
+                                      {res.object_title}
+                                    </span>
+                                    <FontAwesomeIcon
+                                      icon={faPen}
+                                      className={styles.editIcon}
+                                      title="Editar"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleEditClick(
+                                          res.id,
+                                          res.object_title
+                                        );
+                                      }}
+                                    />
+                                  </>
+                                )}
+                              </div>
+                              <div className={styles.resourceCardActions}>
+                                <button
+                                  className={styles.downloadBtn}
+                                  title="Descargar"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <FontAwesomeIcon icon={faDownload} />
+                                </button>
+                                <button
+                                  className={styles.generateBtn}
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <FontAwesomeIcon icon={faWandMagicSparkles} />
+                                  <span>Generar</span>
+                                </button>
+                              </div>
+                            </div>
+                            <div className={styles.resourceCardBody}>
+                              {expanded ? (
                                 <>
-                                  <input
-                                    type="text"
-                                    value={editValue}
-                                    onChange={(e) =>
-                                      handleResourceTitleChange(res.id, e)
-                                    }
-                                    className={styles.input}
-                                    style={{
-                                      fontWeight: 600,
-                                      fontSize: "1.09rem",
-                                      padding: "4px 8px",
-                                      minWidth: 120,
-                                      maxWidth: 400,
-                                      marginRight: 8,
-                                    }}
-                                    autoFocus
-                                    onClick={(e) => e.stopPropagation()}
-                                  />
-                                  <button
-                                    className={styles.editIcon}
-                                    title="Guardar"
-                                    style={{
-                                      background: "none",
-                                      border: "none",
-                                      color: "#7c3aed",
-                                      marginLeft: 2,
-                                      fontSize: 18,
-                                      cursor: "pointer",
-                                    }}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleSaveClick(
-                                        selectedModule.id,
-                                        res.id
-                                      );
-                                    }}
-                                  >
-                                    <FontAwesomeIcon icon={faFloppyDisk} />
-                                  </button>
-                                  <button
-                                    className={styles.editIcon}
-                                    title="Cancelar"
-                                    style={{
-                                      background: "none",
-                                      border: "none",
-                                      color: "#e53e3e",
-                                      marginLeft: 2,
-                                      fontSize: 18,
-                                      cursor: "pointer",
-                                    }}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleCancelClick(res.id);
-                                    }}
-                                  >
-                                    <FontAwesomeIcon icon={faXmark} />
-                                  </button>
+                                  {res.estimated_time && (
+                                    <div className={styles.resourceDetail}>
+                                      Duración: {res.estimated_time} minutos
+                                    </div>
+                                  )}
+                                  {res.format && (
+                                    <div className={styles.resourceDetail}>
+                                      <span
+                                        className={styles.resourceDetailLabel}
+                                      >
+                                        Formato:
+                                      </span>{" "}
+                                      {res.format}
+                                    </div>
+                                  )}
+                                  {/* Arreglo para parsear correctamente el contenido */}
+                                  {res.content &&
+                                    Array.isArray(res.content) &&
+                                    (() => {
+                                      let parsedContent = [];
+                                      try {
+                                        // El backend envía un array con un string JSON adentro
+                                        if (
+                                          res.content.length === 1 &&
+                                          typeof res.content[0] === "string"
+                                        ) {
+                                          parsedContent = JSON.parse(
+                                            res.content[0]
+                                          );
+                                        } else {
+                                          parsedContent = res.content;
+                                        }
+                                      } catch (e) {
+                                        parsedContent = [];
+                                      }
+                                      return parsedContent.length > 0 ? (
+                                        <>
+                                          <div
+                                            className={styles.resourceDetail}
+                                          >
+                                            <span
+                                              className={
+                                                styles.resourceDetailLabel
+                                              }
+                                            >
+                                              Resumen de contenido:
+                                            </span>
+                                          </div>
+                                          <ul
+                                            className={
+                                              styles.resourceSummaryList
+                                            }
+                                          >
+                                            {parsedContent.map((item, idx) => (
+                                              <li
+                                                key={idx}
+                                                className={
+                                                  styles.resourceSummaryItem
+                                                }
+                                              >
+                                                {item}
+                                              </li>
+                                            ))}
+                                          </ul>
+                                        </>
+                                      ) : null;
+                                    })()}
                                 </>
                               ) : (
-                                <>
-                                  <span className={styles.resourceTitleText}>
-                                    {res.object_title}
-                                  </span>
-                                  <FontAwesomeIcon
-                                    icon={faPen}
-                                    className={styles.editIcon}
-                                    title="Editar"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleEditClick(res.id, res.object_title);
-                                    }}
-                                  />
-                                </>
+                                res.format && (
+                                  <div className={styles.resourceDetail}>
+                                    <span
+                                      className={styles.resourceDetailLabel}
+                                    >
+                                      Formato:
+                                    </span>{" "}
+                                    {res.format}
+                                  </div>
+                                )
                               )}
                             </div>
                           </div>
-                          <div className={styles.resourceCardActions}>
-                            <button
-                              className={styles.downloadBtn}
-                              title="Descargar"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <FontAwesomeIcon icon={faDownload} />
-                            </button>
-                            <button
-                              className={styles.generateBtn}
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <FontAwesomeIcon icon={faWandMagicSparkles} />
-                              <span>Generar</span>
-                            </button>
-                          </div>
-                        </div>
-                        <div className={styles.resourceCardBody}>
-                          {expanded ? (
-                            <>
-                              {res.estimated_time && (
-                                <div className={styles.resourceDetail}>
-                                  Duración: {res.estimated_time} minutos
-                                </div>
-                              )}
-                              {res.format && (
-                                <div className={styles.resourceDetail}>
-                                  <span className={styles.resourceDetailLabel}>
-                                    Formato:
-                                  </span>{" "}
-                                  {res.format}
-                                </div>
-                              )}
-                              {/* Arreglo para parsear correctamente el contenido */}
-                              {res.content &&
-                                Array.isArray(res.content) &&
-                                (() => {
-                                  let parsedContent = [];
-                                  try {
-                                    // El backend envía un array con un string JSON adentro
-                                    if (
-                                      res.content.length === 1 &&
-                                      typeof res.content[0] === "string"
-                                    ) {
-                                      parsedContent = JSON.parse(
-                                        res.content[0]
-                                      );
-                                    } else {
-                                      parsedContent = res.content;
-                                    }
-                                  } catch (e) {
-                                    parsedContent = [];
-                                  }
-                                  return parsedContent.length > 0 ? (
-                                    <>
-                                      <div className={styles.resourceDetail}>
-                                        <span
-                                          className={styles.resourceDetailLabel}
-                                        >
-                                          Resumen de contenido:
-                                        </span>
-                                      </div>
-                                      <ul
-                                        className={styles.resourceSummaryList}
-                                      >
-                                        {parsedContent.map((item, idx) => (
-                                          <li
-                                            key={idx}
-                                            className={
-                                              styles.resourceSummaryItem
-                                            }
-                                          >
-                                            {item}
-                                          </li>
-                                        ))}
-                                      </ul>
-                                    </>
-                                  ) : null;
-                                })()}
-                            </>
-                          ) : (
-                            res.format && (
-                              <div className={styles.resourceDetail}>
-                                <span className={styles.resourceDetailLabel}>
-                                  Formato:
-                                </span>{" "}
-                                {res.format}
-                              </div>
-                            )
-                          )}
                         </div>
                       </div>
                     );

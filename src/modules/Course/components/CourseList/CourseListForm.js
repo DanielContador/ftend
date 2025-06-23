@@ -75,10 +75,11 @@ const CourseListForm = ({
   const [filterValue, setFilterValue] = useState("");
   const handleButtonOrder = () => {
     courses.sort((a, b) => {
-      return order
-        ? b.name.localeCompare(a.name, "es") // Z → A
-        : a.name.localeCompare(b.name, "es"); // A → Z
+      const dateA = new Date(a.timeCreated);
+      const dateB = new Date(b.timeCreated);
+      return order ? dateB - dateA : dateA - dateB;
     });
+    setCourses([...courses]);
     setOrder(!order);
   };
   const handleButtonEdit = (id) => {
