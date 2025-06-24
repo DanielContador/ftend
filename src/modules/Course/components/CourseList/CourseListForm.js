@@ -132,7 +132,7 @@ const CourseListForm = ({
             <FontAwesomeIcon icon={faLayerGroup} />
           </div>
           <div>
-            <p className={styles.number}>{courses.length}</p>
+            <p className={styles.number}>4</p>
             <p className={styles.cardSubInfo}>Recursos creados</p>
           </div>
         </div>
