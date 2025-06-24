@@ -42,6 +42,17 @@ const ActivityGenerationVideo = ({ open, onClose, data = {} }) => {
     }
   }
 
+  // Manejar el botón atrás según el tab activo
+  const handleBack = () => {
+    if (activeTab === "config") {
+      onClose();
+    } else if (activeTab === "guion") {
+      setActiveTab("config");
+    } else if (activeTab === "video") {
+      setActiveTab("guion");
+    }
+  };
+
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modal}>
@@ -82,7 +93,7 @@ const ActivityGenerationVideo = ({ open, onClose, data = {} }) => {
           {activeTab === "video" && <ActivityGenerationVideoVideoTab />}
         </div>
         <div className={styles.modalFooter}>
-          <button className={styles.backBtn} onClick={onClose}>
+          <button className={styles.backBtn} onClick={handleBack}>
             <FontAwesomeIcon className={styles.sparkles} icon={faArrowLeft} />
             Atrás
           </button>

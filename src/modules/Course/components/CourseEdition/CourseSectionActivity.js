@@ -55,6 +55,7 @@ const CourseSectionActivity = ({
   // Estado para modal de generación de video
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [videoModalData, setVideoModalData] = useState(null);
+  const [videoModalKey, setVideoModalKey] = useState(0); // <--- nuevo estado para forzar reinicio
 
   const selectedModule =
     modules.find((mod) => mod.id === selectedModuleId) || modules[0];
@@ -111,7 +112,11 @@ const CourseSectionActivity = ({
   // Abrir modal de generación de video
   const handleOpenVideoModal = (resource) => {
     setVideoModalData(resource);
-    setShowVideoModal(true);
+    setShowVideoModal(false); // Cierra primero para forzar reinicio si ya estaba abierto
+    setTimeout(() => {
+      setVideoModalKey((prev) => prev + 1); // Cambia la key para reiniciar el modal
+      setShowVideoModal(true);
+    }, 0);
   };
 
   // Cerrar modal de generación de video
@@ -432,6 +437,7 @@ const CourseSectionActivity = ({
               </div>
               {/* Modal de generación de video */}
               <ActivityGenerationVideo
+                key={videoModalKey}
                 open={showVideoModal}
                 onClose={handleCloseVideoModal}
                 data={videoModalData}
