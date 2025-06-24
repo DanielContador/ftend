@@ -17,6 +17,7 @@ import {
   faHeadphones,
   faFilePowerpoint,
 } from "@fortawesome/free-solid-svg-icons";
+import ActivityGenerationVideo from "../ActivityGeneration/ActivityGenerationVideo";
 
 // Mapea el formato del backend a los iconos y colores igual que en CourseEdition
 const iconByType = {
@@ -50,6 +51,10 @@ const CourseSectionActivity = ({
 
   // Edición de título de recurso (card)
   const [editingResource, setEditingResource] = useState({});
+
+  // Estado para modal de generación de video
+  const [showVideoModal, setShowVideoModal] = useState(false);
+  const [videoModalData, setVideoModalData] = useState(null);
 
   const selectedModule =
     modules.find((mod) => mod.id === selectedModuleId) || modules[0];
@@ -101,6 +106,18 @@ const CourseSectionActivity = ({
         original: prev[objectId].original,
       },
     }));
+  };
+
+  // Abrir modal de generación de video
+  const handleOpenVideoModal = (resource) => {
+    setVideoModalData(resource);
+    setShowVideoModal(true);
+  };
+
+  // Cerrar modal de generación de video
+  const handleCloseVideoModal = () => {
+    setShowVideoModal(false);
+    setVideoModalData(null);
   };
 
   return (
@@ -187,8 +204,8 @@ const CourseSectionActivity = ({
                         onClick={() => handleCardToggle(res.id)}
                         style={{ cursor: "pointer" }}
                       >
-                        <div className="d-flex align-items-center">
-                          <div>
+                        <div className="d-flex">
+                          <div className="mt-4">
                             {iconByType[res.format] || (
                               <FontAwesomeIcon
                                 className={styles.iconPPT}
@@ -289,7 +306,14 @@ const CourseSectionActivity = ({
                                 </button>
                                 <button
                                   className={styles.generateBtn}
-                                  onClick={(e) => e.stopPropagation()}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (res.format === "Video") {
+                                      handleOpenVideoModal(res);
+                                    } else {
+                                      // Aquí puedes manejar otros formatos si lo deseas
+                                    }
+                                  }}
                                 >
                                   <FontAwesomeIcon icon={faWandMagicSparkles} />
                                   <span>Generar</span>
@@ -406,6 +430,12 @@ const CourseSectionActivity = ({
                   />
                 </div>
               </div>
+              {/* Modal de generación de video */}
+              <ActivityGenerationVideo
+                open={showVideoModal}
+                onClose={handleCloseVideoModal}
+                data={videoModalData}
+              />
             </>
           )}
           {selectedTab === "evaluacion" && (
