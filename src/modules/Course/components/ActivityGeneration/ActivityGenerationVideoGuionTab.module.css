@@ -1,0 +1,112 @@
+.guionTabWrapper {
+  width: 100%;
+}
+
+.guionCard {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 18px 0 rgba(127, 86, 217, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.guionCardHeader {
+  background: #fafbfc;
+  padding: 18px 28px 10px 28px;
+  font-size: 1.13rem;
+  font-weight: 700;
+  color: #22223b;
+  border-bottom: 1.5px solid #f3f0fd;
+}
+
+.guionCardBody {
+  padding: 18px 28px 10px 28px;
+  position: relative;
+}
+
+.guionTextarea {
+  width: 100%;
+  min-height: 110px;
+  border-radius: 12px;
+  border: 1.5px solid #ececec;
+  background: #fafbfc;
+  font-size: 1.07rem;
+  color: #22223b;
+  padding: 16px 18px;
+  resize: vertical;
+  outline: none;
+  font-weight: 500;
+}
+
+.guionTextDisplay {
+  min-height: 110px;
+  border: 1.5px dashed #d1c4f7;
+  border-radius: 12px;
+  background: #fafbfc;
+  color: #22223b;
+  font-size: 1.07rem;
+  padding: 16px 18px;
+  white-space: pre-line;
+  font-weight: 500;
+  position: relative;
+  cursor: pointer;
+}
+
+.penIcon {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  color: #b0b0b0;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.componentsCard {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 18px 0 rgba(127, 86, 217, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.componentsCardHeader {
+  background: #fafbfc;
+  padding: 18px 28px 10px 28px;
+  font-size: 1.13rem;
+  font-weight: 700;
+  color: #22223b;
+  border-bottom: 1.5px solid #f3f0fd;
+}
+
+.componentsCardBody {
+  padding: 18px 28px 18px 28px;
+  display: flex;
+  gap: 24px;
+}
+
+.componentCol {
+  flex: 1;
+}
+
+.componentLabel {
+  font-weight: 600;
+  color: #888;
+  font-size: 1.01rem;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.componentSelect {
+  width: 100%;
+  border-radius: 10px;
+  border: 1.5px solid #ececec;
+  background: #fafbfc;
+  font-size: 1.07rem;
+  color: #22223b;
+  padding: 10px 12px;
+  margin-top: 4px;
+  outline: none;
+}
