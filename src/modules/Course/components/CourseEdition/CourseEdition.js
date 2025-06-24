@@ -12,6 +12,8 @@ import {
   faFile,
   faFloppyDisk,
   faXmark,
+  faCirclePlus,
+  faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Mapea el formato del backend a los iconos y badges
@@ -260,14 +262,17 @@ const CourseEdition = ({
                   })}
               </ul>
               <button className={styles.addResource}>
-                <span className={styles.addResourceIcon}>+</span>
+                <FontAwesomeIcon icon={faPlus} />
                 <span className={styles.addResourceText}>Agregar recurso</span>
               </button>
             </div>
           ))}
           <div className={styles.addModule}>
             <button>
-              <span className={styles.addModuleIcon}>+</span>
+              <FontAwesomeIcon
+                className={styles.addModuleIcon}
+                icon={faCirclePlus}
+              />
               <span className={styles.addModuleText}>Agregar nuevo módulo</span>
             </button>
           </div>

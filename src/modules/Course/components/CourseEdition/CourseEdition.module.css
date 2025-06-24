@@ -263,9 +263,10 @@
   font-size: 1.08rem;
   cursor: pointer;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  gap: 10px;
   transition: border 0.2s, 0.2s;
 }
 
@@ -287,7 +288,7 @@
   color: #7c3aed;
   font-size: 1.05rem;
   font-weight: 600;
-  margin-bottom: 6px;
+  margin-bottom: 0;
 }
 
 .addModule {
@@ -307,8 +308,10 @@
 .addModuleIcon {
   border: 1.5px solid #bcb4e6;
   border-radius: 50%;
-  width: 36px;
-  height: 36px;
+  width: 36px !important;
+  height: 36px !important;
+  max-height: none !important;
+  max-width: none !important;
   display: flex;
   align-items: center;
   justify-content: center;
