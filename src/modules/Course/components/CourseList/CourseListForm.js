@@ -11,10 +11,11 @@ import {
   faAngleUp,
   faFilePowerpoint,
   faCopy,
-  faEdit,
+  faPencil,
   faCoins,
   faLayerGroup,
   faPlus,
+  faSearch, // <-- importar icono de lupa
 } from "@fortawesome/free-solid-svg-icons";
 
 const resourceData = [
@@ -69,7 +70,6 @@ const CourseListForm = ({
   handleDelete,
   handleFilterData,
 }) => {
-  console.log("Data", data);
   const [courses, setCourses] = useState(data);
   const [order, setOrder] = useState(true);
   const [filterValue, setFilterValue] = useState("");
@@ -108,14 +108,17 @@ const CourseListForm = ({
       </div>
 
       <div className={styles.controls}>
-        <input
-          onChange={handleOnChangeInput}
-          value={filterValue}
-          type="search"
-          placeholder="Buscar recurso..."
-          className={styles.searchInput}
-          onKeyDown={handleOnKey}
-        />
+        <div className={styles.searchInputWrapper}>
+          <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
+          <input
+            onChange={handleOnChangeInput}
+            value={filterValue}
+            type="search"
+            placeholder="Buscar recurso..."
+            className={styles.searchInput}
+            onKeyDown={handleOnKey}
+          />
+        </div>
         <button onClick={handleButtonOrder} className={styles.orderBtn}>
           Orden
           {order ? (
@@ -213,7 +216,7 @@ const CourseListForm = ({
                     onClick={() => handleButtonEdit(course.id)}
                     className={styles.actionCard}
                   >
-                    <FontAwesomeIcon icon={faEdit} />
+                    <FontAwesomeIcon icon={faPencil} />
                   </div>
                   <div className={styles.actionCard}>
                     <FontAwesomeIcon icon={faEye} />
