@@ -12,12 +12,13 @@
 }
 
 .spinner {
-  border: 0.6em solid rgba(0, 0, 0, 0.1);
-  border-left-color: var(--secondary-color, #7c3aed);
+  width: 56px;
+  height: 56px;
+  border: 6px solid #e5e7eb;
+  border-top: 6px solid #7c3aed;
   border-radius: 50%;
-  width: 4em;
-  height: 4em;
   animation: spin 1s linear infinite;
+  display: inline-block;
 }
 
 @keyframes spin {

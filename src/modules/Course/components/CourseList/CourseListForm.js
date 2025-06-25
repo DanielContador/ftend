@@ -17,6 +17,8 @@ import {
   faPlus,
   faSearch, // <-- importar icono de lupa
 } from "@fortawesome/free-solid-svg-icons";
+import DeleteConfirmationPopup from "../../../../shared/components/DeleteConfirmationPopup";
+import { useTranslation } from "react-i18next";
 
 const resourceData = [
   {
@@ -70,6 +72,9 @@ const CourseListForm = ({
   handleDelete,
   handleFilterData,
 }) => {
+  const { t } = useTranslation();
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [courseToDelete, setCourseToDelete] = useState(null);
   const [courses, setCourses] = useState(data);
   const [order, setOrder] = useState(true);
   const [filterValue, setFilterValue] = useState("");
@@ -85,8 +90,19 @@ const CourseListForm = ({
   const handleButtonEdit = (id) => {
     handleEdit(id);
   };
-  const handleButtonDelete = (id) => {
-    handleDelete(id);
+  const handleDeleteClick = (courseId) => {
+    setCourseToDelete(courseId);
+    setIsPopupOpen(true);
+  };
+  const handleConfirmDelete = () => {
+    handleDelete(courseToDelete);
+    setIsPopupOpen(false);
+    setCourseToDelete(null);
+  };
+
+  const handleCancelDelete = () => {
+    setIsPopupOpen(false);
+    setCourseToDelete(null);
   };
   const handleOnKey = async (e) => {
     if (e.key === "Enter") {
@@ -99,144 +115,163 @@ const CourseListForm = ({
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <h1 className={styles.title}>Recursos Generados</h1>
-        <button onClick={handleCreate} className={styles.createBtn}>
-          <FontAwesomeIcon icon={faPlus} /> Crear recurso +
-        </button>
-      </div>
+    <>
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Recursos Generados</h1>
+          <button onClick={handleCreate} className={styles.createBtn}>
+            <FontAwesomeIcon icon={faPlus} /> Crear recurso +
+          </button>
+        </div>
 
-      <div className={styles.controls}>
-        <div className={styles.searchInputWrapper}>
-          <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
-          <input
-            onChange={handleOnChangeInput}
-            value={filterValue}
-            type="search"
-            placeholder="Buscar recurso..."
-            className={styles.searchInput}
-            onKeyDown={handleOnKey}
-          />
+        <div className={styles.controls}>
+          <div className={styles.searchInputWrapper}>
+            <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
+            <input
+              onChange={handleOnChangeInput}
+              value={filterValue}
+              type="search"
+              placeholder="Buscar recurso..."
+              className={styles.searchInput}
+              onKeyDown={handleOnKey}
+            />
+          </div>
+          <button onClick={handleButtonOrder} className={styles.orderBtn}>
+            Orden
+            {order ? (
+              <FontAwesomeIcon
+                className={styles.iconAngle}
+                icon={faAngleDown}
+              />
+            ) : (
+              <FontAwesomeIcon className={styles.iconAngle} icon={faAngleUp} />
+            )}
+          </button>
         </div>
-        <button onClick={handleButtonOrder} className={styles.orderBtn}>
-          Orden
-          {order ? (
-            <FontAwesomeIcon className={styles.iconAngle} icon={faAngleDown} />
-          ) : (
-            <FontAwesomeIcon className={styles.iconAngle} icon={faAngleUp} />
-          )}
-        </button>
-      </div>
 
-      <div className={styles.stats}>
-        <div className={styles.card}>
-          <div className={`${styles.actionCard} ${styles.iconLayerGroup}`}>
-            <FontAwesomeIcon icon={faLayerGroup} />
+        <div className={styles.stats}>
+          <div className={styles.card}>
+            <div className={`${styles.actionCard} ${styles.iconLayerGroup}`}>
+              <FontAwesomeIcon icon={faLayerGroup} />
+            </div>
+            <div>
+              <p className={styles.number}>4</p>
+              <p className={styles.cardSubInfo}>Recursos creados</p>
+            </div>
           </div>
-          <div>
-            <p className={styles.number}>4</p>
-            <p className={styles.cardSubInfo}>Recursos creados</p>
+          <div className={styles.card}>
+            <div className={`${styles.actionCard} ${styles.iconVideo}`}>
+              <FontAwesomeIcon icon={faVideo} />
+            </div>
+            <div>
+              <p className={styles.number}>Video</p>
+              <p className={styles.cardSubInfo}>Mayor generado</p>
+            </div>
+          </div>
+          <div className={styles.card}>
+            <div className={`${styles.actionCard} ${styles.iconCoins}`}>
+              <FontAwesomeIcon icon={faCoins} />
+            </div>
+            <div>
+              <p className={styles.number}>55</p>
+              <p className={styles.cardSubInfo}>Créditos restantes</p>
+            </div>
           </div>
         </div>
-        <div className={styles.card}>
-          <div className={`${styles.actionCard} ${styles.iconVideo}`}>
-            <FontAwesomeIcon icon={faVideo} />
-          </div>
-          <div>
-            <p className={styles.number}>Video</p>
-            <p className={styles.cardSubInfo}>Mayor generado</p>
-          </div>
-        </div>
-        <div className={styles.card}>
-          <div className={`${styles.actionCard} ${styles.iconCoins}`}>
-            <FontAwesomeIcon icon={faCoins} />
-          </div>
-          <div>
-            <p className={styles.number}>55</p>
-            <p className={styles.cardSubInfo}>Créditos restantes</p>
-          </div>
-        </div>
-      </div>
 
-      <div className={styles.resourcesWrapper}>
-        <div className={styles.resources}>
-          {courses.map((course) => (
-            <div key={course.id} className={styles.resourceCard}>
-              <div>
-                {course?.resource != null && (
-                  <div className={styles.typeLabel}>
-                    <div
-                      className={`${styles.actionCard} ${
-                        resourceData.find((f) => f.key === course.resource)
-                          ?.style
-                      }`}
-                    >
+        <div className={styles.resourcesWrapper}>
+          <div className={styles.resources}>
+            {courses.map((course) => (
+              <div key={course.id} className={styles.resourceCard}>
+                <div>
+                  {course?.resource != null && (
+                    <div className={styles.typeLabel}>
+                      <div
+                        className={`${styles.actionCard} ${
+                          resourceData.find((f) => f.key === course.resource)
+                            ?.style
+                        }`}
+                      >
+                        {
+                          resourceData.find((f) => f.key === course.resource)
+                            ?.icon
+                        }
+                      </div>
                       {
                         resourceData.find((f) => f.key === course.resource)
-                          ?.icon
+                          ?.text
                       }
                     </div>
-                    {resourceData.find((f) => f.key === course.resource)?.text}
-                  </div>
-                )}
-                <div className="mt-2">
-                  <h3 className={styles.courseName}>{course.name}</h3>
-                  <p className={styles.date}>
-                    Creado en{" "}
-                    {new Date(course.timeCreated).toLocaleDateString("es-ES", {
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </p>
-                </div>
-              </div>
-              <div>
-                <div className={styles.actions}>
-                  {course?.courseType && (
-                    <div className={`${styles.wordCard} ${styles.tagVideo}`}>
-                      <p className={styles.textType}>
-                        {course.courseType == "SCORM"
-                          ? resourceData.find((f) => f.key === course.resource)
-                              ?.text
-                          : course.resource}
-                      </p>
-                    </div>
                   )}
-                  {course?.duplicate && (
+                  <div className="mt-2">
+                    <h3 className={styles.courseName}>{course.name}</h3>
+                    <p className={styles.date}>
+                      Creado en{" "}
+                      {new Date(course.timeCreated).toLocaleDateString(
+                        "es-ES",
+                        {
+                          month: "long",
+                          day: "numeric",
+                        }
+                      )}
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <div className={styles.actions}>
+                    {course?.courseType && (
+                      <div className={`${styles.wordCard} ${styles.tagVideo}`}>
+                        <p className={styles.textType}>
+                          {course.courseType == "SCORM"
+                            ? resourceData.find(
+                                (f) => f.key === course.resource
+                              )?.text
+                            : course.resource}
+                        </p>
+                      </div>
+                    )}
+                    {course?.duplicate && (
+                      <div
+                        className={`${styles.wordCard} ${styles.tagDuplicado}`}
+                      >
+                        <p className={styles.textType}>Duplicado</p>
+                      </div>
+                    )}
+                  </div>
+                  <div className={styles.actions}>
                     <div
-                      className={`${styles.wordCard} ${styles.tagDuplicado}`}
+                      onClick={() => handleButtonEdit(course.id)}
+                      className={styles.actionCard}
                     >
-                      <p className={styles.textType}>Duplicado</p>
+                      <FontAwesomeIcon icon={faPencil} />
                     </div>
-                  )}
-                </div>
-                <div className={styles.actions}>
-                  <div
-                    onClick={() => handleButtonEdit(course.id)}
-                    className={styles.actionCard}
-                  >
-                    <FontAwesomeIcon icon={faPencil} />
-                  </div>
-                  <div className={styles.actionCard}>
-                    <FontAwesomeIcon icon={faEye} />
-                  </div>
-                  <div
-                    onClick={() => handleButtonDelete(course.id)}
-                    className={styles.actionCard}
-                  >
-                    <FontAwesomeIcon icon={faTrash} />
-                  </div>
-                  <div className={styles.actionCard}>
-                    <FontAwesomeIcon icon={faCopy} />
+                    <div className={styles.actionCard}>
+                      <FontAwesomeIcon icon={faEye} />
+                    </div>
+                    <div
+                      onClick={() => handleDeleteClick(course.id)}
+                      className={styles.actionCard}
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </div>
+                    <div className={styles.actionCard}>
+                      <FontAwesomeIcon icon={faCopy} />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+      <DeleteConfirmationPopup
+        isOpen={isPopupOpen}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        title={t("confirmDeletion")}
+        message={t("confirmDeletionMessage")}
+      />
+    </>
   );
 };
 

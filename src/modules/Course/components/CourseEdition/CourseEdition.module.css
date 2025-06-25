@@ -139,7 +139,8 @@
 .iconVideo,
 .iconPDF,
 .iconAudio,
-.iconPPT .iconFile {
+.iconPPT,
+.iconFile {
   border-radius: 50%;
   width: 25px !important;
   height: 25px !important;

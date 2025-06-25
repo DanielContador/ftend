@@ -20,8 +20,10 @@ const CourseListPage = ({ handleError }) => {
   });
   const filteredResources = useResourceManager(resourceService, handleError, t);
   const router = useRouter();
+
   const handleDelete = async (id) => {
-    crud.deleteItem(id);
+    await crud.deleteItem(id);
+    await crudResources.reload();
   };
 
   const handleEdit = (id) => {
