@@ -16,12 +16,18 @@ const ActivityGenerationVideoConfigTab = ({
         <div className={styles.dataCol}>
           <div className={styles.dataLabel}>Duración</div>
           <div className={styles.dataValue}>
-            {data.estimated_time ? `${data.estimated_time} minutos` : "-"}
+            {data.duration ? `${data.duration} minutos` : "-"}
           </div>
         </div>
         <div className={styles.dataCol}>
           <div className={styles.dataLabel}>Formato</div>
-          <div className={styles.dataValue}>{data.format || "-"}</div>
+          <div className={styles.dataValue}>{data.contentType || "-"}</div>
+        </div>
+      </div>
+      <div className={styles.dataRow}>
+        <div className={styles.dataCol} style={{ flex: 1 }}>
+          <div className={styles.dataLabel}>Objetivo de aprendizaje</div>
+          <div className={styles.dataValue}>{data.learningGoal || "-"}</div>
         </div>
       </div>
     </div>

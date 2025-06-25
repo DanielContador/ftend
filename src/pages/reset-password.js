@@ -1,5 +1,5 @@
 import SplitLayout from "../shared/layouts/splitlayout/SplitLayout";
-import ResetCenterBrand from "../modules";
+import ResetCenterBrand from "../modules/Auth/components/password/ResetCenterBrand";
 import ResetPasswordPage from "../modules/Auth/pages/ResetPasswordPage";
 
 const ResetPassword = () => {

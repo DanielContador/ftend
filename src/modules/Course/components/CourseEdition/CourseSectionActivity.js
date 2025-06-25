@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styles from "./CourseSectionActivity.module.css";
+import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFolder,
@@ -17,7 +18,6 @@ import {
   faHeadphones,
   faFilePowerpoint,
 } from "@fortawesome/free-solid-svg-icons";
-import ActivityGenerationVideo from "../ActivityGeneration/ActivityGenerationVideo";
 
 // Mapea el formato del backend a los iconos y colores igual que en CourseEdition
 const iconByType = {
@@ -40,6 +40,8 @@ const CourseSectionActivity = ({
   handleRegenerate,
   handleUpdateActivityTitle,
 }) => {
+  console.log("CourseSectionActivity props:", courseStructure);
+  const router = useRouter();
   const modules = courseStructure?.modules || [];
   const [selectedModuleId, setSelectedModuleId] = useState(
     modules.length > 0 ? modules[0].id : null
@@ -107,6 +109,14 @@ const CourseSectionActivity = ({
         original: prev[objectId].original,
       },
     }));
+  };
+
+  const handleGoToActivity = (format, activityId) => {
+    console.log("format:", format);
+    console.log("activityId:", activityId);
+    router.push(
+      `/course/${courseId}/edit/activity/?id=${activityId}&format=${format}`
+    ); // Redirect to the activity edit page
   };
 
   // Abrir modal de generación de video
@@ -313,11 +323,7 @@ const CourseSectionActivity = ({
                                   className={styles.generateBtn}
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    if (res.format === "Video") {
-                                      handleOpenVideoModal(res);
-                                    } else {
-                                      // Aquí puedes manejar otros formatos si lo deseas
-                                    }
+                                    handleGoToActivity(res.format, res.id);
                                   }}
                                 >
                                   <FontAwesomeIcon icon={faWandMagicSparkles} />
@@ -435,13 +441,13 @@ const CourseSectionActivity = ({
                   />
                 </div>
               </div>
-              {/* Modal de generación de video */}
+              {/* Modal de generación de video
               <ActivityGenerationVideo
                 key={videoModalKey}
                 open={showVideoModal}
                 onClose={handleCloseVideoModal}
                 data={videoModalData}
-              />
+              /> */}
             </>
           )}
           {selectedTab === "evaluacion" && (
