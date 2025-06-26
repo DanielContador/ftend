@@ -7,6 +7,7 @@ import {
   generateVideoScript,
   regenerateVideoScript,
   retrieveActivityVideoStatus,
+  getElaiVideoAvatarOptions, // <-- Import for avatar list
 } from "../../../services/activityService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -45,6 +46,15 @@ const ActivityGenerationVideo = ({
   const [data, setData] = useState({});
   const [activityVideo, setActivityVideo] = useState(null);
   const [fileToken, setFileToken] = useState(null);
+  const [videoType, setVideoType] = useState("avatar");
+  const [avatarVoice, setAvatarVoice] = useState(null);
+
+  // Avatar selection state
+  const [showAvatarSelection, setShowAvatarSelection] = useState(false);
+  const [avatarsData, setAvatarsData] = useState([]);
+  const [loadingAvatars, setLoadingAvatars] = useState(false);
+  const [searchAvatar, setSearchAvatar] = useState("");
+  const [selectedAvatar, setSelectedAvatar] = useState(null);
 
   const fetchActivity = async () => {
     setLoading(true);
@@ -157,15 +167,59 @@ const ActivityGenerationVideo = ({
     }
   }
 
-  // Manejar el botón atrás según el tab activo
+  // Manejar el botón atrás según el tab activo y la pantalla de selección de avatar
   const handleBack = () => {
     if (activeTab === "config") {
       onClose();
     } else if (activeTab === "guion") {
-      setActiveTab("config");
+      if (showAvatarSelection) {
+        setShowAvatarSelection(false); // Volver de selección de avatar a guion
+      } else {
+        setActiveTab("config");
+      }
     } else if (activeTab === "video") {
       setActiveTab("guion");
     }
+  };
+
+  // Fetch avatars when showAvatarSelection is true and videoType is avatar
+  useEffect(() => {
+    if (showAvatarSelection && videoType === "avatar") {
+      setLoadingAvatars(true);
+      getElaiVideoAvatarOptions()
+        .then((response) => {
+          // Map avatars to { id, name, image }
+          const avatars = (response.data || [])
+            .filter(
+              (a) => a.type === null && a.variants && a.variants.length > 0
+            )
+            .map((a) => ({
+              id: a.code,
+              name: a.name,
+              image: a.variants[0].canvas, // Use first variant image
+              raw: a,
+            }));
+          setAvatarsData(avatars);
+        })
+        .catch(() => setAvatarsData([]))
+        .finally(() => setLoadingAvatars(false));
+    }
+  }, [showAvatarSelection, videoType]);
+
+  // Handler for "Continuar" or "Generar" button in guion tab
+  const handleContinueGuion = () => {
+    if (videoType === "avatar") {
+      setShowAvatarSelection(true);
+    }
+    // For "scene" type, you can add similar logic if needed
+  };
+
+  // Handler when an avatar is selected
+  const handleAvatarSelected = (avatar) => {
+    setSelectedAvatar(avatar);
+    setShowAvatarSelection(false);
+    // You can store avatar selection in state or pass up as needed
+    // After selection, you may want to proceed to the next step or enable the next button
   };
 
   if (loading) return <LoadingSpinner />;
@@ -211,6 +265,18 @@ const ActivityGenerationVideo = ({
               setGuionInput={setGuionInput}
               guionEdit={guionEdit}
               setGuionEdit={setGuionEdit}
+              setVideoType={setVideoType}
+              videoType={videoType}
+              avatarVoice={avatarVoice}
+              setAvatarVoice={setAvatarVoice}
+              t={t}
+              showAvatarSelection={showAvatarSelection}
+              setShowAvatarSelection={setShowAvatarSelection}
+              onAvatarSelected={handleAvatarSelected}
+              avatarsData={avatarsData}
+              loadingAvatars={loadingAvatars}
+              searchAvatar={searchAvatar}
+              setSearchAvatar={setSearchAvatar}
             />
           )}
           {activeTab === "video" && <ActivityGenerationVideoVideoTab />}
@@ -221,15 +287,34 @@ const ActivityGenerationVideo = ({
             Atrás
           </button>
           <>
-            {activeTab === "guion" && (
-              <button className={styles.generateBtn}>
-                Continuar{" "}
-                <FontAwesomeIcon
-                  className={styles.sparkles}
-                  icon={faArrowRight}
-                />
-              </button>
-            )}{" "}
+            {activeTab === "guion" &&
+              !showAvatarSelection &&
+              (videoType === "avatar" ? (
+                <button
+                  className={styles.generateBtn}
+                  disabled={!avatarVoice}
+                  onClick={handleContinueGuion}
+                >
+                  Continuar{" "}
+                  <FontAwesomeIcon
+                    className={styles.sparkles}
+                    icon={faArrowRight}
+                  />
+                </button>
+              ) : (
+                <button
+                  className={styles.generateBtn}
+                  disabled={!avatarVoice}
+                  // onClick={...}
+                >
+                  Generar{" "}
+                  <FontAwesomeIcon
+                    className={styles.sparkles}
+                    icon={faWandSparkles}
+                  />
+                </button>
+              ))}
+            {/* No button in footer when avatar selection is open */}
             {activeTab === "config" &&
               (activityVideo ? (
                 <button

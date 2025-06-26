@@ -8,6 +8,7 @@ const EditCoursePage = () => {
   const [error, setError] = useState(null);
   const components = ["CourseEdition", "CourseSectionActivity"];
   const [index, setIndex] = useState(0);
+  console.log(index);
   const [showSection, setShowSection] = useState(components[index]);
 
   const handleError = (errorMessage) => {
