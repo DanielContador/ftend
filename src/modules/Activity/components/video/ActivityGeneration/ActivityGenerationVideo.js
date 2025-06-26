@@ -57,6 +57,7 @@ const ActivityGenerationVideo = ({
   const [searchAvatar, setSearchAvatar] = useState("");
   const [selectedAvatar, setSelectedAvatar] = useState(null);
   const [avatarGenerateLoading, setAvatarGenerateLoading] = useState(false); // <-- nuevo estado
+  const [videoLoading, setVideoLoading] = useState(false);
 
   const fetchActivity = async () => {
     setLoading(true);
@@ -257,7 +258,6 @@ const ActivityGenerationVideo = ({
     if (videoType === "avatar" && avatarVoice) {
       setLoading(true);
       try {
-        // No avatar selected yet, just go to avatar selection
         setShowAvatarSelection(true);
       } finally {
         setLoading(false);
@@ -266,7 +266,10 @@ const ActivityGenerationVideo = ({
       setLoading(true);
       try {
         // Aquí iría la lógica para generar video tipo scene
-        // ...tu lógica para scene...
+        // Simulación: después de generar, mostrar el tab de video
+        setActiveTab("video");
+        setVideoLoading(true);
+        // Aquí deberías llamar a tu endpoint de generación de video de escenas y luego pollVideoStatus('videogen')
       } finally {
         setLoading(false);
       }
@@ -287,6 +290,12 @@ const ActivityGenerationVideo = ({
       setSelectedAvatar(null);
     }
     setActiveTab(tabKey);
+  };
+
+  // Handler for guardar y continuar (puedes personalizar la acción)
+  const handleSaveAndContinue = () => {
+    // Aquí puedes agregar la lógica para guardar y continuar
+    // Por ejemplo, cerrar el modal o avanzar a otro paso
   };
 
   if (loading) return <LoadingSpinner />;
@@ -347,7 +356,15 @@ const ActivityGenerationVideo = ({
               selectedAvatar={selectedAvatar} // <-- pasar el prop
             />
           )}
-          {activeTab === "video" && <ActivityGenerationVideoVideoTab />}
+          {activeTab === "video" && (
+            <ActivityGenerationVideoVideoTab
+              activityVideo={activityVideo}
+              videoLoading={videoLoading}
+              data={data}
+              fileToken={fileToken}
+              onSaveContinue={handleSaveAndContinue}
+            />
+          )}
         </div>
         <div className={styles.modalFooter}>
           <button className={styles.backBtn} onClick={handleBack}>
@@ -405,7 +422,20 @@ const ActivityGenerationVideo = ({
                   />
                 </button>
               )}
-            {/* No button in footer when avatar selection is open */}
+            {activeTab === "video" && (
+              <button
+                className={styles.generateBtn}
+                onClick={handleSaveAndContinue}
+                type="button"
+              >
+                Salvar y continuar
+                <FontAwesomeIcon
+                  className={styles.sparkles}
+                  icon={faArrowRight}
+                  style={{ marginLeft: 8 }}
+                />
+              </button>
+            )}
             {activeTab === "config" &&
               (activityVideo ? (
                 <button
