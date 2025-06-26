@@ -31,7 +31,8 @@ const ActivityGenerationVideoGuionTab = ({
   loadingAvatars,
   searchAvatar,
   setSearchAvatar,
-  selectedAvatar, // <-- nuevo prop
+  selectedAvatar,
+  handleSaveScript, // <-- nuevo prop
 }) => {
   const [voiceOptions, setVoiceOptions] = useState([]);
   const [loadingVoices, setLoadingVoices] = useState(false);
@@ -128,6 +129,9 @@ const ActivityGenerationVideoGuionTab = ({
   const handleSaveEdit = () => {
     setGuionInput(tempGuion);
     setGuionEdit(false);
+    if (typeof handleSaveScript === "function") {
+      handleSaveScript();
+    }
   };
 
   // Mostrar el tab de selección de avatar si corresponde

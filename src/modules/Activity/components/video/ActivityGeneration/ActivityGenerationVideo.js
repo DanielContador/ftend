@@ -59,6 +59,9 @@ const ActivityGenerationVideo = ({
   const [avatarGenerateLoading, setAvatarGenerateLoading] = useState(false); // <-- nuevo estado
   const [videoLoading, setVideoLoading] = useState(false);
 
+  // Nuevo estado para loading local del modal (spinner centrado)
+  const [modalLoading, setModalLoading] = useState(false);
+
   const fetchActivity = async () => {
     setLoading(true);
     try {
@@ -123,40 +126,41 @@ const ActivityGenerationVideo = ({
     }, 5000); // Poll every 5 seconds
   };
 
+  // Handler para generar script con loading modal y recarga de info
   const handleGenerateScript = async () => {
-    setLoading(true);
+    setModalLoading(true);
     try {
       const data = {
-        Prompt: instructions,
+        Prompt: guionInput,
         ActivityId: activityId,
       };
-      const response = await generateVideoScript(data);
-      fetchActivity();
-      setActiveTab("script");
+      await generateVideoScript(data);
+      await fetchActivity(); // recarga la info y mantiene el tab
+      // No cambiar el tab, mantener el actual
     } catch (error) {
       console.error("Error generating script:", error);
-      handleError(t("errorGeneratingActivityScript")); // Use translation for error message
+      handleError(t("errorGeneratingActivityScript"));
     } finally {
-      setLoading(false);
+      setModalLoading(false);
     }
   };
 
+  // Handler para regenerar script con loading modal y recarga de info
   const handleRegenerateScript = async () => {
-    setLoading(true);
+    setModalLoading(true);
     try {
       const data = {
-        Prompt: instructions,
+        Prompt: guionInput,
         ActivityId: activityId,
       };
-      const response = await regenerateVideoScript(data);
-      setGuionInput(response.data.contentGenerated);
-      console.log("Script regenerated");
-      setActiveTab("script");
+      await regenerateVideoScript(data);
+      await fetchActivity(); // recarga la info y mantiene el tab
+      // No cambiar el tab, mantener el actual
     } catch (error) {
       console.error("Error regenerating script:", error);
-      handleError(t("errorGeneratingActivityScript")); // Use translation for error message
+      handleError(t("errorGeneratingActivityScript"));
     } finally {
-      setLoading(false);
+      setModalLoading(false);
     }
   };
 
@@ -298,7 +302,42 @@ const ActivityGenerationVideo = ({
     // Por ejemplo, cerrar el modal o avanzar a otro paso
   };
 
+  // Guardar el guion editado (como en VideoEditor)
+  const handleSaveScript = async () => {
+    setLoading(true);
+    try {
+      const dataToUpdate = {
+        content: guionInput,
+      };
+      await updateVideoContent(activityVideo.id, dataToUpdate);
+      // Puedes mostrar un mensaje de éxito si lo deseas
+    } catch (error) {
+      console.error("Error updating script content:", error);
+      handleError(t("errorUpdatingDocumentContent"));
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (loading) return <LoadingSpinner />;
+  if (modalLoading) {
+    return (
+      <div className={styles.modalOverlay}>
+        <div className={styles.modal}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              minHeight: 400,
+            }}
+          >
+            <span className={styles.loader}></span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.modalOverlay}>
@@ -353,7 +392,8 @@ const ActivityGenerationVideo = ({
               loadingAvatars={loadingAvatars}
               searchAvatar={searchAvatar}
               setSearchAvatar={setSearchAvatar}
-              selectedAvatar={selectedAvatar} // <-- pasar el prop
+              selectedAvatar={selectedAvatar}
+              handleSaveScript={handleSaveScript} // <-- pasar el método
             />
           )}
           {activeTab === "video" && (
