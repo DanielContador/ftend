@@ -15,9 +15,9 @@
 }
 
 .avatarSearchInput {
-  width: 320px;
+  width: 550px;
   border-radius: 8px;
-  border: 1.5px solid #ececec;
+  border: 2px solid #ececec;
   background: #fafbfc;
   font-size: 1.07rem;
   color: #22223b;
@@ -52,8 +52,8 @@
   text-align: center;
 }
 
-.avatarCard:hover,
-.avatarCard.selected {
+.avatarCard.selected,
+.avatarCard:hover {
   border: 2.5px solid #7c3aed;
   box-shadow: 0 8px 32px 0 rgba(127, 86, 217, 0.18);
 }

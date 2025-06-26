@@ -31,6 +31,7 @@ const ActivityGenerationVideoGuionTab = ({
   loadingAvatars,
   searchAvatar,
   setSearchAvatar,
+  selectedAvatar, // <-- nuevo prop
 }) => {
   const [voiceOptions, setVoiceOptions] = useState([]);
   const [loadingVoices, setLoadingVoices] = useState(false);
@@ -138,6 +139,7 @@ const ActivityGenerationVideoGuionTab = ({
         searchAvatar={searchAvatar}
         setSearchAvatar={setSearchAvatar}
         onAvatarSelected={onAvatarSelected}
+        selectedAvatar={selectedAvatar} // <-- pasar el prop
       />
     );
   }

@@ -7,6 +7,7 @@ const AvatarSelectionTab = ({
   searchAvatar,
   setSearchAvatar,
   onAvatarSelected,
+  selectedAvatar, // <-- nuevo prop
 }) => (
   <div className={styles.avatarSelectionWrapper}>
     <h2 className={styles.avatarSelectionTitle}>
@@ -31,7 +32,11 @@ const AvatarSelectionTab = ({
           .map((avatar) => (
             <div
               key={avatar.id}
-              className={styles.avatarCard}
+              className={
+                avatar.id === (selectedAvatar && selectedAvatar.id)
+                  ? `${styles.avatarCard} ${styles.selected}`
+                  : styles.avatarCard
+              }
               onClick={() => onAvatarSelected(avatar)}
             >
               <img

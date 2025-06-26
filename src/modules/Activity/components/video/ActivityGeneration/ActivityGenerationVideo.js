@@ -8,6 +8,7 @@ import {
   regenerateVideoScript,
   retrieveActivityVideoStatus,
   getElaiVideoAvatarOptions, // <-- Import for avatar list
+  generateElaiActivityVideo,
 } from "../../../services/activityService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -55,6 +56,7 @@ const ActivityGenerationVideo = ({
   const [loadingAvatars, setLoadingAvatars] = useState(false);
   const [searchAvatar, setSearchAvatar] = useState("");
   const [selectedAvatar, setSelectedAvatar] = useState(null);
+  const [avatarGenerateLoading, setAvatarGenerateLoading] = useState(false); // <-- nuevo estado
 
   const fetchActivity = async () => {
     setLoading(true);
@@ -174,6 +176,7 @@ const ActivityGenerationVideo = ({
     } else if (activeTab === "guion") {
       if (showAvatarSelection) {
         setShowAvatarSelection(false); // Volver de selección de avatar a guion
+        setSelectedAvatar(null); // Limpiar selección de avatar al volver atrás
       } else {
         setActiveTab("config");
       }
@@ -214,12 +217,76 @@ const ActivityGenerationVideo = ({
     // For "scene" type, you can add similar logic if needed
   };
 
+  // Handler for "Generar" button in avatar selection screen
+  const handleGenerateVideoAvatarScreen = async () => {
+    if (videoType === "avatar" && avatarVoice && selectedAvatar) {
+      setAvatarGenerateLoading(true);
+      try {
+        const data = {
+          ActivityId: activityId,
+          Language: "Spanish",
+          Voice: avatarVoice,
+          VoiceProvider: null, // Set if needed
+          AvatarCode: selectedAvatar.raw?.code
+            ? `${selectedAvatar.raw.code}.${selectedAvatar.raw.variants[0].code}`
+            : null,
+          AvatarGender: selectedAvatar.raw?.gender || null,
+          AvatarCanvas:
+            selectedAvatar.raw?.variants &&
+            selectedAvatar.raw.variants[0]?.canvas
+              ? selectedAvatar.raw.variants[0].canvas
+              : null,
+        };
+        const response = await generateElaiActivityVideo(data);
+        activityVideo.videoUrl = response.data.content;
+        setActivityVideo(activityVideo);
+        setActiveTab("video");
+        setVideoLoading(true);
+        pollVideoStatus("elai");
+      } catch (error) {
+        console.error("Error generating video:", error);
+        handleError(t("errorGeneratingVideo"));
+      } finally {
+        setAvatarGenerateLoading(false);
+      }
+    }
+  };
+
+  // Handler for "Generar" button in guion tab (scene or avatar)
+  const handleGenerateVideoGuionTab = async () => {
+    if (videoType === "avatar" && avatarVoice) {
+      setLoading(true);
+      try {
+        // No avatar selected yet, just go to avatar selection
+        setShowAvatarSelection(true);
+      } finally {
+        setLoading(false);
+      }
+    } else if (videoType === "scene" && avatarVoice) {
+      setLoading(true);
+      try {
+        // Aquí iría la lógica para generar video tipo scene
+        // ...tu lógica para scene...
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
   // Handler when an avatar is selected
   const handleAvatarSelected = (avatar) => {
     setSelectedAvatar(avatar);
-    setShowAvatarSelection(false);
-    // You can store avatar selection in state or pass up as needed
-    // After selection, you may want to proceed to the next step or enable the next button
+    // El card se quedará marcado por selectedAvatar
+  };
+
+  // Manejar el cambio de tab y limpiar selección si es necesario
+  const handleTabClick = (tabKey) => {
+    // Si estamos en guion/avatar selection y vamos a la izquierda, limpiar selección
+    if (activeTab === "guion" && showAvatarSelection && tabKey !== "guion") {
+      setShowAvatarSelection(false);
+      setSelectedAvatar(null);
+    }
+    setActiveTab(tabKey);
   };
 
   if (loading) return <LoadingSpinner />;
@@ -231,13 +298,13 @@ const ActivityGenerationVideo = ({
           <FontAwesomeIcon icon={faTimes} />
         </button>
         <div className={styles.tabs}>
-          {TABS.map((tab) => (
+          {TABS.map((tab, idx) => (
             <div
               key={tab.key}
               className={`${styles.tab} ${
                 activeTab === tab.key ? styles.active : ""
               }`}
-              onClick={() => setActiveTab(tab.key)}
+              onClick={() => handleTabClick(tab.key)}
               style={{ userSelect: "none" }}
             >
               {tab.label}
@@ -277,6 +344,7 @@ const ActivityGenerationVideo = ({
               loadingAvatars={loadingAvatars}
               searchAvatar={searchAvatar}
               setSearchAvatar={setSearchAvatar}
+              selectedAvatar={selectedAvatar} // <-- pasar el prop
             />
           )}
           {activeTab === "video" && <ActivityGenerationVideoVideoTab />}
@@ -305,7 +373,7 @@ const ActivityGenerationVideo = ({
                 <button
                   className={styles.generateBtn}
                   disabled={!avatarVoice}
-                  // onClick={...}
+                  onClick={handleGenerateVideoGuionTab}
                 >
                   Generar{" "}
                   <FontAwesomeIcon
@@ -314,6 +382,29 @@ const ActivityGenerationVideo = ({
                   />
                 </button>
               ))}
+            {activeTab === "guion" &&
+              showAvatarSelection &&
+              videoType === "avatar" && (
+                <button
+                  className={styles.generateBtn}
+                  disabled={
+                    !avatarVoice || !selectedAvatar || avatarGenerateLoading
+                  }
+                  style={{
+                    opacity:
+                      !avatarVoice || !selectedAvatar || avatarGenerateLoading
+                        ? 0.1
+                        : 1,
+                  }}
+                  onClick={handleGenerateVideoAvatarScreen}
+                >
+                  {avatarGenerateLoading ? "Generando..." : "Generar"}{" "}
+                  <FontAwesomeIcon
+                    className={styles.sparkles}
+                    icon={faWandSparkles}
+                  />
+                </button>
+              )}
             {/* No button in footer when avatar selection is open */}
             {activeTab === "config" &&
               (activityVideo ? (
