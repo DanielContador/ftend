@@ -193,4 +193,122 @@
 .slider {
   width: 180px;
   margin-top: 4px;
+  accent-color: #7c3aed;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 5px;
+  outline: none;
+  background: #ddd;
+  transition: background 0.3s;
+}
+
+/* Chrome, Safari, Opera, Edge Chromium */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #7c3aed;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 8px 0 rgba(127, 86, 217, 0.13);
+  transition: background 0.3s;
+  position: relative;
+  z-index: 2;
+}
+
+.slider::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 5px;
+  background: #ddd;
+  position: relative;
+  z-index: 1;
+}
+
+.slider:focus {
+  outline: none;
+  border: none;
+}
+
+/* Firefox */
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #7c3aed;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 8px 0 rgba(127, 86, 217, 0.13);
+  transition: background 0.3s;
+  position: relative;
+  z-index: 2;
+}
+
+.slider::-moz-range-track {
+  height: 6px;
+  border-radius: 5px;
+  background: #ddd;
+  position: relative;
+  z-index: 1;
+}
+
+/* IE */
+.slider::-ms-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #7c3aed;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 8px 0 rgba(127, 86, 217, 0.13);
+  transition: background 0.3s;
+  position: relative;
+  z-index: 2;
+}
+
+.slider::-ms-fill-lower {
+  background: #7c3aed;
+  border-radius: 5px;
+}
+.slider::-ms-fill-upper {
+  background: #ddd;
+  border-radius: 5px;
+}
+
+/* Remove default appearance for all browsers */
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Custom dynamic fill for the slider using a pseudo-element workaround */
+.slider::-webkit-slider-runnable-track {
+  background: #ddd;
+}
+.slider.filled::-webkit-slider-runnable-track {
+  background: linear-gradient(
+    to right,
+    #7c3aed 0%,
+    #7c3aed var(--percent, 50%),
+    #ddd var(--percent, 50%),
+    #ddd 100%
+  );
+}
+.slider.filled::-moz-range-track {
+  background: linear-gradient(
+    to right,
+    #7c3aed 0%,
+    #7c3aed var(--percent, 50%),
+    #ddd var(--percent, 50%),
+    #ddd 100%
+  );
+}
+.slider.filled::-ms-fill-lower {
+  background: #7c3aed;
+}
+.slider.filled::-ms-fill-upper {
+  background: #ddd;
 }

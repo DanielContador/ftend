@@ -36,6 +36,20 @@ const ActivityGenerationAudioGuionTab = ({
     }
   };
 
+  // Calcula el background dinámico para el slider
+  const getSliderBackground = (value) =>
+    `linear-gradient(to right, #7c3aed 0%, #7c3aed ${value}%, #ddd ${value}%, #ddd 100%)`;
+
+  // Para aplicar la clase 'filled' y la variable CSS --percent
+  const sliderProps = (value) => ({
+    className: `${styles.slider} ${styles.filled}`,
+    style: {
+      "--percent": `${value}%`,
+      background: getSliderBackground(value),
+      cursor: "pointer",
+    },
+  });
+
   return (
     <div className={styles.guionTabWrapper}>
       <div className={styles.guionCard}>
@@ -128,7 +142,7 @@ const ActivityGenerationAudioGuionTab = ({
               max="100"
               value={stability}
               onChange={(e) => setStability(Number(e.target.value))}
-              className={styles.slider}
+              {...sliderProps(stability)}
             />
             <span>{stability}%</span>
           </div>
@@ -140,7 +154,7 @@ const ActivityGenerationAudioGuionTab = ({
               max="100"
               value={similarity}
               onChange={(e) => setSimilarity(Number(e.target.value))}
-              className={styles.slider}
+              {...sliderProps(similarity)}
             />
             <span>{similarity}%</span>
           </div>

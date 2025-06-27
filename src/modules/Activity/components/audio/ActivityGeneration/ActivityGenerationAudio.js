@@ -4,11 +4,11 @@ import { useTranslation } from "react-i18next";
 import {
   getActivityAudio,
   updateAudioContent,
+  generateActivityAudio,
   generateAudioScript,
   regenerateAudioScript,
-  retrieveActivityAudioStatus,
   getVoiceOptions,
-  generateActivityAudio,
+  retrieveActivityAudioStatus,
 } from "../../../services/activityService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -20,6 +20,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import ActivityGenerationAudioConfigTab from "./ActivityGenerationAudioConfigTab";
 import ActivityGenerationAudioGuionTab from "./ActivityGenerationAudioGuionTab";
+import ActivityGenerationAudioAudioTab from "./ActivityGenerationAudioAudioTab";
 import LoadingSpinner from "../../../../../shared/components/LoadingSpinner";
 
 const TABS = [
@@ -63,6 +64,7 @@ const ActivityGenerationAudio = ({
       if (response.data.audio) {
         setActivityAudio(response.data.audio);
         setGuionInput(response.data.audio.content);
+        // Si el audio está en proceso, hacer polling
         if (response.data.audio.audioUrl === "rendering") {
           pollAudioStatus();
         }
@@ -83,7 +85,6 @@ const ActivityGenerationAudio = ({
 
   // Cargar voces
   useEffect(() => {
-    console.log("Cargando voces...");
     getVoiceOptions()
       .then((response) => {
         const options = response.data.voices.map((voice) => ({
@@ -255,35 +256,12 @@ const ActivityGenerationAudio = ({
             />
           )}
           {activeTab === "audio" && (
-            <div className={styles.audioTabWrapper}>
-              <div className={styles.previewTitle}>Pre-visualización audio</div>
-              {audioLoading ? (
-                <div className={styles.loadingContainer}>
-                  <LoadingSpinner />
-                </div>
-              ) : activityAudio && activityAudio.audioUrl ? (
-                <div className={styles.audioPreviewSection}>
-                  <audio controls className={styles.audioPlayer}>
-                    <source
-                      src={`${process.env.NEXT_PUBLIC_API_URL}/v1/download/audio/file/${data.id}?token=${fileToken}`}
-                      type="audio/mp3"
-                    />
-                    Your browser does not support the audio element.
-                  </audio>
-                  <a
-                    href={`${process.env.NEXT_PUBLIC_API_URL}/v1/download/audio/file/${data.id}?token=${fileToken}`}
-                    className={styles.downloadLink}
-                    download
-                  >
-                    <FontAwesomeIcon icon={faDownload} />
-                  </a>
-                </div>
-              ) : (
-                <div className={styles.noData}>
-                  No hay datos para mostrar en esta pestaña.
-                </div>
-              )}
-            </div>
+            <ActivityGenerationAudioAudioTab
+              activityAudio={activityAudio}
+              audioLoading={audioLoading}
+              data={data}
+              fileToken={fileToken}
+            />
           )}
         </div>
         <div className={styles.modalFooter}>
@@ -310,6 +288,14 @@ const ActivityGenerationAudio = ({
                 className={styles.generateBtn}
                 type="button"
                 onClick={onClose}
+                disabled={!activityAudio || !activityAudio.audioUrl}
+                style={{
+                  opacity: !activityAudio || !activityAudio.audioUrl ? 0.3 : 1,
+                  cursor:
+                    !activityAudio || !activityAudio.audioUrl
+                      ? "not-allowed"
+                      : "pointer",
+                }}
               >
                 Guardar y continuar
                 <FontAwesomeIcon
