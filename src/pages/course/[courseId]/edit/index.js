@@ -14,6 +14,11 @@ const EditCoursePage = () => {
   const [showSection, setShowSection] = useState(components[index]);
   const router = useRouter();
 
+  // Obtener el estado global actualComponent
+  const actualComponent = useSelector(
+    (state) => state.component.actualComponent
+  );
+
   // Sincroniza el index y showSection con el estado global actualComponent
   useEffect(() => {
     if (actualComponent === "CourseSectionActivity") {

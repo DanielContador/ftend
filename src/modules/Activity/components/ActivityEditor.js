@@ -6,6 +6,7 @@ import VideoEditor from "./video/VideoEditor";
 import PPTEditor from "./ppt/PPTEditor"; // Importing PPTEditor
 import { useTranslation } from "react-i18next";
 import ActivityGenerationVideo from "./video/ActivityGeneration/ActivityGenerationVideo";
+import ActivityGenerationAudio from "./audio/ActivityGeneration/ActivityGenerationAudio";
 
 const ActivityEditor = ({ courseId, handleError, onClose }) => {
   const router = useRouter();
@@ -27,8 +28,15 @@ const ActivityEditor = ({ courseId, handleError, onClose }) => {
       );
     case "audio":
       return (
-        <AudioEditor
+        // <AudioEditor
+        //   activityId={id}
+        //   courseId={courseId}
+        //   handleError={handleError}
+        // />
+        <ActivityGenerationAudio
+          onClose={onClose}
           activityId={id}
+          format={format}
           courseId={courseId}
           handleError={handleError}
         />
