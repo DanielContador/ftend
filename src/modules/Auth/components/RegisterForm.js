@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./RegisterForm.module.css";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,6 +7,11 @@ import {
   faCircleInfo,
 } from "@fortawesome/free-solid-svg-icons";
 import { faEye as faEyeRegular } from "@fortawesome/free-regular-svg-icons";
+import { useDispatch } from "react-redux";
+import {
+  showFloatingError,
+  showFloatingSuccess,
+} from "../../../shared/store/rootActions";
 
 const RegisterForm = ({ onRegister, loading, error }) => {
   const [fullName, setFullName] = useState("");
@@ -17,16 +22,24 @@ const RegisterForm = ({ onRegister, loading, error }) => {
   const [news, setNews] = useState("yes");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [success, setSuccess] = useState("");
+  const dispatch = useDispatch();
   const router = useRouter();
+
+  // Maneja errores globales
+  React.useEffect(() => {
+    if (error)
+      dispatch(
+        showFloatingError(error || "Error al registrar. Intenta nuevamente.")
+      );
+    // eslint-disable-next-line
+  }, [error]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!fullName.trim()) {
-      alert("El nombre completo es obligatorio.");
+      dispatch(showFloatingError("El nombre completo es obligatorio."));
       return;
     }
-    setSuccess("");
 
     const [firstname, ...rest] = fullName.trim().split(" ");
     const lastname = rest.join(" ");
@@ -40,15 +53,18 @@ const RegisterForm = ({ onRegister, loading, error }) => {
         email,
         password,
       });
-      setSuccess("Registro exitoso. Ahora puedes iniciar sesión.");
-      // ...puedes redirigir o limpiar el formulario aquí si lo deseas...
+      dispatch(
+        showFloatingSuccess("Registro exitoso. Ahora puedes iniciar sesión.")
+      );
+      router.push("/login");
     } catch (err) {
-      // El error ya es manejado por el hook y mostrado por la prop error
+      dispatch(showFloatingError("Error al registrar. Intenta nuevamente."));
     }
   };
 
   return (
     <div className={styles.container}>
+      {/* FloatingError y FloatingSuccess globales se muestran desde _app.js */}
       <form onSubmit={handleSubmit} className={styles.form}>
         <h2 className={styles.title}>Registro de usuario</h2>
         <div className={styles.inputGroup}>
@@ -178,10 +194,6 @@ const RegisterForm = ({ onRegister, loading, error }) => {
             </label>
           </div>
         </div>
-        {error && <div style={{ color: "red", marginBottom: 8 }}>{error}</div>}
-        {success && (
-          <div style={{ color: "green", marginBottom: 8 }}>{success}</div>
-        )}
         <button type="submit" className={styles.submitBtn} disabled={loading}>
           {loading ? "Registrando..." : "Crear cuenta"}
         </button>

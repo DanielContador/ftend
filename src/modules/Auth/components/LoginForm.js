@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useAuth } from "../../../shared/utils/authProvider";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
@@ -6,7 +6,8 @@ import styles from "./LoginForm.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye as faEyeSolid } from "@fortawesome/free-solid-svg-icons";
 import { faEye as faEyeRegular } from "@fortawesome/free-regular-svg-icons";
-import FloatingError from "../../../shared/components/FloatingError";
+import { useDispatch } from "react-redux";
+import { showFloatingError } from "../../../shared/store/rootActions";
 
 const LoginForm = ({ onLogin, loading, error }) => {
   const { t } = useTranslation();
@@ -17,9 +18,9 @@ const LoginForm = ({ onLogin, loading, error }) => {
   const [submitting, setSubmitting] = useState(false);
   const [remember, setRemember] = useState(true);
   const [fieldErrors, setFieldErrors] = useState({});
-  const [showError, setShowError] = useState(false);
   const router = useRouter();
   const { initSession } = useAuth();
+  const dispatch = useDispatch();
 
   const validate = () => {
     const errors = {};
@@ -37,7 +38,6 @@ const LoginForm = ({ onLogin, loading, error }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLocalError("");
-    setShowError(false);
     setFieldErrors({});
     const errors = validate();
     if (Object.keys(errors).length > 0) {
@@ -51,39 +51,27 @@ const LoginForm = ({ onLogin, loading, error }) => {
         initSession(response.token);
         router.push("/");
       } else {
-        setLocalError(t("loginError") || "Usuario o contraseña incorrectos.");
-        setShowError(true);
+        dispatch(
+          showFloatingError(
+            t("loginError") || "Usuario o contraseña incorrectos."
+          )
+        );
       }
     } catch (err) {
-      setLocalError(
-        t("loginError") ||
-          "Usuario o contraseña incorrectos. Intenta nuevamente."
+      dispatch(
+        showFloatingError(
+          t("loginError") ||
+            "Usuario o contraseña incorrectos. Intenta nuevamente."
+        )
       );
-      setShowError(true);
     } finally {
       setSubmitting(false);
     }
   };
 
-  useEffect(() => {
-    if (showError) {
-      // El FloatingError se encarga de autocerrar, solo resetea el error cuando se cierra
-      return () => {};
-    }
-  }, [showError]);
-
   return (
     <div className={styles.container}>
-      <FloatingError
-        message={
-          localError ||
-          error ||
-          t("loginError") ||
-          "Usuario o contraseña incorrectos. Intenta nuevamente."
-        }
-        show={showError && (localError || error)}
-        onClose={() => setShowError(false)}
-      />
+      {/* FloatingError global se muestra desde _app.js */}
       <form onSubmit={handleSubmit} className={styles.form} noValidate>
         <h2 className={styles.title}>Inicio de sesión</h2>
         <div className={styles.inputGroup}>

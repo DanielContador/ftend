@@ -10,3 +10,23 @@ export const setActualComponent = (componentName) => ({
 export const getActualComponent = () => ({
   type: "GET_ACTUAL_COMPONENT",
 });
+
+// FloatingError global actions
+export const showFloatingError = (message) => ({
+  type: "SHOW_FLOATING_ERROR",
+  payload: message,
+});
+
+export const hideFloatingError = () => ({
+  type: "HIDE_FLOATING_ERROR",
+});
+
+// FloatingSuccess global actions
+export const showFloatingSuccess = (message) => ({
+  type: "SHOW_FLOATING_SUCCESS",
+  payload: message,
+});
+
+export const hideFloatingSuccess = () => ({
+  type: "HIDE_FLOATING_SUCCESS",
+});

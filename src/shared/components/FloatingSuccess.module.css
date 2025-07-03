@@ -1,0 +1,19 @@
+.floatingSuccess {
+  position: fixed;
+  z-index: 1000;
+  background: #27c46a;
+  color: #fff;
+  padding: 8px 22px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  font-weight: bold;
+  font-size: 0.98rem;
+  min-width: 200px;
+  text-align: center;
+  cursor: pointer;
+  max-height: 40px;
+  line-height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
