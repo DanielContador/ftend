@@ -131,7 +131,7 @@ const ActivityGenerationVideo = ({
     setModalLoading(true);
     try {
       const data = {
-        Prompt: guionInput,
+        PromptInstructions: configGuionInput,
         ActivityId: activityId,
       };
       await generateVideoScript(data);
@@ -150,7 +150,7 @@ const ActivityGenerationVideo = ({
     setModalLoading(true);
     try {
       const data = {
-        Prompt: guionInput,
+        PromptInstructions: configGuionInput,
         ActivityId: activityId,
       };
       await regenerateVideoScript(data);
