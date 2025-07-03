@@ -19,6 +19,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import DeleteConfirmationPopup from "../../../../shared/components/DeleteConfirmationPopup";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../../../../shared/utils/authProvider";
 
 const resourceData = [
   {
@@ -73,6 +74,7 @@ const CourseListForm = ({
   handleFilterData,
 }) => {
   const { t } = useTranslation();
+  const { endSession } = useAuth();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [courseToDelete, setCourseToDelete] = useState(null);
   const [courses, setCourses] = useState(data);
@@ -121,6 +123,23 @@ const CourseListForm = ({
           <h1 className={styles.title}>Recursos Generados</h1>
           <button onClick={handleCreate} className={styles.createBtn}>
             <FontAwesomeIcon icon={faPlus} /> Crear recurso +
+          </button>
+          {/* Botón de logout en la esquina superior derecha */}
+          <button
+            style={{
+              position: "absolute",
+              top: 16,
+              right: 16,
+              zIndex: 10,
+              background: "#fff",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+              padding: "6px 14px",
+              cursor: "pointer",
+            }}
+            onClick={endSession}
+          >
+            Logout
           </button>
         </div>
 
