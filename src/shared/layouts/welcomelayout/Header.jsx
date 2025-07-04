@@ -18,7 +18,7 @@ const Header = () => {
         <Link href="https://www.dl.cl/">Nosotros</Link>
         <Link href="/help">Contacto</Link>
         <Link href="/login" className={styles.loginButton}>
-          Sesión
+          Iniciar Sesión
         </Link>
       </nav>
     </header>

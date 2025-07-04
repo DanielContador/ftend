@@ -154,8 +154,8 @@ const ActivityGenerationVideo = ({
         ActivityId: activityId,
       };
       await regenerateVideoScript(data);
-      await fetchActivity(); // recarga la info y mantiene el tab
-      // No cambiar el tab, mantener el actual
+      await fetchActivity();
+      setActiveTab("guion"); // <-- Cambia automáticamente al tab de guion
     } catch (error) {
       console.error("Error regenerating script:", error);
       handleError(t("errorGeneratingActivityScript"));
@@ -303,11 +303,11 @@ const ActivityGenerationVideo = ({
   };
 
   // Guardar el guion editado (como en VideoEditor)
-  const handleSaveScript = async () => {
+  const handleSaveScript = async (text) => {
     setLoading(true);
     try {
       const dataToUpdate = {
-        content: guionInput,
+        content: text || guionInput, // Usa el texto pasado o el estado actual
       };
       await updateVideoContent(activityVideo.id, dataToUpdate);
       // Puedes mostrar un mensaje de éxito si lo deseas

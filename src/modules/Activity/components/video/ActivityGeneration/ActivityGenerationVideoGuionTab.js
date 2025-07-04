@@ -130,7 +130,7 @@ const ActivityGenerationVideoGuionTab = ({
     setGuionInput(tempGuion);
     setGuionEdit(false);
     if (typeof handleSaveScript === "function") {
-      handleSaveScript();
+      handleSaveScript(tempGuion);
     }
   };
 

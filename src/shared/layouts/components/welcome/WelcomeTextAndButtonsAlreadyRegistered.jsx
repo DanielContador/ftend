@@ -16,7 +16,7 @@ const WelcomeTextAndButtonsAlreadyRegistered = () => {
       <div className={styles.ctaButtonsRow}>
         <button
           type="button"
-          onClick={() => window.location.assign("/")}
+          onClick={() => router.push("/login")}
           className={styles.ctaButton}
         >
           <span style={{ display: "flex", alignItems: "center" }}>
