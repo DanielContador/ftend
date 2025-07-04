@@ -7,7 +7,7 @@ import hat from "../../../../../public/hat.svg";
 import brain from "../../../../../public/brain.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faCheck,
+  faCheckCircle,
   faListCheck,
   faEdit,
   faKeyboard,
@@ -18,33 +18,33 @@ import { useRouter } from "next/router";
 const features = [
   {
     icon: thunder,
-    title: "Crea en minutos",
-    desc: "Genera recursos educativos rápidamente con plantillas inteligentes y procesos guiados.",
+    title: "Creación Rápida",
+    desc: "Genera recursos en minutos gracias a plantillas inteligentes.",
   },
   {
     icon: hat,
-    title: "Sin complicaciones",
-    desc: "Interfaz simple y amigable, pensada para docentes y equipos de formación.",
+    title: "Fácil de Usar",
+    desc: "Interfaz intuitiva, sin necesidad de conocimientos técnicos.",
   },
   {
     icon: brain,
-    title: "Personaliza a tu medida",
-    desc: "Adapta los contenidos y recursos según tus necesidades y estilo.",
+    title: "Personalizable",
+    desc: "Adapta los contenidos a tus necesidades y estilos.",
   },
 ];
 
 const steps = [
-  { icon: faCheck, label: "Ingresa el tema" },
+  { icon: faKeyboard, label: "Ingresa el tema" },
   { icon: faListCheck, label: "Selecciona el tipo de recurso" },
   { icon: faEdit, label: "Revisa y ajusta" },
-  { icon: faKeyboard, label: "¡Listo para usar!" },
+  { icon: faCheckCircle, label: "¡Listo para usar!" },
 ];
 
-const WelcomeBottomSection = () => {
+const WelcomeBottomSection = ({ queEsRef }) => {
   const router = useRouter();
   return (
     <div className={styles.bottomSection}>
-      <section className={styles.whatIs}>
+      <section className={styles.whatIs} ref={queEsRef}>
         <div className={styles.iconBox}>
           <Image
             src={robotPurple}
@@ -56,11 +56,11 @@ const WelcomeBottomSection = () => {
         <div>
           <h2>¿Qué es el MentorIA?</h2>
           <p className={styles.description}>
-            MentorIA es una herramienta desarrollada por DL Group que te ayuda a
-            crear materiales didácticos de forma rápida, intuitiva y asistida
-            por inteligencia artificial. Ideal para docentes, diseñadores
-            instruccionales y equipos de formación que buscan ahorrar tiempo y
-            mantener la calidad.
+            El MentorIA es una herramienta desarrollada por DL group que permite
+            generar contenidos educativos de forma rápida, intuitiva y asistida
+            por inteligencia artificial. Está pensado para docentes, diseñadores
+            instruccionales y equipos de formación que buscan ahorrar tiempo sin
+            perder calidad.
           </p>
         </div>
       </section>

@@ -78,6 +78,7 @@ const CourseListForm = ({
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [courseToDelete, setCourseToDelete] = useState(null);
   const [courses, setCourses] = useState(data);
+  console.log(data);
   const [order, setOrder] = useState(true);
   const [filterValue, setFilterValue] = useState("");
   const handleButtonOrder = () => {
@@ -174,7 +175,7 @@ const CourseListForm = ({
               <FontAwesomeIcon icon={faLayerGroup} />
             </div>
             <div>
-              <p className={styles.number}>4</p>
+              <p className={styles.number}>{data.length}</p>
               <p className={styles.cardSubInfo}>Recursos creados</p>
             </div>
           </div>

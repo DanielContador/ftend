@@ -5,10 +5,7 @@ const CenterBrand = () => (
   <div className={styles.centerBrand}>
     <span className={styles.brandText}>MentorIA</span>
     <span className={styles.welcomeText}>
-      ¡Bienvenido
-      <br />
-      a Robot de Cursos DL!
-      <br />
+      ¡Bienvenido!
       <span className={styles.registerText}>Registrate para comenzar</span>
     </span>
   </div>

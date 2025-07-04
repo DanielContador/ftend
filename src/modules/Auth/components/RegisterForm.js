@@ -22,6 +22,7 @@ const RegisterForm = ({ onRegister, loading, error }) => {
   const [news, setNews] = useState("yes");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState({});
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -34,10 +35,44 @@ const RegisterForm = ({ onRegister, loading, error }) => {
     // eslint-disable-next-line
   }, [error]);
 
+  // Validación de campos
+  const validate = () => {
+    const errors = {};
+    if (!fullName.trim()) {
+      errors.fullName = "El nombre completo es obligatorio.";
+    }
+    if (!email) {
+      errors.email = "El correo electrónico es obligatorio.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errors.email = "Ingresa un correo electrónico válido.";
+    }
+    if (!password) {
+      errors.password = "La contraseña es obligatoria.";
+    } else {
+      if (password.length < 8) {
+        errors.password = "La contraseña debe tener al menos 8 caracteres.";
+      } else if (!/[A-Z]/.test(password)) {
+        errors.password = "La contraseña debe tener al menos una mayúscula.";
+      } else if (!/[0-9]/.test(password)) {
+        errors.password = "La contraseña debe tener al menos un número.";
+      }
+    }
+    if (!confirmPassword) {
+      errors.confirmPassword = "Debes confirmar la contraseña.";
+    } else if (password !== confirmPassword) {
+      errors.confirmPassword = "Las contraseñas no coinciden.";
+    }
+    if (!acceptTerms) {
+      errors.acceptTerms = "Debes aceptar los términos y condiciones.";
+    }
+    return errors;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!fullName.trim()) {
-      dispatch(showFloatingError("El nombre completo es obligatorio."));
+    const errors = validate();
+    setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) {
       return;
     }
 
@@ -56,7 +91,10 @@ const RegisterForm = ({ onRegister, loading, error }) => {
       dispatch(
         showFloatingSuccess("Registro exitoso. Ahora puedes iniciar sesión.")
       );
-      router.push("/login");
+      router.push({
+        pathname: "/welcome",
+        query: { onlyLayout: "true" },
+      });
     } catch (err) {
       dispatch(showFloatingError("Error al registrar. Intenta nuevamente."));
     }
@@ -76,6 +114,11 @@ const RegisterForm = ({ onRegister, loading, error }) => {
             required
             className={styles.input}
           />
+          {fieldErrors.fullName && (
+            <div style={{ color: "#ff3b3b", fontSize: "0.95em" }}>
+              {fieldErrors.fullName}
+            </div>
+          )}
         </div>
         <div className={styles.inputGroup}>
           <label className={styles.label}>Correo electrónico</label>
@@ -86,6 +129,11 @@ const RegisterForm = ({ onRegister, loading, error }) => {
             required
             className={styles.input}
           />
+          {fieldErrors.email && (
+            <div style={{ color: "#ff3b3b", fontSize: "0.95em" }}>
+              {fieldErrors.email}
+            </div>
+          )}
         </div>
         <div className={styles.inputGroupSmall}>
           <label className={styles.label}>
@@ -124,6 +172,11 @@ const RegisterForm = ({ onRegister, loading, error }) => {
           <div className={styles.passwordHint}>
             Mínimo 8 caracteres, 1 mayúscula, 1 número
           </div>
+          {fieldErrors.password && (
+            <div style={{ color: "#ff3b3b", fontSize: "0.95em" }}>
+              {fieldErrors.password}
+            </div>
+          )}
         </div>
         <div className={styles.inputGroup}>
           <label className={styles.label}>Confirmar contraseña</label>
@@ -147,6 +200,11 @@ const RegisterForm = ({ onRegister, loading, error }) => {
               )}
             </span>
           </div>
+          {fieldErrors.confirmPassword && (
+            <div style={{ color: "#ff3b3b", fontSize: "0.95em" }}>
+              {fieldErrors.confirmPassword}
+            </div>
+          )}
         </div>
         <div className={styles.termsRow}>
           <input
@@ -163,6 +221,17 @@ const RegisterForm = ({ onRegister, loading, error }) => {
             </a>
           </span>
         </div>
+        {fieldErrors.acceptTerms && (
+          <div
+            style={{
+              color: "#ff3b3b",
+              fontSize: "0.95em",
+              marginBottom: 8,
+            }}
+          >
+            {fieldErrors.acceptTerms}
+          </div>
+        )}
         <div className={styles.newsGroup}>
           <div className={styles.label}>
             ¿Deseas recibir noticias y actualizaciones?

@@ -3,6 +3,7 @@ import { getCookie } from "./shared/utils/session";
 
 export default async function middleware(req) {
   const token = getCookie("authToken", req);
+  console.log(token);
   const { pathname } = req.nextUrl;
   let authorizedPaths = [
     "/",

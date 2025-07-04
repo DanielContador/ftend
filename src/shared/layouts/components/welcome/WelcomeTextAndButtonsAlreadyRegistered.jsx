@@ -1,34 +1,32 @@
 import styles from "./WelcomeTextAndButtons.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight, faLightbulb } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
 
-const WelcomeTextAndButtons = ({ onSaberMas }) => {
+const WelcomeTextAndButtonsAlreadyRegistered = () => {
   const router = useRouter();
 
   return (
     <div className={styles.textAndButtons}>
-      <h1 className={styles.title}>¡Bienvenido a MentorIA!</h1>
+      <h1 className={styles.title}>¡Gracias por unirte a MentorIA!</h1>
       <p className={styles.subtitle}>
-        Asistencia inteligente, resultados humanos.
+        Tu plan ha sido activado. Estamos listos para ayudarte a crear contenido
+        de forma rápida e inteligente.
       </p>
       <div className={styles.ctaButtonsRow}>
         <button
-          onClick={() => router.push(`/register`)}
+          type="button"
+          onClick={() => window.location.assign("/")}
           className={styles.ctaButton}
         >
           <span style={{ display: "flex", alignItems: "center" }}>
-            Comenzar
+            Comenzar a crear
             <FontAwesomeIcon icon={faArrowRight} className={styles.ctaIcon} />
           </span>
-        </button>
-        <button className={styles.secondaryButton} onClick={onSaberMas}>
-          Saber más
-          <FontAwesomeIcon icon={faLightbulb} className={styles.ctaIcon} />
         </button>
       </div>
     </div>
   );
 };
 
-export default WelcomeTextAndButtons;
+export default WelcomeTextAndButtonsAlreadyRegistered;
