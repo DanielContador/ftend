@@ -22,6 +22,8 @@ import ActivityGenerationVideoConfigTab from "./ActivityGenerationVideoConfigTab
 import ActivityGenerationVideoGuionTab from "./ActivityGenerationVideoGuionTab";
 import ActivityGenerationVideoVideoTab from "./ActivityGenerationVideoVideoTab";
 import LoadingSpinner from "../../../../../shared/components/LoadingSpinner";
+import { useDispatch } from "react-redux";
+import { showFloatingError } from "../../../../../shared/store/rootActions";
 
 const TABS = [
   { key: "config", label: "Configuración" },
@@ -59,6 +61,7 @@ const ActivityGenerationVideo = ({
   const [selectedAvatar, setSelectedAvatar] = useState(null);
   const [avatarGenerateLoading, setAvatarGenerateLoading] = useState(false); // <-- nuevo estado
   const [videoLoading, setVideoLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const fetchActivity = async () => {
     setModalLoading(true);
@@ -86,7 +89,7 @@ const ActivityGenerationVideo = ({
       }
     } catch (error) {
       console.error("Error fetching activity:", error);
-      handleError(t("errorFetchingActivity"));
+      dispatch(showFloatingError(t("errorFetchingActivity")));
     } finally {
       setModalLoading(false);
     }
@@ -137,7 +140,7 @@ const ActivityGenerationVideo = ({
       setActiveTab("guion"); // <-- Cambia automáticamente al tab de guion
     } catch (error) {
       console.error("Error generating script:", error);
-      handleError(t("errorGeneratingActivityScript"));
+      dispatch(showFloatingError(t("errorGeneratingActivityScript")));
     } finally {
       setModalLoading(false);
     }
@@ -156,7 +159,7 @@ const ActivityGenerationVideo = ({
       setActiveTab("guion"); // <-- Cambia automáticamente al tab de guion
     } catch (error) {
       console.error("Error regenerating script:", error);
-      handleError(t("errorGeneratingActivityScript"));
+      dispatch(showFloatingError(t("errorGeneratingActivityScript")));
     } finally {
       setModalLoading(false);
     }
@@ -249,7 +252,7 @@ const ActivityGenerationVideo = ({
         pollVideoStatus("elai");
       } catch (error) {
         console.error("Error generating video:", error);
-        handleError(t("errorGeneratingVideo"));
+        dispatch(showFloatingError(t("errorGeneratingVideo")));
       } finally {
         setAvatarGenerateLoading(false);
         setModalLoading(false);
@@ -286,7 +289,7 @@ const ActivityGenerationVideo = ({
         pollVideoStatus("videogen");
       } catch (error) {
         console.error("Error generating scene video:", error);
-        handleError(t("errorGeneratingVideo"));
+        dispatch(showFloatingError(t("errorGeneratingVideo")));
       } finally {
         setModalLoading(false);
       }
@@ -327,7 +330,7 @@ const ActivityGenerationVideo = ({
       // Puedes mostrar un mensaje de éxito si lo deseas
     } catch (error) {
       console.error("Error updating script content:", error);
-      handleError(t("errorUpdatingDocumentContent"));
+      dispatch(showFloatingError(t("errorUpdatingDocumentContent")));
     } finally {
       setModalLoading(false);
     }

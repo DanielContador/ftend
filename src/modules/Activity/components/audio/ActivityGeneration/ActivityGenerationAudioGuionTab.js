@@ -120,11 +120,15 @@ const ActivityGenerationAudioGuionTab = ({
               options={voiceOptions}
               classNamePrefix="audioVoiceSelect"
               className={styles.audioVoiceSelect__control}
-              onChange={(option) =>
-                setSelectedVoice(option ? option.value : null)
+              onChange={
+                (option) => setSelectedVoice(option ? option : null) // Guarda el objeto completo, no solo el value
               }
               value={
-                voiceOptions.find((opt) => opt.value === selectedVoice) || null
+                selectedVoice
+                  ? voiceOptions.find(
+                      (opt) => opt.value === selectedVoice.value
+                    )
+                  : null
               }
               menuPortalTarget={document.body}
               styles={{

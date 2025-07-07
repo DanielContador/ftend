@@ -22,6 +22,8 @@ import ActivityGenerationAudioConfigTab from "./ActivityGenerationAudioConfigTab
 import ActivityGenerationAudioGuionTab from "./ActivityGenerationAudioGuionTab";
 import ActivityGenerationAudioAudioTab from "./ActivityGenerationAudioAudioTab";
 import LoadingSpinner from "../../../../../shared/components/LoadingSpinner";
+import { useDispatch } from "react-redux";
+import { showFloatingError } from "../../../../../shared/store/rootActions";
 
 const TABS = [
   { key: "config", label: "Configuración" },
@@ -48,6 +50,7 @@ const ActivityGenerationAudio = ({
   const [activityAudio, setActivityAudio] = useState(null);
   const [fileToken, setFileToken] = useState(null);
   const [audioLoading, setAudioLoading] = useState(false);
+  const dispatch = useDispatch();
 
   // Estado para voz y sliders
   const [voiceOptions, setVoiceOptions] = useState([]);
@@ -73,7 +76,7 @@ const ActivityGenerationAudio = ({
         setFileToken(response.data.token);
       }
     } catch (error) {
-      handleError(t("errorFetchingActivity"));
+      dispatch(showFloatingError(t("errorFetchingActivity")));
     } finally {
       setModalLoading(false);
     }
@@ -134,7 +137,7 @@ const ActivityGenerationAudio = ({
       await fetchActivity();
       setActiveTab("guion");
     } catch (error) {
-      handleError(t("errorGeneratingActivityScript"));
+      dispatch(showFloatingError(t("errorGeneratingActivityScript")));
     } finally {
       setModalLoading(false);
     }
@@ -151,7 +154,7 @@ const ActivityGenerationAudio = ({
       await fetchActivity();
       setActiveTab("guion");
     } catch (error) {
-      handleError(t("errorGeneratingActivityScript"));
+      dispatch(showFloatingError(t("errorGeneratingActivityScript")));
     } finally {
       setModalLoading(false);
     }
@@ -167,7 +170,7 @@ const ActivityGenerationAudio = ({
       await updateAudioContent(activityAudio.id, dataToUpdate);
       // Puedes mostrar un mensaje de éxito si lo deseas
     } catch (error) {
-      handleError(t("errorUpdatingDocumentContent"));
+      dispatch(showFloatingError(t("errorUpdatingDocumentContent")));
     } finally {
       setModalLoading(false);
     }
@@ -179,15 +182,15 @@ const ActivityGenerationAudio = ({
     try {
       await generateActivityAudio({
         ActivityId: activityId,
-        VoiceId: selectedVoice,
+        VoiceId: selectedVoice ? selectedVoice.value : null,
         Stability: stability,
-        Similarity: similarity,
+        Similarity_Boost: similarity,
       });
       setActiveTab("audio");
       setAudioLoading(true);
       pollAudioStatus();
     } catch (error) {
-      handleError(t("errorGeneratingAudio"));
+      dispatch(showFloatingError(t("errorGeneratingAudio")));
     } finally {
       setModalLoading(false);
     }
