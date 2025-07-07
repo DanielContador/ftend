@@ -183,8 +183,8 @@ const ActivityGenerationAudio = ({
       await generateActivityAudio({
         ActivityId: activityId,
         VoiceId: selectedVoice ? selectedVoice.value : null,
-        Stability: stability,
-        Similarity_Boost: similarity,
+        Stability: 1, //stability,
+        Similarity_Boost: 1, //similarity,
       });
       setActiveTab("audio");
       setAudioLoading(true);

@@ -9,16 +9,16 @@ const EditActivityPage = ({ courseId, handleError }) => {
   const dispatch = useDispatch();
 
   // Cerrar modal de generación de video y actualizar el estado global
-  const handleCloseVideoModal = () => {
+  const handleCloseModal = () => {
     dispatch(setActualComponent("CourseSectionActivity"));
-    router.push(`/course/${courseId}/edit`);
+    router.push(`/`); // Redirige al listado de recursos (index)
   };
 
   return (
     <ActivityEditor
       courseId={courseId}
       handleError={handleError}
-      onClose={handleCloseVideoModal}
+      onClose={handleCloseModal}
     />
   );
 };

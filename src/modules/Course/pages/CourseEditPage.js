@@ -48,6 +48,34 @@ const CourseEditPage = ({ handleError, showSection, onContinue }) => {
           courseId,
           "/course-structure"
         );
+        // --- NUEVO: Detectar si es material por la query ---
+        const queryString =
+          typeof window !== "undefined" ? window.location.search : "";
+        // Elimina el '?' y toma el valor
+        const queryParam = queryString
+          ? queryString.substring(1).toLowerCase()
+          : "";
+        if (queryParam === "material") {
+          // Redirigir a la edición de la actividad principal
+          const modules = data.courseStructure?.modules || [];
+          let activityId = null;
+          let format = null;
+          if (
+            modules.length > 0 &&
+            modules[0].learning_objects &&
+            modules[0].learning_objects.length > 0
+          ) {
+            activityId = modules[0].learning_objects[0].id;
+            format = modules[0].learning_objects[0].format;
+          }
+          if (activityId && format) {
+            router.replace(
+              `/course/${courseId}/edit/activity/?id=${activityId}&format=${format}`
+            );
+            return; // No continuar con el renderizado de CourseEdition
+          }
+        }
+        // --- FIN NUEVO ---
         setCourseStructure(data.courseStructure);
       } catch (error) {
         console.error("Error fetching course structure:", error);
@@ -78,6 +106,7 @@ const CourseEditPage = ({ handleError, showSection, onContinue }) => {
     if (courseId) {
       fetchCourseStructure();
     }
+    // eslint-disable-next-line
   }, [courseId]);
 
   if (loading || courseStructure == null) return <LoadingSpinner />;

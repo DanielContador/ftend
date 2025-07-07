@@ -90,8 +90,8 @@ const CourseListForm = ({
     setCourses([...courses]);
     setOrder(!order);
   };
-  const handleButtonEdit = (id) => {
-    handleEdit(id);
+  const handleButtonEdit = (id, type) => {
+    handleEdit(id, type);
   };
   const handleDeleteClick = (courseId) => {
     setCourseToDelete(courseId);
@@ -262,7 +262,9 @@ const CourseListForm = ({
                   </div>
                   <div className={styles.actions}>
                     <div
-                      onClick={() => handleButtonEdit(course.id)}
+                      onClick={() =>
+                        handleButtonEdit(course.id, course.courseType)
+                      }
                       className={styles.actionCard}
                     >
                       <FontAwesomeIcon icon={faPencil} />

@@ -26,10 +26,10 @@ const CourseListPage = ({ handleError }) => {
     await crudResources.reload();
   };
 
-  const handleEdit = (id) => {
+  const handleEdit = (id, type) => {
     // Logic for editing a course
     console.log(`Edit course with id: ${id}`);
-    router.push(`/course/${id}/edit`);
+    router.push(`/course/${id}/edit?${type}`);
   };
 
   const handleCreate = () => {
