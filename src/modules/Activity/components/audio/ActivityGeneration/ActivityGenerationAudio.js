@@ -8,7 +8,6 @@ import {
   generateAudioScript,
   regenerateAudioScript,
   getVoiceOptions,
-  retrieveActivityAudioStatus,
 } from "../../../services/activityService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -67,10 +66,6 @@ const ActivityGenerationAudio = ({
       if (response.data.audio) {
         setActivityAudio(response.data.audio);
         setGuionInput(response.data.audio.content);
-        // Si el audio está en proceso, hacer polling
-        if (response.data.audio.audioUrl === "rendering") {
-          pollAudioStatus();
-        }
       }
       if (response.data.token) {
         setFileToken(response.data.token);
@@ -99,32 +94,6 @@ const ActivityGenerationAudio = ({
       })
       .catch(() => setVoiceOptions([]));
   }, []);
-
-  // Polling para el audio
-  const pollAudioStatus = async () => {
-    setAudioLoading(true);
-    const interval = setInterval(async () => {
-      try {
-        const response = await retrieveActivityAudioStatus(activityId);
-        if (response.data.content?.status === "ready") {
-          clearInterval(interval);
-          setActivityAudio((prev) => ({
-            ...prev,
-            rawAudio: response.data.url,
-          }));
-          setAudioLoading(false);
-        } else if (response.data.content.status !== "rendering") {
-          clearInterval(interval);
-          setAudioLoading(false);
-          handleError(t("errorGeneratingAudio"));
-        }
-      } catch (error) {
-        clearInterval(interval);
-        setAudioLoading(false);
-        handleError(t("errorGeneratingAudio") + ": " + error.message);
-      }
-    }, 5000);
-  };
 
   // Generar script
   const handleGenerateScript = async () => {
@@ -188,7 +157,6 @@ const ActivityGenerationAudio = ({
       });
       setActiveTab("audio");
       setAudioLoading(true);
-      pollAudioStatus();
     } catch (error) {
       dispatch(showFloatingError(t("errorGeneratingAudio")));
     } finally {
