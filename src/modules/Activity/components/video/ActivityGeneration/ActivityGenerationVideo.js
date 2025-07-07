@@ -9,6 +9,7 @@ import {
   retrieveActivityVideoStatus,
   getElaiVideoAvatarOptions, // <-- Import for avatar list
   generateElaiActivityVideo,
+  generateVideogenActivityVideo, // <-- importar
 } from "../../../services/activityService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -43,7 +44,7 @@ const ActivityGenerationVideo = ({
   const [configGuionInput, setConfigGuionInput] = useState("");
   const [guionInput, setGuionInput] = useState(DEFAULT_GUIÓN);
   const [guionEdit, setGuionEdit] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
   const [data, setData] = useState({});
   const [activityVideo, setActivityVideo] = useState(null);
   const [fileToken, setFileToken] = useState(null);
@@ -59,11 +60,8 @@ const ActivityGenerationVideo = ({
   const [avatarGenerateLoading, setAvatarGenerateLoading] = useState(false); // <-- nuevo estado
   const [videoLoading, setVideoLoading] = useState(false);
 
-  // Nuevo estado para loading local del modal (spinner centrado)
-  const [modalLoading, setModalLoading] = useState(false);
-
   const fetchActivity = async () => {
-    setLoading(true);
+    setModalLoading(true);
     try {
       const response = await getActivityVideo(activityId);
       setData(response.data.activity);
@@ -90,7 +88,7 @@ const ActivityGenerationVideo = ({
       console.error("Error fetching activity:", error);
       handleError(t("errorFetchingActivity"));
     } finally {
-      setLoading(false);
+      setModalLoading(false);
     }
   };
 
@@ -135,8 +133,8 @@ const ActivityGenerationVideo = ({
         ActivityId: activityId,
       };
       await generateVideoScript(data);
-      await fetchActivity(); // recarga la info y mantiene el tab
-      // No cambiar el tab, mantener el actual
+      await fetchActivity();
+      setActiveTab("guion"); // <-- Cambia automáticamente al tab de guion
     } catch (error) {
       console.error("Error generating script:", error);
       handleError(t("errorGeneratingActivityScript"));
@@ -226,12 +224,13 @@ const ActivityGenerationVideo = ({
   const handleGenerateVideoAvatarScreen = async () => {
     if (videoType === "avatar" && avatarVoice && selectedAvatar) {
       setAvatarGenerateLoading(true);
+      setModalLoading(true);
       try {
         const data = {
           ActivityId: activityId,
           Language: "Spanish",
-          Voice: avatarVoice,
-          VoiceProvider: null, // Set if needed
+          Voice: avatarVoice.value, // Usa el value del objeto
+          VoiceProvider: avatarVoice.voiceProvider || null, // Usa el provider del objeto
           AvatarCode: selectedAvatar.raw?.code
             ? `${selectedAvatar.raw.code}.${selectedAvatar.raw.variants[0].code}`
             : null,
@@ -253,6 +252,7 @@ const ActivityGenerationVideo = ({
         handleError(t("errorGeneratingVideo"));
       } finally {
         setAvatarGenerateLoading(false);
+        setModalLoading(false);
       }
     }
   };
@@ -260,22 +260,35 @@ const ActivityGenerationVideo = ({
   // Handler for "Generar" button in guion tab (scene or avatar)
   const handleGenerateVideoGuionTab = async () => {
     if (videoType === "avatar" && avatarVoice) {
-      setLoading(true);
+      setModalLoading(true);
       try {
         setShowAvatarSelection(true);
       } finally {
-        setLoading(false);
+        setModalLoading(false);
       }
     } else if (videoType === "scene" && avatarVoice) {
-      setLoading(true);
+      setModalLoading(true);
       try {
-        // Aquí iría la lógica para generar video tipo scene
-        // Simulación: después de generar, mostrar el tab de video
+        const data = {
+          ActivityId: activityId,
+          Language: "Spanish",
+          Voice: avatarVoice.value,
+          Subtitles: true,
+          CaptionFontName: "Verdana",
+          BackgroundMusic: true,
+        };
+        const response = await generateVideogenActivityVideo(data);
+        console.log("Generated video response:", response);
+        activityVideo.videoUrl = response.data.content;
+        setActivityVideo(activityVideo);
         setActiveTab("video");
         setVideoLoading(true);
-        // Aquí deberías llamar a tu endpoint de generación de video de escenas y luego pollVideoStatus('videogen')
+        pollVideoStatus("videogen");
+      } catch (error) {
+        console.error("Error generating scene video:", error);
+        handleError(t("errorGeneratingVideo"));
       } finally {
-        setLoading(false);
+        setModalLoading(false);
       }
     }
   };
@@ -298,13 +311,14 @@ const ActivityGenerationVideo = ({
 
   // Handler for guardar y continuar (puedes personalizar la acción)
   const handleSaveAndContinue = () => {
-    // Aquí puedes agregar la lógica para guardar y continuar
-    // Por ejemplo, cerrar el modal o avanzar a otro paso
+    if (typeof onClose === "function") {
+      onClose();
+    }
   };
 
   // Guardar el guion editado (como en VideoEditor)
   const handleSaveScript = async (text) => {
-    setLoading(true);
+    setModalLoading(true);
     try {
       const dataToUpdate = {
         content: text || guionInput, // Usa el texto pasado o el estado actual
@@ -315,11 +329,10 @@ const ActivityGenerationVideo = ({
       console.error("Error updating script content:", error);
       handleError(t("errorUpdatingDocumentContent"));
     } finally {
-      setLoading(false);
+      setModalLoading(false);
     }
   };
 
-  if (loading) return <LoadingSpinner />;
   if (modalLoading) {
     return (
       <div className={styles.modalOverlay}>
@@ -468,7 +481,7 @@ const ActivityGenerationVideo = ({
                 onClick={handleSaveAndContinue}
                 type="button"
               >
-                Salvar y continuar
+                Finalizar
                 <FontAwesomeIcon
                   className={styles.sparkles}
                   icon={faArrowRight}

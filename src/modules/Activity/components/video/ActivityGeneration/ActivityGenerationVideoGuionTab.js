@@ -246,11 +246,13 @@ const ActivityGenerationVideoGuionTab = ({
               options={voiceOptions}
               classNamePrefix="avatarVoiceSelect"
               className={styles.avatarVoiceSelect__control}
-              onChange={(option) =>
-                setAvatarVoice(option ? option.value : null)
+              onChange={
+                (option) => setAvatarVoice(option ? option : null) // Guarda el objeto completo
               }
               value={
-                voiceOptions.find((opt) => opt.value === avatarVoice) || null
+                avatarVoice
+                  ? voiceOptions.find((opt) => opt.value === avatarVoice.value)
+                  : null
               }
               menuPortalTarget={document.body}
               styles={{
