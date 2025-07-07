@@ -21,6 +21,7 @@ const EditCoursePage = () => {
 
   // Sincroniza el index y showSection con el estado global actualComponent
   useEffect(() => {
+    console.log(actualComponent);
     if (actualComponent === "CourseSectionActivity") {
       setIndex(1);
       setShowSection("CourseSectionActivity");
@@ -36,6 +37,7 @@ const EditCoursePage = () => {
   };
 
   const handleContinue = (index, components) => {
+    console.log("handleContinue called with index:", index);
     if (index < components.length - 1) {
       setIndex(index + 1);
       setShowSection(components[index + 1]);

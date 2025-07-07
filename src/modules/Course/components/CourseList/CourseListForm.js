@@ -246,7 +246,9 @@ const CourseListForm = ({
                             ? resourceData.find(
                                 (f) => f.key === course.resource
                               )?.text
-                            : course.resource}
+                            : resourceData.find(
+                                (f) => f.key === course.resource
+                              )?.text}
                         </p>
                       </div>
                     )}
