@@ -43,7 +43,7 @@ const ActivityGenerationAudio = ({
   const [configGuionInput, setConfigGuionInput] = useState("");
   const [guionInput, setGuionInput] = useState(DEFAULT_GUIÓN);
   const [guionEdit, setGuionEdit] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
   const [data, setData] = useState({});
   const [activityAudio, setActivityAudio] = useState(null);
   const [fileToken, setFileToken] = useState(null);
@@ -57,7 +57,7 @@ const ActivityGenerationAudio = ({
 
   // Cargar datos de la actividad/audio
   const fetchActivity = async () => {
-    setLoading(true);
+    setModalLoading(true);
     try {
       const response = await getActivityAudio(activityId);
       setData(response.data.activity);
@@ -75,7 +75,7 @@ const ActivityGenerationAudio = ({
     } catch (error) {
       handleError(t("errorFetchingActivity"));
     } finally {
-      setLoading(false);
+      setModalLoading(false);
     }
   };
 
@@ -125,51 +125,57 @@ const ActivityGenerationAudio = ({
 
   // Generar script
   const handleGenerateScript = async () => {
-    setLoading(true);
+    setModalLoading(true);
     try {
       await generateAudioScript({
-        Prompt: configGuionInput,
+        PromptInstructions: configGuionInput,
         ActivityId: activityId,
       });
       await fetchActivity();
+      setActiveTab("guion");
     } catch (error) {
       handleError(t("errorGeneratingActivityScript"));
     } finally {
-      setLoading(false);
+      setModalLoading(false);
     }
   };
 
   // Regenerar script
   const handleRegenerateScript = async () => {
-    setLoading(true);
+    setModalLoading(true);
     try {
       await regenerateAudioScript({
-        Prompt: configGuionInput,
+        PromptInstructions: configGuionInput,
         ActivityId: activityId,
       });
       await fetchActivity();
+      setActiveTab("guion");
     } catch (error) {
       handleError(t("errorGeneratingActivityScript"));
     } finally {
-      setLoading(false);
+      setModalLoading(false);
     }
   };
 
   // Guardar guion editado
-  const handleSaveScript = async () => {
-    setLoading(true);
+  const handleSaveScript = async (text) => {
+    setModalLoading(true);
     try {
-      await updateAudioContent(activityAudio.id, { content: guionInput });
+      const dataToUpdate = {
+        content: text || guionInput, // Usa el texto pasado o el estado actual
+      };
+      await updateAudioContent(activityAudio.id, dataToUpdate);
+      // Puedes mostrar un mensaje de éxito si lo deseas
     } catch (error) {
       handleError(t("errorUpdatingDocumentContent"));
     } finally {
-      setLoading(false);
+      setModalLoading(false);
     }
   };
 
   // Generar audio
   const handleGenerateAudio = async () => {
-    setLoading(true);
+    setModalLoading(true);
     try {
       await generateActivityAudio({
         ActivityId: activityId,
@@ -183,7 +189,7 @@ const ActivityGenerationAudio = ({
     } catch (error) {
       handleError(t("errorGeneratingAudio"));
     } finally {
-      setLoading(false);
+      setModalLoading(false);
     }
   };
 
@@ -208,7 +214,24 @@ const ActivityGenerationAudio = ({
     }
   };
 
-  if (loading) return <LoadingSpinner />;
+  if (modalLoading) {
+    return (
+      <div className={styles.modalOverlay}>
+        <div className={styles.modal}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              minHeight: 400,
+            }}
+          >
+            <span className={styles.loader}></span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.modalOverlay}>
