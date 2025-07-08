@@ -8,6 +8,8 @@ import courseService from "../services/courseService";
 import courseContentAIService from "../services/courseContentAIService";
 import { useCrudManager } from "../../../shared/hooks/useCrudManager";
 import { updateActivityTitle } from "../services/courseStructureService";
+import { useDispatch } from "react-redux";
+import { setEditType } from "../../../shared/store/rootActions";
 
 const CourseEditPage = ({ handleError, showSection, onContinue }) => {
   const router = useRouter();
@@ -19,6 +21,7 @@ const CourseEditPage = ({ handleError, showSection, onContinue }) => {
   const crud = useCrudManager(courseService, handleError, t, {
     fetchOnMount: false,
   });
+  const dispatch = useDispatch();
 
   const handleRegenerate = async (instructions, courseId) => {
     setLoading(true);
@@ -51,11 +54,11 @@ const CourseEditPage = ({ handleError, showSection, onContinue }) => {
         // --- NUEVO: Detectar si es material por la query ---
         const queryString =
           typeof window !== "undefined" ? window.location.search : "";
-        // Elimina el '?' y toma el valor
         const queryParam = queryString
           ? queryString.substring(1).toLowerCase()
           : "";
         if (queryParam === "material") {
+          dispatch(setEditType("material"));
           // Redirigir a la edición de la actividad principal
           const modules = data.courseStructure?.modules || [];
           let activityId = null;
@@ -72,8 +75,10 @@ const CourseEditPage = ({ handleError, showSection, onContinue }) => {
             router.replace(
               `/course/${courseId}/edit/activity/?id=${activityId}&format=${format}`
             );
-            return; // No continuar con el renderizado de CourseEdition
+            return;
           }
+        } else {
+          dispatch(setEditType("course"));
         }
         // --- FIN NUEVO ---
         setCourseStructure(data.courseStructure);

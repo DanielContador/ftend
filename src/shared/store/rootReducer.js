@@ -48,10 +48,25 @@ function floatingSuccessReducer(state = initialFloatingSuccessState, action) {
   }
 }
 
+// Nuevo estado global para tipo de edición (material/curso)
+const initialEditTypeState = {
+  editType: null,
+};
+
+function editTypeReducer(state = initialEditTypeState, action) {
+  switch (action.type) {
+    case "SET_EDIT_TYPE":
+      return { ...state, editType: action.payload };
+    default:
+      return state;
+  }
+}
+
 const rootReducer = combineReducers({
   component: componentReducer,
   floatingError: floatingErrorReducer,
   floatingSuccess: floatingSuccessReducer,
+  editType: editTypeReducer, // <-- agregar aquí
   // Add your reducers here
 });
 

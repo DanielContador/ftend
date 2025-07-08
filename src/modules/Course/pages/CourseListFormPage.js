@@ -9,6 +9,8 @@ import styles from "./CourseListFormPage.module.css"; // Assuming we will create
 import { useRouter } from "next/router"; // Importing useRouter for navigation
 import { useTranslation } from "react-i18next"; // Importing useTranslation
 import CourseListForm from "../components/CourseList/CourseListForm";
+import { useDispatch } from "react-redux";
+import { setActualComponent } from "../../../shared/store/rootActions";
 
 const CourseListPage = ({ handleError }) => {
   const { t } = useTranslation();
@@ -20,6 +22,7 @@ const CourseListPage = ({ handleError }) => {
   });
   const filteredResources = useResourceManager(resourceService, handleError, t);
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleDelete = async (id) => {
     await crud.deleteItem(id);
@@ -27,6 +30,7 @@ const CourseListPage = ({ handleError }) => {
   };
 
   const handleEdit = (id, type) => {
+    dispatch(setActualComponent("CourseEdition"));
     // Logic for editing a course
     console.log(`Edit course with id: ${id}`);
     router.push(`/course/${id}/edit?${type}`);

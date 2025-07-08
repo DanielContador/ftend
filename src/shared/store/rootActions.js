@@ -30,3 +30,9 @@ export const showFloatingSuccess = (message) => ({
 export const hideFloatingSuccess = () => ({
   type: "HIDE_FLOATING_SUCCESS",
 });
+
+// Acción para setear el tipo de edición global (material/curso/null)
+export const setEditType = (editType) => ({
+  type: "SET_EDIT_TYPE",
+  payload: editType, // "material", "course" o null
+});
