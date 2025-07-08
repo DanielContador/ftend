@@ -15,13 +15,13 @@ const options = [
     description:
       "Estandariza cursos e-learning para integrarse fácilmente a cualquier LMS compatible",
   },
-  {
-    key: "material", // Cambiado de "independiente" a "internet"
-    label: "Recurso independiente",
-    icon: <FontAwesomeIcon className={styles.customIcon} icon={faBookOpen} />,
-    description:
-      "Material autónomo que se usa sin depender de otros contenidos.",
-  },
+  // {
+  //   key: "material", // Cambiado de "independiente" a "internet"
+  //   label: "Recurso independiente",
+  //   icon: <FontAwesomeIcon className={styles.customIcon} icon={faBookOpen} />,
+  //   description:
+  //     "Material autónomo que se usa sin depender de otros contenidos.",
+  // },
   {
     key: "standard",
     label: "Moodle",

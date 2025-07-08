@@ -134,10 +134,9 @@ const ActivityGenerationAudio = ({
     setModalLoading(true);
     try {
       const dataToUpdate = {
-        content: text || guionInput, // Usa el texto pasado o el estado actual
+        content: text || guionInput,
       };
       await updateAudioContent(activityAudio.id, dataToUpdate);
-      // Puedes mostrar un mensaje de éxito si lo deseas
     } catch (error) {
       dispatch(showFloatingError(t("errorUpdatingDocumentContent")));
     } finally {
@@ -148,18 +147,46 @@ const ActivityGenerationAudio = ({
   // Generar audio
   const handleGenerateAudio = async () => {
     setModalLoading(true);
+    setAudioLoading(true);
     try {
-      await generateActivityAudio({
+      // Llama a la generación y espera a que el audio esté listo (polling)
+      const response = await generateActivityAudio({
         ActivityId: activityId,
         VoiceId: selectedVoice ? selectedVoice.value : null,
-        Stability: 1, //stability,
-        Similarity_Boost: 1, //similarity,
+        Stability: stability / 100,
+        Similarity_Boost: similarity / 100,
       });
+
+      // Polling para esperar a que el audio esté listo
+      let audioReady = false;
+      let pollCount = 0;
+      let audioData = null;
+      while (!audioReady && pollCount < 30) {
+        // Máximo 30 intentos (~2.5 minutos)
+        // Espera 5 segundos entre cada intento
+        // eslint-disable-next-line no-await-in-loop
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+        // eslint-disable-next-line no-await-in-loop
+        const pollResponse = await getActivityAudio(activityId);
+        if (
+          pollResponse.data.audio &&
+          pollResponse.data.audio.filePath &&
+          pollResponse.data.token
+        ) {
+          audioReady = true;
+          audioData = pollResponse.data.audio;
+          setFileToken(pollResponse.data.token);
+        }
+        pollCount++;
+      }
+      if (audioReady && audioData) {
+        setActivityAudio(audioData);
+      }
       setActiveTab("audio");
-      setAudioLoading(true);
     } catch (error) {
       dispatch(showFloatingError(t("errorGeneratingAudio")));
     } finally {
+      setAudioLoading(false);
       setModalLoading(false);
     }
   };
