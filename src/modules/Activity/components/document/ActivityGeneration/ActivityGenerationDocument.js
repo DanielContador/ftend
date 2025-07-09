@@ -76,7 +76,7 @@ const ActivityGenerationDocument = ({
   const handleGenerateDocument = async () => {
     setModalLoading(true);
     try {
-      await generateActivityDocument({
+      const response = await generateActivityDocument({
         Prompt: configInstructions,
         Duration: data.duration,
         DocumentType: data.contentType,
@@ -96,7 +96,7 @@ const ActivityGenerationDocument = ({
   const handleRegenerateDocument = async () => {
     setModalLoading(true);
     try {
-      await regenerateActivityDocument({
+      const response = await regenerateActivityDocument({
         Prompt: configInstructions,
         ActivityId: activityId,
       });
@@ -111,9 +111,26 @@ const ActivityGenerationDocument = ({
 
   // Guardar documento editado
   const handleSaveDocument = async (content) => {
+    if (!activityDocument || !activityDocument.id) return;
     setModalLoading(true);
     try {
-      await updateDocumentContent(activityDocument.id, { content });
+      // Solo envía las propiedades requeridas y que existan, para evitar nulls innecesarios
+      const dataToSend = {
+        Content: content,
+      };
+      if (activityDocument.filePath)
+        dataToSend.FilePath = activityDocument.filePath;
+      if (activityDocument.fileType)
+        dataToSend.FileType = activityDocument.fileType;
+      if (activityDocument.prompt) dataToSend.Prompt = activityDocument.prompt;
+      if (activityDocument.duration)
+        dataToSend.Duration = activityDocument.duration;
+      if (typeof activityDocument.includeImages !== "undefined")
+        dataToSend.IncludeImages = activityDocument.includeImages;
+      if (typeof activityDocument.cantPages !== "undefined")
+        dataToSend.CantPages = activityDocument.cantPages;
+
+      await updateDocumentContent(activityDocument.activityId, dataToSend);
       setDocumentContent(content);
       setEditMode(false);
     } catch (error) {
@@ -219,7 +236,7 @@ const ActivityGenerationDocument = ({
                   onClick={handleRegenerateDocument}
                   className={styles.generateBtn}
                 >
-                  Generar
+                  {t("regenerateActivity")}
                   <FontAwesomeIcon
                     className={styles.sparkles}
                     icon={faWandSparkles}
@@ -230,7 +247,7 @@ const ActivityGenerationDocument = ({
                   onClick={handleGenerateDocument}
                   className={styles.generateBtn}
                 >
-                  Generar
+                  {t("generateActivity")}
                   <FontAwesomeIcon
                     className={styles.sparkles}
                     icon={faWandSparkles}
@@ -240,15 +257,10 @@ const ActivityGenerationDocument = ({
             {activeTab === "document" && (
               <button
                 className={styles.generateBtn}
-                onClick={() => handleSaveDocument(documentContent)}
+                onClick={onClose}
                 type="button"
               >
-                Guardar
-                <FontAwesomeIcon
-                  className={styles.sparkles}
-                  icon={faSave}
-                  style={{ marginLeft: 8 }}
-                />
+                Finalizar
               </button>
             )}
           </>
