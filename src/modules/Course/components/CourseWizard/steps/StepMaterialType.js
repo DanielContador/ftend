@@ -10,9 +10,7 @@ const options = [
     label: (
       <>
         Archivos de texto{" "}
-        <span style={{ color: "#888", fontWeight: 400 }}>
-          (word, excel, pdf, txt)
-        </span>
+        <span style={{ color: "#888", fontWeight: 400 }}>(word, pdf, txt)</span>
       </>
     ),
   },
@@ -22,7 +20,7 @@ const keyToLabel = {
   videos: "Video",
   ppt: "PPT",
   audios: "Audio",
-  archivos: "Archivos de texto (Word, Excel, txt y PDF)",
+  archivos: "Archivos de texto (Word, txt y PDF)",
 };
 
 export const StepMaterialType = ({

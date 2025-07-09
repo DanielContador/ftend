@@ -6,7 +6,7 @@ const keyToLabel = {
   videos: "Video",
   ppt: "PPT",
   audios: "Audio",
-  archivos: "Archivos de texto (Word, Excel, txt y PDF)",
+  archivos: "Archivos de texto (Word, txt y PDF)",
   scormslide: "HTML5 (diapositivas interactivas)",
 };
 
@@ -34,7 +34,7 @@ export const StepCourseMaterialType = ({
         }
       : {
           key: "archivos",
-          label: "Archivos de texto (word, excel, pdf, txt)",
+          label: "Archivos de texto (word, pdf, txt)",
         };
 
   const options = [...baseOptions, lastOption];
