@@ -7,6 +7,7 @@ import PPTEditor from "./ppt/PPTEditor"; // Importing PPTEditor
 import { useTranslation } from "react-i18next";
 import ActivityGenerationVideo from "./video/ActivityGeneration/ActivityGenerationVideo";
 import ActivityGenerationAudio from "./audio/ActivityGeneration/ActivityGenerationAudio";
+import ActivityGenerationDocument from "./document/ActivityGeneration/ActivityGenerationDocument";
 
 const ActivityEditor = ({ courseId, handleError, onClose }) => {
   const router = useRouter();
@@ -20,8 +21,15 @@ const ActivityEditor = ({ courseId, handleError, onClose }) => {
     case "word":
     case "txt":
       return (
-        <DocumentEditor
+        // <DocumentEditor
+        //   activityId={id}
+        //   courseId={courseId}
+        //   handleError={handleError}
+        // />
+        <ActivityGenerationDocument
+          onClose={onClose}
           activityId={id}
+          format={format}
           courseId={courseId}
           handleError={handleError}
         />
