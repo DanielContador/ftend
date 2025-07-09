@@ -5,8 +5,9 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  height: 180px;
+  min-height: 130px;
   margin-bottom: 18px;
+  padding-bottom: 12px;
 }
 
 .dataCardHeader {
@@ -20,16 +21,18 @@
 
 .dataRow {
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-start;
   gap: 80px;
-  padding: 12px 28px 12px 28px;
+  padding: 12px 28px 0 28px;
 }
 
 .dataCol {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  min-width: 120px;
+  min-width: 180px;
+  margin-bottom: 10px;
 }
 
 .dataLabel {
@@ -45,7 +48,12 @@
   color: #888;
   border-radius: 8px;
   padding: 5px 18px;
-  margin-bottom: 10px;
+  margin-bottom: 0;
+  background: transparent;
+  min-height: 24px;
+  display: flex;
+  align-items: center;
+  word-break: break-word;
 }
 
 .summaryCard {
@@ -55,8 +63,8 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  max-height: 120px;
-  margin-bottom: 18px;
+  min-height: 150px;
+  max-height: 260px;
 }
 
 .summaryCardHeader {
@@ -70,7 +78,8 @@
 
 .summaryListBox {
   padding: 12px 28px 12px 28px;
-  max-height: 80px;
+  max-height: 300px;
+  height: 300px;
   overflow-y: auto;
 }
 
@@ -100,8 +109,9 @@
 .switchContainer {
   display: flex;
   align-items: center;
-  margin-bottom: 1em;
-  margin-top: 10px;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  gap: 12px;
 }
 
 .instructionsContainer {

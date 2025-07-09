@@ -219,7 +219,7 @@ const ActivityGenerationDocument = ({
                   onClick={handleRegenerateDocument}
                   className={styles.generateBtn}
                 >
-                  {t("regenerateActivity")}
+                  Generar
                   <FontAwesomeIcon
                     className={styles.sparkles}
                     icon={faWandSparkles}
@@ -230,13 +230,27 @@ const ActivityGenerationDocument = ({
                   onClick={handleGenerateDocument}
                   className={styles.generateBtn}
                 >
-                  {t("generateActivity")}
+                  Generar
                   <FontAwesomeIcon
                     className={styles.sparkles}
                     icon={faWandSparkles}
                   />
                 </button>
               ))}
+            {activeTab === "document" && (
+              <button
+                className={styles.generateBtn}
+                onClick={() => handleSaveDocument(documentContent)}
+                type="button"
+              >
+                Guardar
+                <FontAwesomeIcon
+                  className={styles.sparkles}
+                  icon={faSave}
+                  style={{ marginLeft: 8 }}
+                />
+              </button>
+            )}
           </>
         </div>
       </div>

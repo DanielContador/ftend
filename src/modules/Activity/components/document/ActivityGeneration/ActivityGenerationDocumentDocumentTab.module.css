@@ -33,7 +33,7 @@
 .documentTextarea {
   width: 100%;
   min-height: 200px;
-  max-height: 300px;
+  max-height: 200px;
   border-radius: 12px;
   border: 1.5px solid #ececec;
   background: #fafbfc;
@@ -48,7 +48,7 @@
 
 .documentTextDisplay {
   min-height: 200px;
-  max-height: 300px;
+  max-height: 200px;
   border: 1.5px dashed #d1c4f7;
   border-radius: 12px;
   background: #fafbfc;

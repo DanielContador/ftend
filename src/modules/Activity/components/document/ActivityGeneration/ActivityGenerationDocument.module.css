@@ -12,11 +12,11 @@
 }
 
 .modal {
-  background: #fff;
+  background: #f9f8f8;
   border-radius: 28px;
   box-shadow: 0 8px 32px 0 rgba(44, 44, 44, 0.18);
-  width: 700px;
-  min-height: 480px;
+  width: 1050px;
+  height: 600px;
   position: relative;
   display: flex;
   flex-direction: column;

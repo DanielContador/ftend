@@ -40,7 +40,7 @@ const ActivityGenerationDocumentDocumentTab = ({
               onChange={(e) => setTempContent(e.target.value)}
               style={{
                 minHeight: 200,
-                maxHeight: 300,
+                maxHeight: 200,
                 width: "100%",
                 overflowY: "auto",
               }}
@@ -50,7 +50,7 @@ const ActivityGenerationDocumentDocumentTab = ({
               className={styles.documentTextDisplay}
               style={{
                 minHeight: 200,
-                maxHeight: 300,
+                maxHeight: 200,
                 width: "100%",
                 overflowY: "auto",
                 whiteSpace: "pre-line",
@@ -76,7 +76,10 @@ const ActivityGenerationDocumentDocumentTab = ({
           <div className={styles.editActions}>
             <button
               className={styles.saveBtn}
-              onClick={() => handleSaveDocument(tempContent)}
+              onClick={() => {
+                setEditMode(false);
+                setDocumentContent(tempContent);
+              }}
               type="button"
             >
               <FontAwesomeIcon icon={faSave} style={{ marginRight: 4 }} />
