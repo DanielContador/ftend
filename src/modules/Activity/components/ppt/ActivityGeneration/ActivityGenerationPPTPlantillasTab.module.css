@@ -1,0 +1,176 @@
+.plantillasTabWrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.plantillasCard {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 18px 0 rgba(127, 86, 217, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 32px 36px 28px 36px;
+  margin-top: 32px;
+  margin-bottom: 24px;
+  min-width: 480px;
+  max-width: 540px;
+  width: 100%;
+}
+
+.plantillasHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 16px;
+}
+
+.iconBox {
+  width: 56px;
+  height: 56px;
+  background: #7c3aed; /* Violeta sólido */
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Quitar sombra de fondo */
+  box-shadow: none;
+}
+
+.pptIcon {
+  width: 38px;
+  height: 38px;
+  color: #fff; /* Icono blanco sobre fondo violeta */
+}
+
+.title {
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: #22223b;
+  margin-bottom: 2px;
+}
+
+.subtitle {
+  font-size: 1.01rem;
+  color: #888;
+  font-weight: 500;
+}
+
+.tabsRow {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 18px;
+  margin-top: 8px;
+}
+
+.tabActive {
+  background: none;
+  border: none;
+  color: #7c3aed;
+  font-weight: 700;
+  font-size: 1.08rem;
+  border-bottom: 2.5px solid #7c3aed;
+  padding: 0 0 7px 0;
+  cursor: pointer;
+}
+
+.selectLabel {
+  font-size: 1.07rem;
+  color: #22223b;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.templatesGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 18px;
+  width: 100%;
+}
+
+.templateCard {
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  padding: 0;
+  transition: box-shadow 0.18s, border 0.18s;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 92px;
+  min-width: 180px;
+  max-width: 240px;
+  box-shadow: none;
+  outline: none;
+  position: relative;
+}
+
+.templateCard.selected,
+.templateCard:focus {
+  outline: 2.5px solid #7c3aed;
+  background: #ede9fe;
+  box-shadow: 0 8px 32px 0 rgba(127, 86, 217, 0.18);
+}
+
+.templateImageBox {
+  width: 100%;
+  height: 64px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 0;
+}
+
+.templateImage {
+  width: 100%;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+}
+
+.templateName {
+  font-size: 1.01rem;
+  font-weight: 600;
+  color: #22223b;
+  padding: 10px 0 10px 0;
+  text-align: left;
+  width: 100%;
+}
+
+.loading {
+  display: none; /* Oculta el texto de cargando */
+}
+
+.footerRow {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+.generateBtn {
+  background: #7c3aed;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.08rem;
+  padding: 8px 32px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  transition: 0.18s;
+}
+
+.generateBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.generateBtn:hover:enabled {
+  background: #6230ed;
+}

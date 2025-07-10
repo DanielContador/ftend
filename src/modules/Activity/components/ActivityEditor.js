@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import ActivityGenerationVideo from "./video/ActivityGeneration/ActivityGenerationVideo";
 import ActivityGenerationAudio from "./audio/ActivityGeneration/ActivityGenerationAudio";
 import ActivityGenerationDocument from "./document/ActivityGeneration/ActivityGenerationDocument";
+import ActivityGenerationPPT from "./ppt/ActivityGeneration/ActivityGenerationPPT";
 
 const ActivityEditor = ({ courseId, handleError, onClose }) => {
   const router = useRouter();
@@ -21,11 +22,6 @@ const ActivityEditor = ({ courseId, handleError, onClose }) => {
     case "word":
     case "txt":
       return (
-        // <DocumentEditor
-        //   activityId={id}
-        //   courseId={courseId}
-        //   handleError={handleError}
-        // />
         <ActivityGenerationDocument
           onClose={onClose}
           activityId={id}
@@ -36,11 +32,6 @@ const ActivityEditor = ({ courseId, handleError, onClose }) => {
       );
     case "audio":
       return (
-        // <AudioEditor
-        //   activityId={id}
-        //   courseId={courseId}
-        //   handleError={handleError}
-        // />
         <ActivityGenerationAudio
           onClose={onClose}
           activityId={id}
@@ -51,11 +42,6 @@ const ActivityEditor = ({ courseId, handleError, onClose }) => {
       );
     case "video":
       return (
-        // <VideoEditor
-        //   activityId={id}
-        //   courseId={courseId}
-        //   handleError={handleError}
-        // />
         <ActivityGenerationVideo
           onClose={onClose}
           activityId={id}
@@ -66,8 +52,10 @@ const ActivityEditor = ({ courseId, handleError, onClose }) => {
       );
     case "ppt":
       return (
-        <PPTEditor
+        <ActivityGenerationPPT
+          onClose={onClose}
           activityId={id}
+          format={format}
           courseId={courseId}
           handleError={handleError}
         />
