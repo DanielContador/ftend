@@ -40,10 +40,17 @@
   font-size: 1.07rem;
   color: #22223b;
   padding: 16px 18px;
-  resize: none;
-  outline: none;
   font-weight: 500;
   overflow-y: auto;
+  outline: none;
+  white-space: pre-wrap;
+  /* Para edición visual similar a DocumentEditor */
+  box-shadow: 0 1.5px 8px 0 rgba(127, 86, 217, 0.07);
+  transition: border 0.2s;
+}
+
+.documentTextarea:focus {
+  border: 1.5px solid #7c3aed;
 }
 
 .documentTextDisplay {
@@ -55,7 +62,7 @@
   color: #22223b;
   font-size: 1.07rem;
   padding: 16px 18px;
-  white-space: pre-line;
+  white-space: pre-wrap;
   font-weight: 500;
   position: relative;
   cursor: default;
@@ -145,4 +152,27 @@
   text-decoration: none;
   display: inline-block;
   font-weight: 600;
+}
+
+/* Estilo para el botón de UploadDocumentPopup (violeta como Guardar) */
+.uploadPopupButton {
+  background: #7c3aed;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1.01rem;
+  padding: 7px 18px 7px 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  transition: 0.18s;
+  min-width: 0;
+  max-width: 120px;
+  margin-top: 16px;
+}
+
+.uploadPopupButton:hover {
+  background: #6230ed;
 }
