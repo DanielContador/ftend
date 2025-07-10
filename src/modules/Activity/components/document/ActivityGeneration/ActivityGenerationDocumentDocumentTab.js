@@ -26,7 +26,7 @@ const ActivityGenerationDocumentDocumentTab = ({
   data,
 }) => {
   const [showImagePopup, setShowImagePopup] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(null);
   const contentRef = useRef(null);
 
   // URL de descarga del documento generado
@@ -48,8 +48,13 @@ const ActivityGenerationDocumentDocumentTab = ({
   // Cuando se hace click en una imagen en modo edición
   const handleImageClick = (e) => {
     if (editMode && e.target.tagName === "IMG") {
-      setSelectedImage(e.target);
-      setShowImagePopup(true);
+      // Encuentra el índice de la imagen clickeada dentro del contentEditable
+      if (contentRef.current) {
+        const images = Array.from(contentRef.current.querySelectorAll("img"));
+        const idx = images.indexOf(e.target);
+        setSelectedImageIndex(idx);
+        setShowImagePopup(true);
+      }
     }
   };
 
@@ -57,21 +62,47 @@ const ActivityGenerationDocumentDocumentTab = ({
   const handleImageUpload = (file) => {
     const reader = new window.FileReader();
     reader.onload = (event) => {
-      if (selectedImage) {
-        selectedImage.src = event.target.result;
-        // Actualiza el HTML editable
-        if (contentRef.current) {
+      if (
+        contentRef.current &&
+        selectedImageIndex !== null &&
+        selectedImageIndex >= 0
+      ) {
+        const images = Array.from(contentRef.current.querySelectorAll("img"));
+        const img = images[selectedImageIndex];
+        if (img) {
+          // Guardar tamaño original
+          const width = img.width || img.style.width;
+          const height = img.height || img.style.height;
+          img.src = event.target.result;
+          // Restaurar tamaño si existía
+          if (width) img.width = width;
+          if (height) img.height = height;
+          // Actualiza el HTML editable
           setTempContent(contentRef.current.innerHTML);
         }
       }
       setShowImagePopup(false);
+      setSelectedImageIndex(null);
     };
     reader.readAsDataURL(file);
   };
 
-  // Para edición: actualiza el tempContent con el HTML actual del div editable
-  const handleInput = (e) => {
-    setTempContent(e.currentTarget.innerHTML);
+  // Cuando se da guardar, actualiza el contenido y sale de edición
+  const handleSave = () => {
+    if (contentRef.current) {
+      const html = contentRef.current.innerHTML;
+      setTempContent(html);
+      setDocumentContent(html);
+      // Enviar el HTML completo (texto e imágenes) al backend
+      handleSaveDocument(html);
+    }
+    setEditMode(false);
+  };
+
+  // Cuando se cancela, vuelve al contenido original
+  const handleCancel = () => {
+    setEditMode(false);
+    setTempContent(documentContent);
   };
 
   return (
@@ -87,32 +118,17 @@ const ActivityGenerationDocumentDocumentTab = ({
               ref={contentRef}
               contentEditable
               suppressContentEditableWarning
-              onInput={handleInput}
               onClick={handleImageClick}
-              style={{
-                minHeight: 200,
-                maxHeight: 200,
-                width: "100%",
-                overflowY: "auto",
-                outline: "none",
-              }}
               dangerouslySetInnerHTML={{
-                __html: tempContent || documentContent || DEFAULT_DOCUMENT_TEXT,
+                __html:
+                  tempContent !== undefined && tempContent !== null
+                    ? tempContent
+                    : documentContent || DEFAULT_DOCUMENT_TEXT,
               }}
             />
           ) : (
             <div
               className={styles.documentTextDisplay}
-              style={{
-                minHeight: 200,
-                maxHeight: 200,
-                width: "100%",
-                overflowY: "auto",
-                whiteSpace: "pre-line",
-                color: isEmpty ? "#b0b0b0" : "#22223b",
-                opacity: isEmpty ? 0.7 : 1,
-                fontStyle: isEmpty ? "italic" : "normal",
-              }}
               dangerouslySetInnerHTML={{
                 __html: isEmpty ? DEFAULT_DOCUMENT_TEXT : documentContent,
               }}
@@ -135,11 +151,7 @@ const ActivityGenerationDocumentDocumentTab = ({
           <div className={styles.editActions}>
             <button
               className={styles.saveBtn}
-              onClick={() => {
-                setEditMode(false);
-                setDocumentContent(tempContent);
-                handleSaveDocument(tempContent);
-              }}
+              onClick={handleSave}
               type="button"
               disabled={!canSave}
               style={{
@@ -152,7 +164,7 @@ const ActivityGenerationDocumentDocumentTab = ({
             </button>
             <button
               className={styles.cancelBtn}
-              onClick={() => setEditMode(false)}
+              onClick={handleCancel}
               type="button"
             >
               <FontAwesomeIcon icon={faXmark} style={{ marginRight: 4 }} />
@@ -173,7 +185,10 @@ const ActivityGenerationDocumentDocumentTab = ({
       </div>
       <UploadDocumentPopup
         isOpen={showImagePopup}
-        onClose={() => setShowImagePopup(false)}
+        onClose={() => {
+          setShowImagePopup(false);
+          setSelectedImageIndex(null);
+        }}
         onUpload={handleImageUpload}
         title="Subir imagen"
         message="Selecciona una imagen para reemplazar la actual"
