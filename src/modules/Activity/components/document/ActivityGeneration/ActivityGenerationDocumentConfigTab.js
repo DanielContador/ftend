@@ -26,12 +26,6 @@ const ActivityGenerationDocumentConfigTab = ({
           <div className={styles.dataValue}>{data.contentType || "-"}</div>
         </div>
       </div>
-      <div className={styles.dataRow}>
-        <div className={styles.dataCol} style={{ flex: 1 }}>
-          <div className={styles.dataLabel}>Objetivo de aprendizaje</div>
-          <div className={styles.dataValue}>{data.learningGoal || "-"}</div>
-        </div>
-      </div>
     </div>
     <div className={styles.summaryCard}>
       <div className={styles.summaryCardHeader}>Resumen de contenido</div>

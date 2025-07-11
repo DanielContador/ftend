@@ -2,22 +2,11 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-}
-
-.plantillasCard {
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 4px 18px 0 rgba(127, 86, 217, 0.1);
-  display: flex;
-  flex-direction: column;
   align-items: flex-start;
   padding: 32px 36px 28px 36px;
-  margin-top: 32px;
-  margin-bottom: 24px;
+  margin: 32px auto 24px auto;
   min-width: 480px;
   max-width: 540px;
-  width: 100%;
 }
 
 .plantillasHeader {
@@ -27,22 +16,13 @@
   margin-bottom: 16px;
 }
 
-.iconBox {
-  width: 56px;
-  height: 56px;
-  background: #7c3aed; /* Violeta sólido */
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* Quitar sombra de fondo */
-  box-shadow: none;
-}
-
-.pptIcon {
-  width: 38px;
-  height: 38px;
-  color: #fff; /* Icono blanco sobre fondo violeta */
+.pptCustomIcon {
+  font-size: 48px;
+  height: 50px !important;
+  width: inherit !important;
+  min-width: none !important;
+  max-width: none !important;
+  color: #7c3aed; /* Cambiar color a violeta */
 }
 
 .title {
@@ -92,7 +72,7 @@
 
 .templateCard {
   background: transparent;
-  border: none;
+  border: 2.5px solid transparent; /* Borde transparente por defecto */
   border-radius: 12px;
   cursor: pointer;
   padding: 0;
@@ -110,9 +90,10 @@
 
 .templateCard.selected,
 .templateCard:focus {
-  outline: 2.5px solid #7c3aed;
+  border-color: #7c3aed; /* Cambia el color del borde al seleccionar */
   background: #ede9fe;
   box-shadow: 0 8px 32px 0 rgba(127, 86, 217, 0.18);
+  outline: none; /* Asegurarse de que no haya un outline por defecto del navegador */
 }
 
 .templateImageBox {
@@ -173,4 +154,35 @@
 
 .generateBtn:hover:enabled {
   background: #6230ed;
+}
+
+.loaderContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  width: 100%;
+  grid-column: 1 / -1;
+}
+
+.loader {
+  width: 56px;
+  height: 56px;
+  border: 6px solid #e5e7eb;
+  border-top: 6px solid #7c3aed;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  margin: 0 auto;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

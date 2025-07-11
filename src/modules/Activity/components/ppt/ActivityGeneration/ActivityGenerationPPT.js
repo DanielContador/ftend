@@ -3,9 +3,9 @@ import styles from "./ActivityGenerationPPT.module.css";
 import { useTranslation } from "react-i18next";
 import {
   getActivityPPT,
-  generateActivityPPT,
-  regenerateActivityPPT,
+  generateActivityPPT, // Usaremos esta para todo
   updatePPTContent,
+  retrieveActivityPPTStatus,
 } from "../../../services/activityService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -16,12 +16,14 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import ActivityGenerationPPTConfigTab from "./ActivityGenerationPPTConfigTab";
 import ActivityGenerationPPTPlantillasTab from "./ActivityGenerationPPTPlantillasTab";
+import ActivityGenerationPPTTab from "./ActivityGenerationPPTTab";
 import { useDispatch } from "react-redux";
 import { showFloatingError } from "../../../../../shared/store/rootActions";
 
 const TABS = [
   { key: "config", label: "Configuración" },
-  { key: "document", label: "Plantillas" },
+  { key: "slides", label: "Plantillas" },
+  { key: "ppt", label: "PPT" },
 ];
 
 const ActivityGenerationPPT = ({
@@ -43,6 +45,7 @@ const ActivityGenerationPPT = ({
   const [tempContent, setTempContent] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [plantillaLoading, setPlantillaLoading] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const dispatch = useDispatch();
 
   // Cargar datos de la actividad/PPT
@@ -51,9 +54,8 @@ const ActivityGenerationPPT = ({
     try {
       const response = await getActivityPPT(activityId);
       setData(response.data.activity);
-      if (response.data.ppt) {
-        setActivityPPT(response.data.ppt);
-        setPPTContent(response.data.ppt.content);
+      if (response.data.powerPoint) {
+        setActivityPPT(response.data.powerPoint);
       }
       if (response.data.token) {
         setFileToken(response.data.token);
@@ -69,67 +71,57 @@ const ActivityGenerationPPT = ({
     fetchActivity();
   }, [activityId]);
 
-  // Generar PPT
-  const handleGeneratePPT = async () => {
-    setModalLoading(true);
-    try {
-      await generateActivityPPT({
-        Prompt: configInstructions,
-        NumSlides: numSlides,
-        ActivityId: activityId,
-      });
-      await fetchActivity();
-      setActiveTab("document");
-    } catch (error) {
-      dispatch(showFloatingError(t("errorGeneratingActivityPPT")));
-    } finally {
-      setModalLoading(false);
-    }
-  };
-
-  // Regenerar PPT
-  const handleRegeneratePPT = async () => {
-    setModalLoading(true);
-    try {
-      await regenerateActivityPPT({
-        Prompt: configInstructions,
-        ActivityId: activityId,
-      });
-      await fetchActivity();
-      setActiveTab("document");
-    } catch (error) {
-      dispatch(showFloatingError(t("errorGeneratingActivityPPT")));
-    } finally {
-      setModalLoading(false);
-    }
-  };
-
-  // Guardar PPT editado
-  const handleSavePPT = async (content) => {
-    if (!activityPPT || !activityPPT.id) return;
-    setModalLoading(true);
-    try {
-      await updatePPTContent(activityPPT.id, { Content: content });
-      setPPTContent(content);
-      setEditMode(false);
-    } catch (error) {
-      dispatch(showFloatingError(t("errorUpdatingPPTContent")));
-    } finally {
-      setModalLoading(false);
-    }
-  };
-
   // Nueva función para generar PPT con plantilla seleccionada
-  const handleGenerateWithTemplate = async () => {
-    setPlantillaLoading(true);
+  // Lógica de generación unificada inspirada en PPTEditor.js
+  const handleUnifiedGenerate = async ({
+    instructions,
+    numSlides,
+    template,
+  }) => {
+    setIsGenerating(true);
+    setActiveTab("ppt");
+
+    const payload = {
+      activityId: activityId,
+      prompt_instructions: instructions || "",
+      amount_slides: numSlides || 10,
+      Template: template ? template.name : "default",
+      // Valores por defecto como en PPTEditor
+      tone: "educational",
+      verbosity: "standard",
+      fetch_images: true,
+    };
+
     try {
-      // Aquí deberías llamar a tu servicio de generación de PPT usando la plantilla seleccionada
-      // await generateActivityPPTWithTemplate({ ...otrosDatos, Template: selectedTemplate });
-      // Simulación de espera
-      await handleGeneratePPT();
-    } finally {
-      setPlantillaLoading(false);
+      await generateActivityPPT(payload);
+      pollPPTStatus(); // Inicia el sondeo para verificar el estado del PPT
+    } catch (error) {
+      dispatch(showFloatingError("Error al iniciar la generación del PPT."));
+      setIsGenerating(false);
+      // Devolver al usuario a la pestaña desde la que inició la generación
+      setActiveTab(template ? "slides" : "config");
     }
+  };
+
+  const pollPPTStatus = async () => {
+    const interval = setInterval(async () => {
+      try {
+        const response = await retrieveActivityPPTStatus(activityId);
+        if (response.data.content?.status === "ready") {
+          clearInterval(interval);
+          setIsGenerating(false);
+          fetchActivity(); // ¡Clave! Refrescar toda la data para consistencia.
+        } else if (response.data.content?.status === "error") {
+          clearInterval(interval);
+          setIsGenerating(false);
+          dispatch(showFloatingError("Error durante la generación del PPT."));
+        }
+      } catch (error) {
+        clearInterval(interval);
+        setIsGenerating(false);
+        dispatch(showFloatingError("Error al verificar el estado del PPT."));
+      }
+    }, 5000); // Sondeo cada 5 segundos
   };
 
   // Parse contentOverview del backend
@@ -146,7 +138,7 @@ const ActivityGenerationPPT = ({
   const handleBack = () => {
     if (activeTab === "config") {
       onClose();
-    } else if (activeTab === "document") {
+    } else if (activeTab === "slides") {
       setActiveTab("config");
     }
   };
@@ -194,11 +186,19 @@ const ActivityGenerationPPT = ({
               setNumSlides={setNumSlides}
             />
           )}
-          {activeTab === "document" && (
+          {activeTab === "slides" && (
             <ActivityGenerationPPTPlantillasTab
               selectedTemplate={selectedTemplate}
               setSelectedTemplate={setSelectedTemplate}
               loading={plantillaLoading}
+            />
+          )}
+          {activeTab === "ppt" && (
+            <ActivityGenerationPPTTab
+              pptData={activityPPT}
+              isLoading={isGenerating}
+              fileToken={fileToken}
+              pptId={activityPPT?.activityId}
             />
           )}
         </div>
@@ -208,34 +208,29 @@ const ActivityGenerationPPT = ({
             Atrás
           </button>
           <>
-            {activeTab === "config" &&
-              (activityPPT ? (
-                <button
-                  onClick={handleRegeneratePPT}
-                  className={styles.generateBtn}
-                >
-                  {t("regenerateActivity")}
-                  <FontAwesomeIcon
-                    className={styles.sparkles}
-                    icon={faWandSparkles}
-                  />
-                </button>
-              ) : (
-                <button
-                  onClick={handleGeneratePPT}
-                  className={styles.generateBtn}
-                >
-                  {t("generateActivity")}
-                  <FontAwesomeIcon
-                    className={styles.sparkles}
-                    icon={faWandSparkles}
-                  />
-                </button>
-              ))}
-            {activeTab === "document" && (
+            {activeTab === "config" && (
+              <button
+                onClick={() =>
+                  handleUnifiedGenerate({
+                    instructions: configInstructions,
+                    numSlides: numSlides,
+                  })
+                }
+                className={styles.generateBtn}
+              >
+                {activityPPT ? t("regenerateActivity") : t("generateActivity")}
+                <FontAwesomeIcon
+                  className={styles.sparkles}
+                  icon={faWandSparkles}
+                />
+              </button>
+            )}
+            {activeTab === "slides" && (
               <button
                 className={styles.generateBtn}
-                onClick={handleGenerateWithTemplate}
+                onClick={() =>
+                  handleUnifiedGenerate({ template: selectedTemplate })
+                }
                 type="button"
                 disabled={!selectedTemplate || plantillaLoading}
                 style={{
@@ -254,7 +249,7 @@ const ActivityGenerationPPT = ({
                 />
               </button>
             )}
-            {activeTab !== "config" && activeTab !== "document" && (
+            {activeTab === "ppt" && (
               <button
                 className={styles.generateBtn}
                 onClick={onClose}

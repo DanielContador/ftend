@@ -1,0 +1,75 @@
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 40px;
+  text-align: center;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 7px solid #f3f3f3;
+  border-top: 7px solid #7c3aed;
+  border-radius: 50%;
+  animation: spin 1.5s linear infinite;
+  margin-bottom: 24px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loadingTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #22223b;
+  margin: 0 0 8px 0;
+}
+
+.loadingSubtitle {
+  font-size: 1rem;
+  color: #888;
+  margin-bottom: 24px;
+}
+
+.cancelButton {
+  background: #fff;
+  border: 1.5px solid #e0e0e0;
+  color: #555;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 10px 40px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancelButton:hover {
+  background: #f9f9f9;
+  border-color: #ccc;
+}
+
+.placeholderContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #888;
+  font-size: 1.1rem;
+}
+
+.pptViewer {
+  width: 100%;
+  height: 100%;
+  min-height: 450px; /* Ajustar según sea necesario */
+}
+
+.pptIframe {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+}

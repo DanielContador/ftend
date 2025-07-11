@@ -22,54 +22,54 @@ const ActivityGenerationPPTPlantillasTab = ({
       .finally(() => setLoadingTemplates(false));
   }, []);
 
-  // Si loadingTemplates está activo, el modal principal muestra el loader, así que no mostramos nada aquí
   return (
     <div className={styles.plantillasTabWrapper}>
-      <div className={styles.plantillasCard}>
-        <div className={styles.plantillasHeader}>
-          <div className={styles.iconBox}>
-            <FontAwesomeIcon
-              icon={faFilePowerpoint}
-              className={styles.pptIcon}
-            />
-          </div>
-          <div>
-            <div className={styles.title}>Crear una presentación</div>
-            <div className={styles.subtitle}>
-              Esto creará una presentación de PowerPoint basada en el tema que
-              elijas.
-            </div>
+      <div className={styles.plantillasHeader}>
+        <FontAwesomeIcon
+          icon={faFilePowerpoint}
+          className={styles.pptCustomIcon}
+        />
+        <div>
+          <div className={styles.title}>Crear una presentación</div>
+          <div className={styles.subtitle}>
+            Esto creará una presentación de PowerPoint basada en el tema que
+            elijas.
           </div>
         </div>
-        <div className={styles.tabsRow}>
-          <button className={styles.tabActive}>Plantillas</button>
-        </div>
-        <div className={styles.selectLabel}>Selecciona una plantilla</div>
-        <div className={styles.templatesGrid}>
-          {!loadingTemplates &&
-            templates.map((tpl) => (
-              <button
-                key={tpl.name}
-                type="button"
-                className={`${styles.templateCard} ${
-                  selectedTemplate && selectedTemplate.name === tpl.name
-                    ? styles.selected
-                    : ""
-                }`}
-                onClick={() => setSelectedTemplate(tpl)}
-                tabIndex={0}
-              >
-                <div className={styles.templateImageBox}>
-                  <img
-                    src={tpl.images?.cover}
-                    alt={tpl.name}
-                    className={styles.templateImage}
-                  />
-                </div>
-                <div className={styles.templateName}>{tpl.name}</div>
-              </button>
-            ))}
-        </div>
+      </div>
+      <div className={styles.tabsRow}>
+        <button className={styles.tabActive}>Plantillas</button>
+      </div>
+      <div className={styles.selectLabel}>Selecciona una plantilla</div>
+      <div className={styles.templatesGrid}>
+        {loadingTemplates ? (
+          <div className={styles.loaderContainer}>
+            <span className={styles.loader}></span>
+          </div>
+        ) : (
+          templates.map((tpl) => (
+            <button
+              key={tpl.name}
+              type="button"
+              className={`${styles.templateCard} ${
+                selectedTemplate && selectedTemplate.name === tpl.name
+                  ? styles.selected
+                  : ""
+              }`}
+              onClick={() => setSelectedTemplate(tpl)}
+              tabIndex={0}
+            >
+              <div className={styles.templateImageBox}>
+                <img
+                  src={tpl.images?.cover}
+                  alt={tpl.name}
+                  className={styles.templateImage}
+                />
+              </div>
+              <div className={styles.templateName}>{tpl.name}</div>
+            </button>
+          ))
+        )}
       </div>
     </div>
   );
