@@ -125,23 +125,7 @@ const CourseListForm = ({
           <button onClick={handleCreate} className={styles.createBtn}>
             <FontAwesomeIcon icon={faPlus} /> Crear recurso +
           </button>
-          {/* Botón de logout en la esquina superior derecha */}
-          <button
-            style={{
-              position: "absolute",
-              top: 16,
-              right: 16,
-              zIndex: 10,
-              background: "#fff",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              padding: "6px 14px",
-              cursor: "pointer",
-            }}
-            onClick={endSession}
-          >
-            Logout
-          </button>
+
         </div>
 
         <div className={styles.controls}>

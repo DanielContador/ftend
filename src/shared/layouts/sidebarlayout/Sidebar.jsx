@@ -1,14 +1,16 @@
 import styles from "./Sidebar.module.css";
 import Image from "next/image";
-import Link from 'next/link';
+import Link from "next/link";
 import LogoBlanco from "../../../../public/LogoBlanco.svg";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { faSlidersH } from "@fortawesome/free-solid-svg-icons"; // faSlidersH es el icono de sliders/settings horizontal
+import { useAuth } from "../../utils/authProvider";
 
 const Sidebar = ({ menuButtons }) => {
   const router = useRouter();
+  const { user } = useAuth();
 
   return (
     <aside className={styles.sidebar}>
@@ -52,7 +54,7 @@ const Sidebar = ({ menuButtons }) => {
               style={{ fontSize: 16, color: "#fff" }}
             />
           </div>
-          <span className={styles.supportText}>Soporte.ti@dl.cl</span>
+          <span className={styles.supportText}>{user?.email}</span>
           <div className={styles.supportSettings}>
             <FontAwesomeIcon
               icon={faSlidersH}

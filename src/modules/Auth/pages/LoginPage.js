@@ -19,7 +19,9 @@ const LoginPage = () => {
     try {
       const response = await loginService.add({ username, password });
       if (response && response.token) {
-        initSession(response.token);
+        // Asumiendo que el nombre de usuario es el email
+        const user = { email: username }; 
+        initSession(response.token, user);
         router.push("/");
       } else {
         // Si la respuesta no tiene token pero no hubo excepción, es un error de login

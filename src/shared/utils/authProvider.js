@@ -5,34 +5,40 @@ import { useRouter } from "next/router";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
     const token = Cookies.get("authToken");
-    if (token) {
+    const userData = Cookies.get("user");
+    if (token && userData) {
+      setUser(JSON.parse(userData));
       setIsLoggedIn(true);
     }
     setIsLoading(false);
   }, []);
 
-  const initSession = (token) => {
+  const initSession = (token, user) => {
     Cookies.set("authToken", token);
+    Cookies.set("user", JSON.stringify(user));
+    setUser(user);
     setIsLoggedIn(true);
   };
 
   const endSession = () => {
-    console.log("removing authToken....");
-    router.push(`/login`);
+    console.log("removing authToken and user data....");
     Cookies.remove("authToken");
+    Cookies.remove("user");
+    setUser(null);
     setIsLoggedIn(false);
-    // Redirect to login page
+    router.push(`/login`);
   };
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn, isLoading, initSession, endSession }}
+      value={{ user, isLoggedIn, isLoading, initSession, endSession }}
     >
       {children}
     </AuthContext.Provider>
