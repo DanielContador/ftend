@@ -7,7 +7,10 @@ import LoadingSpinner from "../../../shared/components/LoadingSpinner";
 import courseService from "../services/courseService";
 import courseContentAIService from "../services/courseContentAIService";
 import { useCrudManager } from "../../../shared/hooks/useCrudManager";
-import { updateActivityTitle } from "../services/courseStructureService";
+import {
+  updateActivityTitle,
+  deleteActivity,
+} from "../services/courseStructureService";
 import { useDispatch } from "react-redux";
 import { setEditType } from "../../../shared/store/rootActions";
 
@@ -91,6 +94,19 @@ const CourseEditPage = ({ handleError, showSection, onContinue }) => {
     }
   };
 
+  const handleDeleteActivity = async (activityId) => {
+    setLoading(true);
+    try {
+      await deleteActivity("activity", activityId);
+      fetchCourseStructure();
+    } catch (error) {
+      console.error("Error deleting activity:", error);
+      handleError(t("deleteActivityError"));
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleUpdateActivityTitle = async (text, activityId) => {
     setLoading(true);
     try {
@@ -125,6 +141,7 @@ const CourseEditPage = ({ handleError, showSection, onContinue }) => {
           courseStructure={courseStructure}
           handleRegenerate={handleRegenerate}
           handleUpdateActivityTitle={handleUpdateActivityTitle}
+          handleDeleteActivity={handleDeleteActivity}
         />
       )}
       {showSection == "CourseEdition" && (
@@ -134,6 +151,7 @@ const CourseEditPage = ({ handleError, showSection, onContinue }) => {
           courseStructure={courseStructure}
           handleRegenerate={handleRegenerate}
           handleUpdateActivityTitle={handleUpdateActivityTitle}
+          handleDeleteActivity={handleDeleteActivity}
         />
       )}
     </>

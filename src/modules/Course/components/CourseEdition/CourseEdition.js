@@ -45,6 +45,7 @@ const CourseEdition = ({
   courseId,
   handleRegenerate,
   handleUpdateActivityTitle,
+  handleDeleteActivity,
 }) => {
   const modules = courseStructure?.modules || [];
   const [editInput, setEditInput] = useState("");
@@ -252,6 +253,7 @@ const CourseEdition = ({
                             <button
                               className={styles.deleteBtn}
                               title="Eliminar"
+                              onClick={() => handleDeleteActivity(res.id)}
                             >
                               <FontAwesomeIcon icon={faTrash} />
                             </button>
