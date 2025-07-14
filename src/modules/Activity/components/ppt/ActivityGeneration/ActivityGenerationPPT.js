@@ -71,15 +71,21 @@ const ActivityGenerationPPT = ({
     fetchActivity();
   }, [activityId]);
 
-  // Nueva función para generar PPT con plantilla seleccionada
-  // Lógica de generación unificada inspirada en PPTEditor.js
-  const handleUnifiedGenerate = async ({
-    instructions,
-    numSlides,
-    template,
-  }) => {
+  // Función para generar PPT con plantilla seleccionada
+  const handleGenerate = async () => {
+    if (activityPPT) {
+      dispatch(
+        showFloatingError(
+          "Ya existe una presentación generada. Si deseas una nueva, elimínala primero."
+        )
+      );
+      setActiveTab("ppt"); // Lleva al usuario a ver el PPT que ya existe
+      return;
+    }
+
+    const instructions = configInstructions;
+    const template = selectedTemplate;
     setIsGenerating(true);
-    setActiveTab("ppt");
 
     const payload = {
       activityId: activityId,
@@ -94,12 +100,12 @@ const ActivityGenerationPPT = ({
 
     try {
       await generateActivityPPT(payload);
+      setActiveTab("ppt"); // Cambia de tab DESPUÉS de iniciar la generación
       pollPPTStatus(); // Inicia el sondeo para verificar el estado del PPT
     } catch (error) {
       dispatch(showFloatingError("Error al iniciar la generación del PPT."));
       setIsGenerating(false);
-      // Devolver al usuario a la pestaña desde la que inició la generación
-      setActiveTab(template ? "slides" : "config");
+      setActiveTab("slides"); // Devuelve al usuario a la pestaña anterior en caso de error
     }
   };
 
@@ -210,27 +216,21 @@ const ActivityGenerationPPT = ({
           <>
             {activeTab === "config" && (
               <button
-                onClick={() =>
-                  handleUnifiedGenerate({
-                    instructions: configInstructions,
-                    numSlides: numSlides,
-                  })
-                }
+                onClick={() => setActiveTab("slides")}
                 className={styles.generateBtn}
               >
-                {activityPPT ? t("regenerateActivity") : t("generateActivity")}
+                Continuar
                 <FontAwesomeIcon
                   className={styles.sparkles}
-                  icon={faWandSparkles}
+                  icon={faArrowLeft}
+                  style={{ transform: "rotate(180deg)", marginLeft: 8 }}
                 />
               </button>
             )}
             {activeTab === "slides" && (
               <button
                 className={styles.generateBtn}
-                onClick={() =>
-                  handleUnifiedGenerate({ template: selectedTemplate })
-                }
+                onClick={handleGenerate}
                 type="button"
                 disabled={!selectedTemplate || plantillaLoading}
                 style={{
