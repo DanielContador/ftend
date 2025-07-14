@@ -4,36 +4,58 @@ import loginService from "../services/loginService";
 import { useAuth } from "../../../shared/utils/authProvider";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
+import { showFloatingError } from "../../../shared/store/rootActions";
 
 const LoginPage = () => {
-  const { t } = useTranslation();
   const { initSession } = useAuth();
   const router = useRouter();
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const handleLogin = async ({ username, password }) => {
     setLoading(true);
-    setError("");
     try {
       const response = await loginService.add({ username, password });
       if (response && response.token) {
         initSession(response.token);
         router.push("/");
-        return response;
       } else {
-        setError(t("loginError") || "Usuario o contraseña incorrectos.");
-        return null;
+        // Si la respuesta no tiene token pero no hubo excepción, es un error de login
+        dispatch(
+          showFloatingError(
+            t("loginError") || "Usuario o contraseña incorrectos."
+          )
+        );
       }
     } catch (err) {
-      setError(err?.message || t("loginError"));
-      return null;
+      if (err.code === "ERR_NETWORK") {
+        dispatch(
+          showFloatingError(
+            t("connectionError") ||
+              "Error de conexión. Por favor, verifica tu red."
+          )
+        );
+      } else if (err.response && err.response.status === 401) {
+        dispatch(
+          showFloatingError(
+            t("loginError") || "Usuario o contraseña incorrectos."
+          )
+        );
+      } else {
+        dispatch(
+          showFloatingError(
+            t("genericError") || "Ha ocurrido un error inesperado."
+          )
+        );
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  return <LoginForm onLogin={handleLogin} loading={loading} error={error} />;
+  return <LoginForm onLogin={handleLogin} loading={loading} />;
 };
 
 export default LoginPage;

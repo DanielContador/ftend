@@ -15,10 +15,10 @@ const Header = () => {
       </div>
       <nav className={styles.nav}>
         {/* <Link href="/">Inicio</Link> */}
-        <Link href="https://www.dl.cl/">Nosotros</Link>
+        <Link href="https://www.dl.cl/">Sobre nosotros</Link>
         <Link href="/help">Contacto</Link>
         <Link href="/login" className={styles.loginButton}>
-          Iniciar Sesión
+          Iniciar sesión
         </Link>
       </nav>
     </header>

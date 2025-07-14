@@ -45,28 +45,8 @@ const LoginForm = ({ onLogin, loading, error }) => {
       return;
     }
     setSubmitting(true);
-    try {
-      const response = await onLogin({ username, password });
-      if (response && response.token) {
-        initSession(response.token);
-        router.push("/");
-      } else {
-        dispatch(
-          showFloatingError(
-            t("loginError") || "Usuario o contraseña incorrectos."
-          )
-        );
-      }
-    } catch (err) {
-      dispatch(
-        showFloatingError(
-          t("loginError") ||
-            "Usuario o contraseña incorrectos. Intenta nuevamente."
-        )
-      );
-    } finally {
-      setSubmitting(false);
-    }
+    await onLogin({ username, password });
+    setSubmitting(false);
   };
 
   return (

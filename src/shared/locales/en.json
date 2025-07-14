@@ -111,5 +111,6 @@
   "selectFormat": "Select Format",
   "rawZip": "RawZip",
   "download": "Download",
-  "loginError": "The email or password you entered is incorrect."
+  "loginError": "The email or password you entered is incorrect.",
+  "connectionError": "Connection error. Please, check your connection."
 }

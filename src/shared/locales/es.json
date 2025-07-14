@@ -111,5 +111,6 @@
   "selectFormat": "Seleccionar formato",
   "rawZip": "RawZip",
   "download": "Descargar",
-  "loginError": "El correo electrónico o la contraseña ingresados son incorrectos."
+  "loginError": "El correo electrónico o la contraseña ingresados son incorrectos.",
+  "connectionError": "Error de conexión, por favor, chequea tu conexión"
 }
