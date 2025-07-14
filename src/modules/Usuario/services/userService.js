@@ -1,18 +1,12 @@
-import axios from 'axios';
+import { BaseService } from "../../../shared/services/baseService";
 
-const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/users/`;
+const USER_ENDPOINT = "user";
 
-const getUsers = async () => {
-    const response = await axios.get(API_URL);
-    return response.data;
-};
+class UserService extends BaseService {
+  constructor() {
+    super(USER_ENDPOINT);
+  }
+}
 
-const getUserById = async (id) => {
-    const response = await axios.get(`${API_URL}${id}`);
-    return response.data;
-};
-
-export default {
-    getUsers,
-    getUserById,
-};
+const userService = new UserService();
+export default userService;
