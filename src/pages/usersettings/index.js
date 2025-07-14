@@ -6,7 +6,7 @@ import SidebarHelpButton from "../../shared/layouts/components/sidebar/SidebarHe
 
 const UserSettings = () => {
   return (
-    <SidebarLayout menuButtons={[SidebarBackButton, SidebarHelpButton]}>
+    <SidebarLayout menuButtons={[SidebarBackButton, SidebarHelpButton]} showUserProfile={false}>
       <UserProfilePage />
     </SidebarLayout>
   );

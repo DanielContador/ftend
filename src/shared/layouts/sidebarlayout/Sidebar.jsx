@@ -8,7 +8,7 @@ import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { faSlidersH } from "@fortawesome/free-solid-svg-icons"; // faSlidersH es el icono de sliders/settings horizontal
 import { useAuth } from "../../utils/authProvider";
 
-const Sidebar = ({ menuButtons }) => {
+const Sidebar = ({ menuButtons, showUserProfile }) => {
   const router = useRouter();
   const { user } = useAuth();
 
@@ -26,6 +26,7 @@ const Sidebar = ({ menuButtons }) => {
             ))}
         </div>
       </div>
+            {showUserProfile && (
       <div className={styles.bottom}>
         <div className={styles.creditsBox}>
           <div className={styles.creditsHeader}>
@@ -63,6 +64,7 @@ const Sidebar = ({ menuButtons }) => {
           </div>
         </Link>
       </div>
+      )}
     </aside>
   );
 };
