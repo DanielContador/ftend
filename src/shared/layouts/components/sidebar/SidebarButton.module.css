@@ -1,0 +1,26 @@
+.button {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 12px 20px;
+    background-color: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-radius: 8px;
+}
+
+.button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.icon {
+    margin-right: 12px;
+    font-size: 18px;
+    width: 20px; /* Ensures alignment */
+    text-align: center;
+}

@@ -1,5 +1,6 @@
 import styles from "./Sidebar.module.css";
 import Image from "next/image";
+import Link from 'next/link';
 import LogoBlanco from "../../../../public/LogoBlanco.svg";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -33,7 +34,7 @@ const Sidebar = ({ menuButtons }) => {
             <div className={styles.creditsBarFill} style={{ width: "0%" }} />
           </div>
         </div>
-        <div className={styles.supportBox}>
+        <Link href="/usersettings" className={styles.supportBox}>
           <div
             className={styles.supportIcon}
             style={{
@@ -58,7 +59,7 @@ const Sidebar = ({ menuButtons }) => {
               style={{ fontSize: 20, color: "#bdb7e6" }}
             />
           </div>
-        </div>
+        </Link>
       </div>
     </aside>
   );
