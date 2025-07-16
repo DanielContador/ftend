@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./UserProfileForm.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -10,15 +10,26 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../../../shared/utils/authProvider";
 
-const UserProfileForm = () => {
+const UserProfileForm = ({ onSave }) => {
   const { user, endSession } = useAuth();
-  const [fullName, setFullName] = useState(user?.email || 'Usuario');
-  const [jobTitle, setJobTitle] = useState('Diseñador instruccional');
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
+
+  useEffect(() => {
+    if (user) {
+      console.log("user", user);
+      // Usar directamente las propiedades firstname y lastname del objeto user
+      setFirstName(user.firstname || "");
+      setLastName(user.lastname || "");
+      const job = user.jobTitle || "Diseñador instruccional";
+      setJobTitle(job);
+    }
+  }, [user]);
 
   const handleSaveChanges = (e) => {
     e.preventDefault();
-    // Lógica para guardar los cambios
-    console.log({ fullName, jobTitle });
+    onSave({ firstName, lastName, jobTitle });
   };
 
   return (
@@ -28,8 +39,11 @@ const UserProfileForm = () => {
           <FontAwesomeIcon icon={faUserCircle} />
         </div>
         <div className={styles.userInfo}>
-          <h2>{user?.email || 'Usuario'} <span className={styles.badge}>Mentor</span></h2>
-          <p>{user?.email || 'cargando...'}</p>
+          <h2>
+            {user?.email || "Usuario"}{" "}
+            <span className={styles.badge}>Mentor</span>
+          </h2>
+          <p>{user?.email || "cargando..."}</p>
         </div>
         <button className={styles.logoutButton} onClick={endSession}>
           Cerrar sesión <FontAwesomeIcon icon={faSignOutAlt} />
@@ -46,7 +60,7 @@ const UserProfileForm = () => {
           </div>
           <div className={styles.infoRow}>
             <label>Dirección de email</label>
-            <p>{user?.email || 'cargando...'}</p>
+            <p>{user?.email || "cargando..."}</p>
           </div>
           <div className={styles.infoRow}>
             <label>Plan actual</label>
@@ -66,17 +80,27 @@ const UserProfileForm = () => {
           </div>
           <form onSubmit={handleSaveChanges}>
             <div className={styles.inputGroup}>
-              <label htmlFor="fullName">Full Name</label>
+              <label htmlFor="firstName">Nombres</label>
               <input
-                id="fullName"
+                id="firstName"
                 type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
                 className={styles.input}
               />
             </div>
             <div className={styles.inputGroup}>
-              <label htmlFor="jobTitle">Job Title</label>
+              <label htmlFor="lastName">Apellidos</label>
+              <input
+                id="lastName"
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                className={styles.input}
+              />
+            </div>
+            <div className={styles.inputGroup}>
+              <label htmlFor="jobTitle">Nombre del Trabajo</label>
               <input
                 id="jobTitle"
                 type="text"
