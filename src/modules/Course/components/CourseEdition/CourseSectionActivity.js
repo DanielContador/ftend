@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./CourseSectionActivity.module.css";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,6 +18,12 @@ import {
   faHeadphones,
   faFilePowerpoint,
 } from "@fortawesome/free-solid-svg-icons";
+import {
+  getActivityPPT,
+  getActivityVideo,
+  getActivityAudio,
+  getActivityDocument,
+} from "../../../Activity/services/activityService";
 
 // Mapea el formato del backend a los iconos y colores igual que en CourseEdition
 const iconByType = {
@@ -32,6 +38,30 @@ const tabs = [
   { key: "evaluacion", label: "Evaluación" },
   { key: "exportar", label: "Exportar" },
 ];
+
+// Mapa de servicios y claves de datos para cada formato
+const serviceMap = {
+  PPT: {
+    get: getActivityPPT,
+    checker: (data) => !!data.powerPoint,
+    urlPath: "ppt",
+  },
+  Video: {
+    get: getActivityVideo,
+    checker: (data) => !!data.video,
+    urlPath: "video",
+  },
+  Audio: {
+    get: getActivityAudio,
+    checker: (data) => !!data.audio,
+    urlPath: "audio",
+  },
+  PDF: {
+    get: getActivityDocument,
+    checker: (data) => data.documents && data.documents.length > 0,
+    urlPath: "pdf",
+  },
+};
 
 const CourseSectionActivity = ({
   courseStructure,
@@ -58,9 +88,46 @@ const CourseSectionActivity = ({
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [videoModalData, setVideoModalData] = useState(null);
   const [videoModalKey, setVideoModalKey] = useState(0); // <--- nuevo estado para forzar reinicio
+  const [downloadableStatus, setDownloadableStatus] = useState({});
 
   const selectedModule =
     modules.find((mod) => mod.id === selectedModuleId) || modules[0];
+
+  useEffect(() => {
+    const checkAllActivitiesDownloadStatus = async () => {
+      if (!selectedModule || !selectedModule.learning_objects) {
+        return;
+      }
+
+      const statusPromises = selectedModule.learning_objects.map(
+        async (activity) => {
+          const serviceConfig = serviceMap[activity.format];
+          if (!serviceConfig) {
+            return { id: activity.id, isDownloadable: false };
+          }
+          try {
+            const response = await serviceConfig.get(activity.id);
+            return {
+              id: activity.id,
+              isDownloadable: serviceConfig.checker(response.data),
+            };
+          } catch (error) {
+            return { id: activity.id, isDownloadable: false };
+          }
+        }
+      );
+
+      const statuses = await Promise.all(statusPromises);
+      const newStatus = statuses.reduce((acc, current) => {
+        acc[current.id] = current.isDownloadable;
+        return acc;
+      }, {});
+
+      setDownloadableStatus(newStatus);
+    };
+
+    checkAllActivitiesDownloadStatus();
+  }, [selectedModule]);
 
   const handleCardToggle = (resourceId) => {
     setExpandedResource((prev) => (prev === resourceId ? null : resourceId));
@@ -100,6 +167,41 @@ const CourseSectionActivity = ({
   };
 
   // Cancelar edición
+  const handleDownload = async (resource) => {
+    if (!resource || !resource.id || !resource.format) {
+      console.error("Invalid resource for download");
+      return;
+    }
+
+    const serviceConfig = serviceMap[resource.format];
+    if (!serviceConfig) {
+      console.error(`No service configuration for format: ${resource.format}`);
+      return;
+    }
+
+    try {
+      // 1. Obtener el token para la descarga
+      const response = await serviceConfig.get(resource.id);
+      const token = response?.data?.token;
+
+      if (!token) {
+        console.error("Failed to retrieve download token.");
+        return;
+      }
+
+      // 2. Construir la URL de descarga usando la configuración del serviceMap
+      const downloadUrl = `${process.env.NEXT_PUBLIC_API_URL}/v1/download/${serviceConfig.urlPath}/file/${resource.id}?token=${token}`;
+
+      // 3. Abrir la URL para iniciar la descarga
+      window.open(downloadUrl, "_blank");
+    } catch (error) {
+      console.error(
+        `Error during download process for ${resource.format}:`,
+        error
+      );
+    }
+  };
+
   const handleCancelClick = (objectId) => {
     setEditingResource((prev) => ({
       ...prev,
@@ -313,9 +415,23 @@ const CourseSectionActivity = ({
                               </div>
                               <div className={styles.resourceCardActions}>
                                 <button
-                                  className={styles.downloadBtn}
-                                  title="Descargar"
-                                  onClick={(e) => e.stopPropagation()}
+                                  className={`${styles.downloadBtn} ${
+                                    !downloadableStatus[res.id]
+                                      ? styles.disabled
+                                      : ""
+                                  }`}
+                                  title={
+                                    downloadableStatus[res.id]
+                                      ? "Descargar"
+                                      : "No hay contenido para descargar"
+                                  }
+                                  disabled={!downloadableStatus[res.id]}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (downloadableStatus[res.id]) {
+                                      handleDownload(res);
+                                    }
+                                  }}
                                 >
                                   <FontAwesomeIcon icon={faDownload} />
                                 </button>

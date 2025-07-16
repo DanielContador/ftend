@@ -228,6 +228,11 @@
   color: #7c3aed;
 }
 
+.downloadBtn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .generateBtn {
   background: #a78bfa;
   color: #fff;
