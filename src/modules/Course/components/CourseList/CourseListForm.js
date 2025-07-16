@@ -71,6 +71,7 @@ const CourseListForm = ({
   handleCreate,
   handleEdit,
   handleDelete,
+  handleClone,
   handleFilterData,
 }) => {
   const { t } = useTranslation();
@@ -125,7 +126,6 @@ const CourseListForm = ({
           <button onClick={handleCreate} className={styles.createBtn}>
             <FontAwesomeIcon icon={faPlus} /> Crear recurso +
           </button>
-
         </div>
 
         <div className={styles.controls}>
@@ -262,7 +262,10 @@ const CourseListForm = ({
                     >
                       <FontAwesomeIcon icon={faTrash} />
                     </div>
-                    <div className={styles.actionCard}>
+                    <div
+                      onClick={() => handleClone(course.id)}
+                      className={styles.actionCard}
+                    >
                       <FontAwesomeIcon icon={faCopy} />
                     </div>
                   </div>

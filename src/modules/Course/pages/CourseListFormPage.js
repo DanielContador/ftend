@@ -29,6 +29,15 @@ const CourseListPage = ({ handleError }) => {
     await crudResources.reload();
   };
 
+  const handleClone = async (id) => {
+    try {
+      await courseService.clone(id);
+      await crudResources.reload(); // Recargar la lista para mostrar el curso clonado
+    } catch (error) {
+      handleError(error.message || 'Ocurrió un error al clonar el curso.');
+    }
+  };
+
   const handleEdit = (id, type) => {
     dispatch(setActualComponent("CourseEdition"));
     // Logic for editing a course
@@ -54,6 +63,7 @@ const CourseListPage = ({ handleError }) => {
           handleCreate={handleCreate}
           handleEdit={handleEdit}
           handleDelete={handleDelete}
+          handleClone={handleClone}
           handleFilterData={filteredResources.getFilteredResources}
         />
       )}
