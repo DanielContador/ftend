@@ -12,7 +12,16 @@ const HelpEmailBox = () => (
     </div>
     <div>
       <div className={styles.emailLabel}>Email</div>
-      <div className={styles.emailValue}>contact@brix.com</div>
+      <div className={styles.emailValue}>
+        <a
+          href="mailto:contact@brix.com"
+          style={{ color: "inherit", textDecoration: "none" }}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          contact@brix.com
+        </a>
+      </div>
     </div>
   </div>
 );

@@ -35,6 +35,8 @@ const ActivityGenerationDocumentDocumentTab = ({
       ? `${process.env.NEXT_PUBLIC_API_URL}/v1/download/${data.contentType}/file/${activityDocument.activityId}?token=${fileToken}`
       : "";
 
+  const isDownloadDisabled = !activityDocument || !fileToken;
+
   // Mostrar texto por defecto si no hay documento generado
   const isEmpty = !documentContent || documentContent.trim() === "";
 
@@ -175,10 +177,20 @@ const ActivityGenerationDocumentDocumentTab = ({
       </div>
       <div style={{ marginTop: 24 }}>
         <a
-          href={downloadUrl}
+          href={!isDownloadDisabled ? downloadUrl : undefined}
           className={styles.downloadLink}
           download
-          style={{ color: "#7c3aed", textDecoration: "none" }}
+          style={{
+            color: "#7c3aed",
+            textDecoration: "none",
+            opacity: isDownloadDisabled ? 0.5 : 1,
+            cursor: isDownloadDisabled ? "not-allowed" : "pointer",
+          }}
+          onClick={(e) => {
+            if (isDownloadDisabled) {
+              e.preventDefault();
+            }
+          }}
         >
           Descargar visualización <FontAwesomeIcon icon={faDownload} />
         </a>
