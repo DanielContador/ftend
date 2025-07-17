@@ -81,22 +81,30 @@ const RegisterForm = ({ onRegister, loading, error }) => {
     const username = email.split("@")[0];
 
     try {
-      await onRegister({
+      const response = await onRegister({
         username,
         firstname,
         lastname,
         email,
         password,
       });
-      dispatch(
-        showFloatingSuccess("Registro exitoso. Ahora puedes iniciar sesión.")
-      );
-      router.push({
-        pathname: "/welcome",
-        query: { onlyLayout: "true" },
-      });
+
+      if (response && response.status === 200) {
+        dispatch(
+          showFloatingSuccess("Registro exitoso. Ahora puedes iniciar sesión.")
+        );
+        router.push({
+          pathname: "/welcome",
+          query: { onlyLayout: "true" },
+        });
+      }
     } catch (err) {
-      dispatch(showFloatingError("Error al registrar. Intenta nuevamente."));
+      console.log(err);
+      if (err.response && err.response.status === 400) {
+        dispatch(showFloatingError(err.response.data));
+      } else {
+        dispatch(showFloatingError("Error al registrar. Intenta nuevamente."));
+      }
     }
   };
 

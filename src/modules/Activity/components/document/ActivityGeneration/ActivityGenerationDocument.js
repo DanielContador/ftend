@@ -130,7 +130,8 @@ const ActivityGenerationDocument = ({
       if (typeof activityDocument.cantPages !== "undefined")
         dataToSend.CantPages = activityDocument.cantPages;
 
-      await updateDocumentContent(activityDocument.activityId, dataToSend);
+      await updateDocumentContent(activityDocument.id, dataToSend);
+      await fetchActivity(); // Recargar datos para reflejar los cambios
       setDocumentContent(content);
       setEditMode(false);
     } catch (error) {

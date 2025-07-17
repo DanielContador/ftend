@@ -38,14 +38,16 @@ export function useCrudManager(service, handleError, t, options = {}) {
 
   const createItem = async (data) => {
     try {
-      await service.add(data);
+      const response = await service.add(data);
       // Solo recarga la lista si fetchAll fue ejecutado alguna vez
       if (fetchOnMount || didFetch.current) {
         await fetchAll();
       }
+      return response; // Devuelve la respuesta para manejo posterior
     } catch (error) {
+      // No uses handleError aquí para permitir que el componente decida
       console.error("Error creating item:", error);
-      handleError(t("createError"));
+      throw error; // Relanza el error para que el componente lo capture
     }
   };
 
