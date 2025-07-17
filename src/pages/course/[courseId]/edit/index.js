@@ -12,6 +12,7 @@ const EditCoursePage = () => {
   const components = ["CourseEdition", "CourseSectionActivity"];
   const [index, setIndex] = useState(0);
   const [showSection, setShowSection] = useState(components[index]);
+  const [selectedTab, setSelectedTab] = useState("contenido"); // Estado para la pestaña
   const router = useRouter();
 
   // Obtener el estado global actualComponent
@@ -36,18 +37,23 @@ const EditCoursePage = () => {
     setError(errorMessage);
   };
 
-  const handleContinue = (index, components) => {
-    console.log("handleContinue called with index:", index);
-    if (index < components.length - 1) {
-      setIndex(index + 1);
-      setShowSection(components[index + 1]);
+  const handleContinue = () => {
+    if (showSection === "CourseEdition") {
+      setIndex(1);
+      setShowSection("CourseSectionActivity");
+    } else if (showSection === "CourseSectionActivity" && selectedTab === "contenido") {
+      setSelectedTab("evaluacion");
     }
   };
-  const handleBack = (index, components) => {
-    if (index > 0) {
-      setIndex(index - 1);
-      setShowSection(components[index - 1]);
-    } else if (index === 0) {
+  const handleBack = () => {
+    if (showSection === "CourseSectionActivity") {
+      if (selectedTab === "evaluacion") {
+        setSelectedTab("contenido");
+      } else {
+        setIndex(0);
+        setShowSection("CourseEdition");
+      }
+    } else if (showSection === "CourseEdition") {
       router.push("/");
     }
   };
@@ -58,20 +64,18 @@ const EditCoursePage = () => {
         <SaveContinueButton
           text="Siguiente"
           displayIcon={false}
-          onClick={
-            index < components.length - 1
-              ? () => handleContinue(index, components)
-              : null
-          }
+          onClick={handleContinue}
         />
       }
-      handleBack={() => handleBack(index, components)}
+      handleBack={handleBack}
     >
       {error && <ErrorMessage error={error} />}
       <CourseEditPage
         handleError={handleError}
         showSection={showSection}
         onContinue={handleContinue}
+        selectedTab={selectedTab}
+        setSelectedTab={setSelectedTab}
       />
     </ManagementLayout>
   );

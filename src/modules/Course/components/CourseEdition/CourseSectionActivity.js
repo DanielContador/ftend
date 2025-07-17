@@ -24,6 +24,7 @@ import {
   getActivityAudio,
   getActivityDocument,
 } from "../../../Activity/services/activityService";
+import CourseEvaluation from "./CourseEvaluation";
 
 // Mapea el formato del backend a los iconos y colores igual que en CourseEdition
 const iconByType = {
@@ -69,6 +70,8 @@ const CourseSectionActivity = ({
   courseId,
   handleRegenerate,
   handleUpdateActivityTitle,
+  selectedTab,
+  setSelectedTab,
 }) => {
   console.log("CourseSectionActivity props:", courseStructure);
   const router = useRouter();
@@ -79,7 +82,7 @@ const CourseSectionActivity = ({
   const [selectedType, setSelectedType] = useState("PPT");
   const [contentInput, setContentInput] = useState("");
   const [expandedResource, setExpandedResource] = useState(null);
-  const [selectedTab, setSelectedTab] = useState(tabs[0].key);
+
 
   // Edición de título de recurso (card)
   const [editingResource, setEditingResource] = useState({});
@@ -566,12 +569,7 @@ const CourseSectionActivity = ({
               /> */}
             </>
           )}
-          {selectedTab === "evaluacion" && (
-            <div style={{ padding: "2rem", color: "#888" }}>
-              <h3>Evaluación</h3>
-              <p>Aquí irá la funcionalidad para evaluación.</p>
-            </div>
-          )}
+          {selectedTab === "evaluacion" && <CourseEvaluation />}
           {selectedTab === "exportar" && (
             <div style={{ padding: "2rem", color: "#888" }}>
               <h3>Exportar</h3>
