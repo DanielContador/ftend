@@ -289,7 +289,11 @@ const CourseSectionActivity = ({
             </button>
           ))}
         </div>
-        <main className={styles.sectionMain}>
+        <main
+          className={`${styles.sectionMain} ${
+            selectedTab === "evaluacion" ? styles.sectionMainExpanded : ""
+          }`}
+        >
           {selectedTab === "contenido" && (
             <>
               <div className={styles.sectionHeader}>

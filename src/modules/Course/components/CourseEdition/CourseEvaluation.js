@@ -47,13 +47,13 @@ const CourseEvaluation = () => {
           <div key={q.id} className={styles.questionCard}>
             <div className={styles.questionHeader}>
               <p className={styles.questionText}>{q.text}</p>
-              <input type="text" className={styles.pointsInput} defaultValue={`${q.points} pts`} />
+              <input type="text" className={styles.pointsInput} />
             </div>
             <div className={styles.optionsContainer}>
-              {q.options.map((opt, index) => (
+              {q.options.map((opt) => (
                 <div key={opt.id} className={styles.option}>
-                  <input type={q.type} name={`question-${q.id}`} defaultChecked={opt.checked} />
-                  <input type="text" defaultValue={opt.text} />
+                  <input type={q.type} id={`q${q.id}-opt${opt.id}`} name={`question-${q.id}`} defaultChecked={opt.checked} />
+                  <label htmlFor={`q${q.id}-opt${opt.id}`}>{opt.text}</label>
                 </div>
               ))}
             </div>

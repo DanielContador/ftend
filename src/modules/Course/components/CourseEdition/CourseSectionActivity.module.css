@@ -132,6 +132,11 @@
   width: 100%;
 }
 
+.sectionMainExpanded {
+  max-width: none;
+  padding: 24px 40px 0 40px;
+}
+
 .sectionHeader {
   margin-bottom: 18px;
   margin-left: 0;
