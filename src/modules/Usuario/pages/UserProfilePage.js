@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import UserProfileForm from '../components/UserProfileForm';
 import { useAuth } from '../../../shared/utils/authProvider';
 import userService from '../services/userService';
+import { useDispatch } from 'react-redux';
+import { showFloatingError, showFloatingSuccess } from '../../../shared/store/rootActions';
+import LoadingSpinner from '../../../shared/components/LoadingSpinner';
 
 const UserProfilePage = () => {
     const { user } = useAuth();
+    const dispatch = useDispatch();
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleUpdateUser = async (formData) => {
         if (!user || !user.id) {
-            alert("Error: No se pudo identificar al usuario. Por favor, inicie sesión de nuevo.");
+            dispatch(showFloatingError("Error: No se pudo identificar al usuario. Por favor, inicie sesión de nuevo."));
             return;
         }
 
@@ -16,21 +21,25 @@ const UserProfilePage = () => {
             id: user.id,
             firstname: formData.firstName,
             lastname: formData.lastName,
-            roleId: user.roleId, // Mantener datos existentes
-            receiveNews: user.receiveNews, // Mantener datos existentes
         };
 
+        setIsLoading(true);
         try {
             await userService.update(user.id, userDTO);
-            alert("¡Perfil actualizado con éxito!");
+            dispatch(showFloatingSuccess("¡Perfil actualizado con éxito!"));
         } catch (error) {
             console.error("Error al actualizar el perfil:", error);
-            alert("Hubo un error al actualizar el perfil.");
+            dispatch(showFloatingError("Hubo un error al actualizar el perfil."));
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
-        <UserProfileForm onSave={handleUpdateUser} />
+        <>
+            {isLoading && <LoadingSpinner />}
+            <UserProfileForm onSave={handleUpdateUser} />
+        </>
     );
 };
 

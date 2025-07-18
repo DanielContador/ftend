@@ -18,8 +18,6 @@ const UserProfileForm = ({ onSave }) => {
 
   useEffect(() => {
     if (user) {
-      console.log("user", user);
-      // Usar directamente las propiedades firstname y lastname del objeto user
       setFirstName(user.firstname || "");
       setLastName(user.lastname || "");
       const job = user.jobTitle || "Diseñador instruccional";
@@ -30,6 +28,15 @@ const UserProfileForm = ({ onSave }) => {
   const handleSaveChanges = (e) => {
     e.preventDefault();
     onSave({ firstName, lastName, jobTitle });
+  };
+
+  const handleCancel = () => {
+    if (user) {
+      setFirstName(user.firstname || "");
+      setLastName(user.lastname || "");
+      const job = user.jobTitle || "Diseñador instruccional";
+      setJobTitle(job);
+    }
   };
 
   return (
@@ -43,7 +50,7 @@ const UserProfileForm = ({ onSave }) => {
             {user?.email || "Usuario"}{" "}
             <span className={styles.badge}>Mentor</span>
           </h2>
-          <p>{user?.email || "cargando..."}</p>
+          <p>{user?.username || "cargando..."}</p>
         </div>
         <button className={styles.logoutButton} onClick={endSession}>
           Cerrar sesión <FontAwesomeIcon icon={faSignOutAlt} />
@@ -110,7 +117,11 @@ const UserProfileForm = ({ onSave }) => {
               />
             </div>
             <div className={styles.cardActions}>
-              <button type="button" className={styles.secondaryButton}>
+              <button
+                type="button"
+                className={styles.secondaryButton}
+                onClick={handleCancel}
+              >
                 Cancelar
               </button>
               <button type="submit" className={styles.blackButton}>

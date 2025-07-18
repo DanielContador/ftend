@@ -19,8 +19,8 @@ const LoginPage = () => {
     try {
       const response = await loginService.add({ username, password });
       if (response && response.token) {
-        // Asumiendo que el nombre de usuario es el email
-        const user = { email: username }; 
+        // Construir el objeto de usuario a partir de la respuesta del servicio
+        const user = { id: response.id, username: response.username, email: response.email };
         initSession(response.token, user);
         router.push("/");
       } else {
