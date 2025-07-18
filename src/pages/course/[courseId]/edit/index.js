@@ -4,15 +4,17 @@ import CourseEditPage from "../../../../modules/Course/pages/CourseEditPage";
 import SaveContinueButton from "../../../../shared/layouts/components/management/SaveContinueButton";
 import { useState, useEffect } from "react";
 // --- REDUX ---
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { showFloatingError } from "../../../../shared/store/rootActions";
 import { useRouter } from "next/router";
 
 const EditCoursePage = () => {
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
   const components = ["CourseEdition", "CourseSectionActivity"];
   const [index, setIndex] = useState(0);
   const [showSection, setShowSection] = useState(components[index]);
   const [selectedTab, setSelectedTab] = useState("contenido"); // Estado para la pestaña
+  const [isEvaluationAvailable, setIsEvaluationAvailable] = useState(false);
   const router = useRouter();
 
   // Obtener el estado global actualComponent
@@ -34,7 +36,11 @@ const EditCoursePage = () => {
   }, [actualComponent]);
 
   const handleError = (errorMessage) => {
-    setError(errorMessage);
+    dispatch(showFloatingError(errorMessage));
+  };
+
+  const handleEvaluationStatusChange = (isAvailable) => {
+    setIsEvaluationAvailable(isAvailable);
   };
 
   const handleContinue = () => {
@@ -42,7 +48,11 @@ const EditCoursePage = () => {
       setIndex(1);
       setShowSection("CourseSectionActivity");
     } else if (showSection === "CourseSectionActivity" && selectedTab === "contenido") {
-      setSelectedTab("evaluacion");
+      if (isEvaluationAvailable) {
+        setSelectedTab("evaluacion");
+      } else {
+        handleError("No hay evaluación en este módulo para poder continuar.");
+      }
     }
   };
   const handleBack = () => {
@@ -69,13 +79,13 @@ const EditCoursePage = () => {
       }
       handleBack={handleBack}
     >
-      {error && <ErrorMessage error={error} />}
       <CourseEditPage
         handleError={handleError}
         showSection={showSection}
         onContinue={handleContinue}
         selectedTab={selectedTab}
         setSelectedTab={setSelectedTab}
+        onEvaluationStatusChange={handleEvaluationStatusChange}
       />
     </ManagementLayout>
   );

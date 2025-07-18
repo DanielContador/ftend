@@ -14,7 +14,7 @@ import {
 import { useDispatch } from "react-redux";
 import { setEditType } from "../../../shared/store/rootActions";
 
-const CourseEditPage = ({ handleError, showSection, onContinue, selectedTab, setSelectedTab }) => {
+const CourseEditPage = ({ handleError, showSection, onContinue, selectedTab, setSelectedTab, onEvaluationStatusChange }) => {
   const router = useRouter();
   const { t } = useTranslation();
   const { courseId } = router.query;
@@ -144,6 +144,7 @@ const CourseEditPage = ({ handleError, showSection, onContinue, selectedTab, set
           handleDeleteActivity={handleDeleteActivity}
           selectedTab={selectedTab}
           setSelectedTab={setSelectedTab}
+          onEvaluationStatusChange={onEvaluationStatusChange}
         />
       )}
       {showSection == "CourseEdition" && (

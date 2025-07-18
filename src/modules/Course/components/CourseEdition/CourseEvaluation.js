@@ -35,9 +35,9 @@ const initialQuestions = [
   },
 ];
 
-const CourseEvaluation = ({ module }) => {
+const CourseEvaluation = ({ moduleEvaluation }) => {
   const [questions, setQuestions] = useState(initialQuestions);
-  console.log("CourseEvaluation", module);
+  console.log("CourseEvaluation", moduleEvaluation);
 
   return (
     <div className={styles.container}>

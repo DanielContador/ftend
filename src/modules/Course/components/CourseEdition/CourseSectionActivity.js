@@ -72,6 +72,7 @@ const CourseSectionActivity = ({
   handleUpdateActivityTitle,
   selectedTab,
   setSelectedTab,
+  onEvaluationStatusChange,
 }) => {
   console.log("CourseSectionActivity props:", courseStructure);
   const router = useRouter();
@@ -95,11 +96,23 @@ const CourseSectionActivity = ({
   const selectedModule =
     modules.find((mod) => mod.id === selectedModuleId) || modules[0];
 
+  const moduleEvaluation = selectedModule?.learning_objects.find((lo) =>
+    lo.format.toLowerCase().includes("evaluacion")
+  );
+
+
+
+  useEffect(() => {
+    onEvaluationStatusChange(!!moduleEvaluation);
+  }, [moduleEvaluation, onEvaluationStatusChange]);
+
   useEffect(() => {
     const checkAllActivitiesDownloadStatus = async () => {
       if (!selectedModule || !selectedModule.learning_objects) {
         return;
       }
+
+
 
       const statusPromises = selectedModule.learning_objects.map(
         async (activity) => {
@@ -237,7 +250,21 @@ const CourseSectionActivity = ({
                     ? `${styles.moduleItem} ${styles.activeModule}`
                     : styles.moduleItem
                 }
-                onClick={() => setSelectedModuleId(mod.id)}
+                onClick={() => {
+                  if (selectedTab === "evaluacion") {
+                    const newModule = modules.find((m) => m.id === mod.id);
+                    const hasEvaluation = newModule?.learning_objects.some((lo) =>
+                      lo.format.toLowerCase().includes("evaluacion")
+                    );
+                    if (!hasEvaluation) {
+                      handleError(
+                        "No se puede cambiar a un módulo sin evaluación desde esta pestaña."
+                      );
+                      return;
+                    }
+                  }
+                  setSelectedModuleId(mod.id);
+                }}
               >
                 <FontAwesomeIcon
                   icon={mod.id === selectedModuleId ? faFolderOpen : faFolder}
@@ -260,13 +287,22 @@ const CourseSectionActivity = ({
           {tabs.map((tab) => (
             <button
               key={tab.key}
-              className={
-                selectedTab === tab.key
-                  ? `${styles.tabItem} ${styles.tabItemActive}`
-                  : styles.tabItem
-              }
-              onClick={() => setSelectedTab(tab.key)}
-              type="button"
+              className={`${styles.tabItem} ${
+                selectedTab === tab.key ? styles.tabItemActive : ""
+              } ${
+                tab.key === "evaluacion" && !moduleEvaluation
+                  ? styles.disabledTab
+                  : ""
+              }`}
+              onClick={() => {
+                if (tab.key === "evaluacion" && !moduleEvaluation) {
+                  handleError(
+                    "No hay evaluación en este módulo para poder acceder a esta pestaña."
+                  );
+                  return;
+                }
+                setSelectedTab(tab.key);
+              }}
             >
               {tab.label}
             </button>
@@ -429,7 +465,11 @@ const CourseSectionActivity = ({
                                   className={styles.generateBtn}
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    handleGoToActivity(res.format, res.id);
+                                    if (res.format.toLowerCase().includes("evaluacion")) {
+                                      setSelectedTab("evaluacion");
+                                    } else {
+                                      handleGoToActivity(res.format, res.id);
+                                    }
                                   }}
                                 >
                                   <FontAwesomeIcon icon={faWandMagicSparkles} />
@@ -549,8 +589,8 @@ const CourseSectionActivity = ({
               </div>
             </>
           )}
-          {selectedTab === "evaluacion" && (
-            <CourseEvaluation module={selectedModule} />
+          {selectedTab === "evaluacion" && moduleEvaluation && (
+            <CourseEvaluation moduleEvaluation={moduleEvaluation} />
           )}
           {selectedTab === "exportar" && (
             <div style={{ padding: "2rem", color: "#888" }}>
@@ -558,6 +598,7 @@ const CourseSectionActivity = ({
               <p>Aquí irá la funcionalidad para exportar el curso.</p>
             </div>
           )}
+
         </main>
       </div>
     </div>
