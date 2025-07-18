@@ -4,6 +4,7 @@ import CourseSectionActivity from "../components/CourseEdition/CourseSectionActi
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
 import LoadingSpinner from "../../../shared/components/LoadingSpinner";
+import evaluationService from "../services/evaluationService";
 import courseService from "../services/courseService";
 import courseContentAIService from "../services/courseContentAIService";
 import { useCrudManager } from "../../../shared/hooks/useCrudManager";
@@ -14,7 +15,14 @@ import {
 import { useDispatch } from "react-redux";
 import { setEditType } from "../../../shared/store/rootActions";
 
-const CourseEditPage = ({ handleError, showSection, onContinue, selectedTab, setSelectedTab, onEvaluationStatusChange }) => {
+const CourseEditPage = ({
+  handleError,
+  showSection,
+  onContinue,
+  selectedTab,
+  setSelectedTab,
+  onEvaluationStatusChange,
+}) => {
   const router = useRouter();
   const { t } = useTranslation();
   const { courseId } = router.query;
@@ -123,6 +131,19 @@ const CourseEditPage = ({ handleError, showSection, onContinue, selectedTab, set
     }
   };
 
+  const handleCreateEvaluationQuiz = async (evaluationData) => {
+    setLoading(true);
+    try {
+      await evaluationService.create(evaluationData);
+      fetchCourseStructure(); // Refetch to show the new evaluation
+    } catch (error) {
+      console.error("Error creating evaluation quiz:", error);
+      handleError("Error al crear la evaluación.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (courseId) {
       fetchCourseStructure();
@@ -136,6 +157,7 @@ const CourseEditPage = ({ handleError, showSection, onContinue, selectedTab, set
     <>
       {showSection == "CourseSectionActivity" && (
         <CourseSectionActivity
+          onCreateEvaluationQuiz={handleCreateEvaluationQuiz}
           handleError={handleError}
           courseId={courseId}
           courseStructure={courseStructure}

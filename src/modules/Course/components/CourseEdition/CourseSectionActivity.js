@@ -73,6 +73,7 @@ const CourseSectionActivity = ({
   selectedTab,
   setSelectedTab,
   onEvaluationStatusChange,
+  onCreateEvaluationQuiz,
 }) => {
   console.log("CourseSectionActivity props:", courseStructure);
   const router = useRouter();
@@ -590,7 +591,10 @@ const CourseSectionActivity = ({
             </>
           )}
           {selectedTab === "evaluacion" && moduleEvaluation && (
-            <CourseEvaluation moduleEvaluation={moduleEvaluation} />
+            <CourseEvaluation 
+              moduleEvaluation={moduleEvaluation} 
+              onCreateEvaluationQuiz={onCreateEvaluationQuiz} 
+            />
           )}
           {selectedTab === "exportar" && (
             <div style={{ padding: "2rem", color: "#888" }}>
