@@ -1,4 +1,5 @@
 import { combineReducers } from "redux";
+import uiReducer from './uiSlice';
 
 // Reducer para manejar el componente actual
 const initialComponentState = {
@@ -67,6 +68,7 @@ const rootReducer = combineReducers({
   floatingError: floatingErrorReducer,
   floatingSuccess: floatingSuccessReducer,
   editType: editTypeReducer, // <-- agregar aquí
+  ui: uiReducer,
   // Add your reducers here
 });
 

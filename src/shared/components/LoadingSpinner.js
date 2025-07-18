@@ -1,7 +1,14 @@
 import React from 'react';
-import styles from  './LoadingSpinner.module.css'; // Assuming we will create a CSS file for styles
+import { useSelector } from 'react-redux';
+import styles from './LoadingSpinner.module.css';
 
 const LoadingSpinner = () => {
+    const isLoading = useSelector((state) => state.ui.isLoading);
+
+    if (!isLoading) {
+        return null;
+    }
+
     return (
         <div className={styles.loadingSpinner}>
             <div className={styles.spinner}></div>

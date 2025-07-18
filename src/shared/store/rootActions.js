@@ -1,3 +1,8 @@
+import { showLoading, hideLoading } from './uiSlice';
+
+// Re-exportar para acceso centralizado
+export { showLoading, hideLoading };
+
 // Define your actions here
 
 // Acción para cambiar el actualComponent

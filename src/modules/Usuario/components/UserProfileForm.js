@@ -9,33 +9,48 @@ import {
   faIdCard,
 } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../../../shared/utils/authProvider";
+import { useDispatch } from "react-redux";
 
-const UserProfileForm = ({ onSave }) => {
-  const { user, endSession } = useAuth();
+const UserProfileForm = ({ user, onSave }) => {
+  const { endSession } = useAuth(); // Solo para el botón de cerrar sesión
+  const dispatch = useDispatch();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [jobTitle, setJobTitle] = useState("");
+  const [errors, setErrors] = useState({});
 
+  // Sincronizar el estado del formulario con el usuario que llega por props
   useEffect(() => {
     if (user) {
       setFirstName(user.firstname || "");
       setLastName(user.lastname || "");
-      const job = user.jobTitle || "Diseñador instruccional";
-      setJobTitle(job);
+      setJobTitle(user.jobTitle || "Diseñador instruccional");
     }
   }, [user]);
 
   const handleSaveChanges = (e) => {
     e.preventDefault();
-    onSave({ firstName, lastName, jobTitle });
+
+    // 1. Validar campos vacíos
+    const newErrors = {};
+    if (!firstName.trim()) newErrors.firstName = "El nombre es requerido.";
+    if (!lastName.trim()) newErrors.lastName = "El apellido es requerido.";
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      // Si todo es correcto, guardar
+      onSave({ firstName, lastName, jobTitle });
+      setErrors({}); // Limpiar errores después de un guardado exitoso
+    }
   };
 
   const handleCancel = () => {
     if (user) {
       setFirstName(user.firstname || "");
       setLastName(user.lastname || "");
-      const job = user.jobTitle || "Diseñador instruccional";
-      setJobTitle(job);
+      setJobTitle(user.jobTitle || "Diseñador instruccional");
+      setErrors({});
     }
   };
 
@@ -95,6 +110,9 @@ const UserProfileForm = ({ onSave }) => {
                 onChange={(e) => setFirstName(e.target.value)}
                 className={styles.input}
               />
+              {errors.firstName && (
+                <span className={styles.errorText}>{errors.firstName}</span>
+              )}
             </div>
             <div className={styles.inputGroup}>
               <label htmlFor="lastName">Apellidos</label>
@@ -105,6 +123,9 @@ const UserProfileForm = ({ onSave }) => {
                 onChange={(e) => setLastName(e.target.value)}
                 className={styles.input}
               />
+              {errors.lastName && (
+                <span className={styles.errorText}>{errors.lastName}</span>
+              )}
             </div>
             <div className={styles.inputGroup}>
               <label htmlFor="jobTitle">Nombre del Trabajo</label>
@@ -124,7 +145,11 @@ const UserProfileForm = ({ onSave }) => {
               >
                 Cancelar
               </button>
-              <button type="submit" className={styles.blackButton}>
+              <button
+                type="submit"
+                className={styles.blackButton}
+                disabled={!firstName.trim() && !lastName.trim()}
+              >
                 Guardar cambios
               </button>
             </div>

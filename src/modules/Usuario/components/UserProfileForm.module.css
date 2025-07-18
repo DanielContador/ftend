@@ -200,3 +200,15 @@
 .blackButton:hover {
     background-color: #343a40;
 }
+
+.blackButton:disabled {
+    background-color: #212529;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.errorText {
+  color: #ef4444; /* Rojo para errores */
+  font-size: 0.875rem; /* 14px */
+  margin-top: 0.25rem; /* 4px */
+}

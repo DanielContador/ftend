@@ -9,6 +9,7 @@ import { Provider } from "react-redux";
 import store from "../shared/store/store";
 import FloatingError from "../shared/components/FloatingError";
 import FloatingSuccess from "../shared/components/FloatingSuccess";
+import LoadingSpinner from "../shared/components/LoadingSpinner";
 import { useSelector, useDispatch } from "react-redux";
 import {
   hideFloatingError,
@@ -45,6 +46,7 @@ function MyApp({ Component, pageProps }) {
               content="initial-scale=1, width=device-width"
             />
           </Head>
+          <LoadingSpinner />
           <FloatingErrorWrapper />
           <FloatingSuccessWrapper />
           <Component {...pageProps} />
