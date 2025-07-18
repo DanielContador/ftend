@@ -83,7 +83,6 @@ const CourseSectionActivity = ({
   const [contentInput, setContentInput] = useState("");
   const [expandedResource, setExpandedResource] = useState(null);
 
-
   // Edición de título de recurso (card)
   const [editingResource, setEditingResource] = useState({});
 
@@ -222,22 +221,6 @@ const CourseSectionActivity = ({
     router.push(
       `/course/${courseId}/edit/activity/?id=${activityId}&format=${format}`
     ); // Redirect to the activity edit page
-  };
-
-  // Abrir modal de generación de video
-  const handleOpenVideoModal = (resource) => {
-    setVideoModalData(resource);
-    setShowVideoModal(false); // Cierra primero para forzar reinicio si ya estaba abierto
-    setTimeout(() => {
-      setVideoModalKey((prev) => prev + 1); // Cambia la key para reiniciar el modal
-      setShowVideoModal(true);
-    }, 0);
-  };
-
-  // Cerrar modal de generación de video
-  const handleCloseVideoModal = () => {
-    setShowVideoModal(false);
-    setVideoModalData(null);
   };
 
   return (
@@ -564,16 +547,11 @@ const CourseSectionActivity = ({
                   />
                 </div>
               </div>
-              {/* Modal de generación de video
-              <ActivityGenerationVideo
-                key={videoModalKey}
-                open={showVideoModal}
-                onClose={handleCloseVideoModal}
-                data={videoModalData}
-              /> */}
             </>
           )}
-          {selectedTab === "evaluacion" && <CourseEvaluation />}
+          {selectedTab === "evaluacion" && (
+            <CourseEvaluation module={selectedModule} />
+          )}
           {selectedTab === "exportar" && (
             <div style={{ padding: "2rem", color: "#888" }}>
               <h3>Exportar</h3>
