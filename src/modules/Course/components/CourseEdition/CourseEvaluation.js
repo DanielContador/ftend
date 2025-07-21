@@ -8,7 +8,13 @@ import {
   faWandMagicSparkles,
 } from "@fortawesome/free-solid-svg-icons";
 
-const CourseEvaluation = ({ moduleEvaluation, onCreateEvaluationQuiz }) => {
+const CourseEvaluation = ({
+  moduleEvaluation,
+  onCreateEvaluationQuiz,
+  onGenerateEvaluation,
+  onRegenerateEvaluation,
+  generatedQuestions,
+}) => {
   console.log("CourseEvaluation", moduleEvaluation);
   const [questions, setQuestions] = useState([]);
   const [estimatedTime, setEstimatedTime] = useState(
@@ -18,7 +24,24 @@ const CourseEvaluation = ({ moduleEvaluation, onCreateEvaluationQuiz }) => {
   const [randomQuestions, setRandomQuestions] = useState(false);
 
   useEffect(() => {
-    if (moduleEvaluation?.content && moduleEvaluation.content.length > 0) {
+    // Priority 1: Use generated questions from API response
+    if (generatedQuestions && Array.isArray(generatedQuestions)) {
+      // Transform API response format to component format
+      const transformedQuestions = generatedQuestions.map((q) => ({
+        id: q.questionId,
+        text: q.question,
+        type: "checkbox", // Multiple choice with multiple correct answers
+        points: 1, // Default points
+        options: q.answers.map((answer) => ({
+          id: answer.answerId,
+          text: answer.answer,
+          checked: answer.correct,
+        })),
+      }));
+      setQuestions(transformedQuestions);
+    }
+    // Priority 2: Use existing module content
+    else if (moduleEvaluation?.content && moduleEvaluation.content.length > 0) {
       try {
         const parsedQuestions = JSON.parse(moduleEvaluation.content[0]);
         setQuestions(Array.isArray(parsedQuestions) ? parsedQuestions : []);
@@ -29,7 +52,7 @@ const CourseEvaluation = ({ moduleEvaluation, onCreateEvaluationQuiz }) => {
     } else {
       setQuestions([]);
     }
-  }, [moduleEvaluation]);
+  }, [moduleEvaluation, generatedQuestions]);
 
   const handleSave = () => {
     const evaluationData = {
@@ -37,6 +60,20 @@ const CourseEvaluation = ({ moduleEvaluation, onCreateEvaluationQuiz }) => {
       ActivityId: moduleEvaluation.id, // Link quiz to the learning object
     };
     onCreateEvaluationQuiz(evaluationData);
+  };
+
+  const handleGenerateWithAI = () => {
+    const evaluationData = {
+      ActivityId: moduleEvaluation.id,
+      Prompt: "",
+      Multiple_Choise: true,
+      Cant_Answers: 5,
+    };
+    if (questions.length > 0) {
+      onRegenerateEvaluation(evaluationData);
+    } else {
+      onGenerateEvaluation(evaluationData);
+    }
   };
 
   return (
@@ -103,8 +140,15 @@ const CourseEvaluation = ({ moduleEvaluation, onCreateEvaluationQuiz }) => {
         <button className={styles.addQuestionBtn}>
           <FontAwesomeIcon icon={faPlus} /> Agregar pregunta
         </button>
-        <button className={styles.generateAIBtn}>
-          <FontAwesomeIcon icon={faWandMagicSparkles} /> Generar con IA
+        <button 
+          className={styles.generateAIBtn} 
+          onClick={handleGenerateWithAI}
+        >
+          <FontAwesomeIcon icon={faWandMagicSparkles} />{" "}
+          {questions.length > 0 
+            ? "Regenerar con IA" 
+            : "Generar con IA"
+          }
         </button>
 
         <div className={styles.configBox}>

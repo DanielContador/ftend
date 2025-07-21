@@ -7,6 +7,7 @@ import LoadingSpinner from "../../../shared/components/LoadingSpinner";
 import evaluationService from "../services/evaluationService";
 import courseService from "../services/courseService";
 import courseContentAIService from "../services/courseContentAIService";
+import quizzesGeneratorService from "../services/quizzesGeneratorService";
 import { useCrudManager } from "../../../shared/hooks/useCrudManager";
 import {
   updateActivityTitle,
@@ -28,6 +29,7 @@ const CourseEditPage = ({
   const { courseId } = router.query;
   const [courseStructure, setCourseStructure] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [generatedQuestions, setGeneratedQuestions] = useState(null);
 
   const crud = useCrudManager(courseService, handleError, t, {
     fetchOnMount: false,
@@ -144,6 +146,44 @@ const CourseEditPage = ({
     }
   };
 
+  const handleGenerateEvaluation = async (evaluationData) => {
+    setLoading(true);
+    try {
+      const response = await quizzesGeneratorService.generateQuiz(evaluationData);
+      console.log("Generating evaluation with data:", evaluationData);
+      
+      if (response && response.data && response.data.questions) {
+        setGeneratedQuestions(response.data.questions);
+      }
+      
+      fetchCourseStructure();
+    } catch (error) {
+      console.error("Error generating evaluation:", error);
+      handleError("Error al generar la evaluación con IA.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRegenerateEvaluation = async (evaluationData) => {
+    setLoading(true);
+    try {
+      const response = await quizzesGeneratorService.regenerateQuiz(evaluationData);
+      console.log("Regenerating evaluation with data:", evaluationData);
+      
+      if (response && response.data && response.data.questions) {
+        setGeneratedQuestions(response.data.questions);
+      }
+      
+      fetchCourseStructure();
+    } catch (error) {
+      console.error("Error regenerating evaluation:", error);
+      handleError("Error al regenerar la evaluación con IA.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (courseId) {
       fetchCourseStructure();
@@ -158,6 +198,9 @@ const CourseEditPage = ({
       {showSection == "CourseSectionActivity" && (
         <CourseSectionActivity
           onCreateEvaluationQuiz={handleCreateEvaluationQuiz}
+          onGenerateEvaluation={handleGenerateEvaluation}
+          onRegenerateEvaluation={handleRegenerateEvaluation}
+          generatedQuestions={generatedQuestions}
           handleError={handleError}
           courseId={courseId}
           courseStructure={courseStructure}

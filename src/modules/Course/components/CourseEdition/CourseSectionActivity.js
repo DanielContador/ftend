@@ -74,6 +74,9 @@ const CourseSectionActivity = ({
   setSelectedTab,
   onEvaluationStatusChange,
   onCreateEvaluationQuiz,
+  onGenerateEvaluation,
+  onRegenerateEvaluation,
+  generatedQuestions,
 }) => {
   console.log("CourseSectionActivity props:", courseStructure);
   const router = useRouter();
@@ -593,7 +596,10 @@ const CourseSectionActivity = ({
           {selectedTab === "evaluacion" && moduleEvaluation && (
             <CourseEvaluation 
               moduleEvaluation={moduleEvaluation} 
-              onCreateEvaluationQuiz={onCreateEvaluationQuiz} 
+              onCreateEvaluationQuiz={onCreateEvaluationQuiz}
+              onGenerateEvaluation={onGenerateEvaluation}
+              onRegenerateEvaluation={onRegenerateEvaluation}
+              generatedQuestions={generatedQuestions}
             />
           )}
           {selectedTab === "exportar" && (
