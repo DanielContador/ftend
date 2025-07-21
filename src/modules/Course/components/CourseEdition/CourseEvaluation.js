@@ -54,9 +54,7 @@ const CourseEvaluation = ({
     } else {
       setQuestions([]);
     }
-  }, [moduleEvaluation, generatedQuestions, existingQuestions]);
-
-
+  }, [moduleEvaluation?.quizData, generatedQuestions, existingQuestions]);
 
   const handleGenerateWithAI = () => {
     const evaluationData = {
@@ -133,15 +131,9 @@ const CourseEvaluation = ({
         <button className={styles.addQuestionBtn}>
           <FontAwesomeIcon icon={faPlus} /> Agregar pregunta
         </button>
-        <button 
-          className={styles.generateAIBtn} 
-          onClick={handleGenerateWithAI}
-        >
+        <button className={styles.generateAIBtn} onClick={handleGenerateWithAI}>
           <FontAwesomeIcon icon={faWandMagicSparkles} />{" "}
-          {questions.length > 0 
-            ? "Regenerar con IA" 
-            : "Generar con IA"
-          }
+          {questions.length > 0 ? "Regenerar con IA" : "Generar con IA"}
         </button>
 
         <div className={styles.configBox}>

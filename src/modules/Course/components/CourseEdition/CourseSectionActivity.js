@@ -115,7 +115,7 @@ const CourseSectionActivity = ({
     if (selectedTab === "evaluacion" && moduleEvaluation?.id) {
       onFetchQuizzes(moduleEvaluation.id);
     }
-  }, [selectedTab, moduleEvaluation, onFetchQuizzes]);
+  }, [selectedTab, moduleEvaluation?.id]);
 
   useEffect(() => {
     const checkAllActivitiesDownloadStatus = async () => {
