@@ -4,7 +4,7 @@ import CourseSectionActivity from "../components/CourseEdition/CourseSectionActi
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
 import LoadingSpinner from "../../../shared/components/LoadingSpinner";
-import evaluationService from "../services/evaluationService";
+import quizzesService from "../services/quizzesService";
 import courseService from "../services/courseService";
 import courseContentAIService from "../services/courseContentAIService";
 import quizzesGeneratorService from "../services/quizzesGeneratorService";
@@ -30,6 +30,7 @@ const CourseEditPage = ({
   const { courseId } = router.query;
   const [courseStructure, setCourseStructure] = useState(null);
   const [generatedQuestions, setGeneratedQuestions] = useState(null);
+  const [existingQuestions, setExistingQuestions] = useState(null);
 
   const dispatch = useDispatch();
   const crud = useCrudManager(courseService, handleError, t, {
@@ -133,14 +134,20 @@ const CourseEditPage = ({
     }
   };
 
-  const handleCreateEvaluationQuiz = async (evaluationData) => {
+  const handleFetchQuizzes = async (activityId) => {
+    if (!activityId) return;
     dispatch(showLoading());
     try {
-      await evaluationService.create(evaluationData);
-      fetchCourseStructure(); // Refetch to show the new evaluation
+      const response = await quizzesService.getQuizzesByActivityId(activityId);
+      if (response && response.data && response.data.quizData) {
+        const parsedQuestions = JSON.parse(response.data.quizData).questions;
+        setExistingQuestions(parsedQuestions);
+      } else {
+        setExistingQuestions([]);
+      }
     } catch (error) {
-      console.error("Error creating evaluation quiz:", error);
-      handleError("Error al crear la evaluación.");
+      console.error("Error fetching quizzes:", error);
+      setExistingQuestions([]);
     } finally {
       dispatch(hideLoading());
     }
@@ -200,7 +207,8 @@ const CourseEditPage = ({
     <>
       {showSection == "CourseSectionActivity" && (
         <CourseSectionActivity
-          onCreateEvaluationQuiz={handleCreateEvaluationQuiz}
+          onFetchQuizzes={handleFetchQuizzes}
+          existingQuestions={existingQuestions}
           onGenerateEvaluation={handleGenerateEvaluation}
           onRegenerateEvaluation={handleRegenerateEvaluation}
           generatedQuestions={generatedQuestions}

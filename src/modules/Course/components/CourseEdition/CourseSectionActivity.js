@@ -73,7 +73,8 @@ const CourseSectionActivity = ({
   selectedTab,
   setSelectedTab,
   onEvaluationStatusChange,
-  onCreateEvaluationQuiz,
+  onFetchQuizzes,
+  existingQuestions,
   onGenerateEvaluation,
   onRegenerateEvaluation,
   generatedQuestions,
@@ -109,6 +110,12 @@ const CourseSectionActivity = ({
   useEffect(() => {
     onEvaluationStatusChange(!!moduleEvaluation);
   }, [moduleEvaluation, onEvaluationStatusChange]);
+
+  useEffect(() => {
+    if (selectedTab === "evaluacion" && moduleEvaluation?.id) {
+      onFetchQuizzes(moduleEvaluation.id);
+    }
+  }, [selectedTab, moduleEvaluation, onFetchQuizzes]);
 
   useEffect(() => {
     const checkAllActivitiesDownloadStatus = async () => {
@@ -596,10 +603,10 @@ const CourseSectionActivity = ({
           {selectedTab === "evaluacion" && moduleEvaluation && (
             <CourseEvaluation 
               moduleEvaluation={moduleEvaluation} 
-              onCreateEvaluationQuiz={onCreateEvaluationQuiz}
               onGenerateEvaluation={onGenerateEvaluation}
               onRegenerateEvaluation={onRegenerateEvaluation}
               generatedQuestions={generatedQuestions}
+              existingQuestions={existingQuestions}
             />
           )}
           {selectedTab === "exportar" && (

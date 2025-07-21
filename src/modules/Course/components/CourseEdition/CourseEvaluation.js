@@ -3,17 +3,16 @@ import styles from "./CourseEvaluation.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEye,
-  faSave,
   faPlus,
   faWandMagicSparkles,
 } from "@fortawesome/free-solid-svg-icons";
 
 const CourseEvaluation = ({
   moduleEvaluation,
-  onCreateEvaluationQuiz,
   onGenerateEvaluation,
   onRegenerateEvaluation,
   generatedQuestions,
+  existingQuestions,
 }) => {
   console.log("CourseEvaluation", moduleEvaluation);
   const [questions, setQuestions] = useState([]);
@@ -24,43 +23,40 @@ const CourseEvaluation = ({
   const [randomQuestions, setRandomQuestions] = useState(false);
 
   useEffect(() => {
-    // Priority 1: Use generated questions from API response
-    if (generatedQuestions && Array.isArray(generatedQuestions)) {
-      // Transform API response format to component format
-      const transformedQuestions = generatedQuestions.map((q) => ({
-        id: q.questionId,
+    let questionsToDisplay = null;
+
+    if (generatedQuestions && generatedQuestions.length > 0) {
+      questionsToDisplay = generatedQuestions;
+    } else if (existingQuestions && existingQuestions.length > 0) {
+      questionsToDisplay = existingQuestions;
+    } else if (moduleEvaluation?.quizData) {
+      try {
+        questionsToDisplay = JSON.parse(moduleEvaluation.quizData).questions;
+      } catch (error) {
+        console.error("Error parsing quizData:", error);
+        questionsToDisplay = [];
+      }
+    }
+
+    if (questionsToDisplay && Array.isArray(questionsToDisplay)) {
+      const transformedQuestions = questionsToDisplay.map((q, index) => ({
+        id: q.questionId || `q-${index}`,
         text: q.question,
-        type: "checkbox", // Multiple choice with multiple correct answers
-        points: 1, // Default points
-        options: q.answers.map((answer) => ({
-          id: answer.answerId,
+        type: "checkbox",
+        points: 1,
+        options: q.answers.map((answer, aIndex) => ({
+          id: answer.answerId || `a-${index}-${aIndex}`,
           text: answer.answer,
           checked: answer.correct,
         })),
       }));
       setQuestions(transformedQuestions);
-    }
-    // Priority 2: Use existing module content
-    else if (moduleEvaluation?.content && moduleEvaluation.content.length > 0) {
-      try {
-        const parsedQuestions = JSON.parse(moduleEvaluation.content[0]);
-        setQuestions(Array.isArray(parsedQuestions) ? parsedQuestions : []);
-      } catch (error) {
-        console.error("Error parsing questions from module content:", error);
-        setQuestions([]);
-      }
     } else {
       setQuestions([]);
     }
-  }, [moduleEvaluation, generatedQuestions]);
+  }, [moduleEvaluation, generatedQuestions, existingQuestions]);
 
-  const handleSave = () => {
-    const evaluationData = {
-      QuizData: JSON.stringify(questions),
-      ActivityId: moduleEvaluation.id, // Link quiz to the learning object
-    };
-    onCreateEvaluationQuiz(evaluationData);
-  };
+
 
   const handleGenerateWithAI = () => {
     const evaluationData = {
@@ -92,9 +88,6 @@ const CourseEvaluation = ({
           <div className={styles.headerActions}>
             <button className={styles.previewBtn}>
               <FontAwesomeIcon icon={faEye} /> Preview
-            </button>
-            <button className={styles.saveBtn} onClick={handleSave}>
-              <FontAwesomeIcon icon={faSave} /> Save
             </button>
           </div>
         </div>
