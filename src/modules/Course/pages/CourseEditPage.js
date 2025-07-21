@@ -15,6 +15,7 @@ import {
 } from "../services/courseStructureService";
 import { useDispatch } from "react-redux";
 import { setEditType } from "../../../shared/store/rootActions";
+import { showLoading, hideLoading } from "../../../shared/store/uiSlice";
 
 const CourseEditPage = ({
   handleError,
@@ -28,16 +29,15 @@ const CourseEditPage = ({
   const { t } = useTranslation();
   const { courseId } = router.query;
   const [courseStructure, setCourseStructure] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [generatedQuestions, setGeneratedQuestions] = useState(null);
 
+  const dispatch = useDispatch();
   const crud = useCrudManager(courseService, handleError, t, {
     fetchOnMount: false,
   });
-  const dispatch = useDispatch();
 
   const handleRegenerate = async (instructions, courseId) => {
-    setLoading(true);
+    dispatch(showLoading());
     try {
       const promptInstructionsData = {
         prompt: instructions,
@@ -52,13 +52,13 @@ const CourseEditPage = ({
       console.error("Error regenerating course structure:", error);
       handleError(t("regenerateCourseStructureError"));
     } finally {
-      setLoading(false);
+      dispatch(hideLoading());
     }
   };
 
   const fetchCourseStructure = async () => {
     if (courseId) {
-      setLoading(true);
+      dispatch(showLoading());
       try {
         const data = await courseContentAIService.getCourseStructure(
           courseId,
@@ -99,13 +99,13 @@ const CourseEditPage = ({
         console.error("Error fetching course structure:", error);
         handleError(t("fetchCourseStructureError"));
       } finally {
-        setLoading(false);
+        dispatch(hideLoading());
       }
     }
   };
 
   const handleDeleteActivity = async (activityId) => {
-    setLoading(true);
+    dispatch(showLoading());
     try {
       await deleteActivity("activity", activityId);
       fetchCourseStructure();
@@ -113,12 +113,12 @@ const CourseEditPage = ({
       console.error("Error deleting activity:", error);
       handleError(t("deleteActivityError"));
     } finally {
-      setLoading(false);
+      dispatch(hideLoading());
     }
   };
 
   const handleUpdateActivityTitle = async (text, activityId) => {
-    setLoading(true);
+    dispatch(showLoading());
     try {
       const activityData = {
         name: text,
@@ -129,12 +129,12 @@ const CourseEditPage = ({
       console.error("Error updating activity title:", error);
       handleError(t("updateActivityTitleError"));
     } finally {
-      setLoading(false);
+      dispatch(hideLoading());
     }
   };
 
   const handleCreateEvaluationQuiz = async (evaluationData) => {
-    setLoading(true);
+    dispatch(showLoading());
     try {
       await evaluationService.create(evaluationData);
       fetchCourseStructure(); // Refetch to show the new evaluation
@@ -142,12 +142,12 @@ const CourseEditPage = ({
       console.error("Error creating evaluation quiz:", error);
       handleError("Error al crear la evaluación.");
     } finally {
-      setLoading(false);
+      dispatch(hideLoading());
     }
   };
 
   const handleGenerateEvaluation = async (evaluationData) => {
-    setLoading(true);
+    dispatch(showLoading());
     try {
       const response = await quizzesGeneratorService.generateQuiz(evaluationData);
       console.log("Generating evaluation with data:", evaluationData);
@@ -161,12 +161,12 @@ const CourseEditPage = ({
       console.error("Error generating evaluation:", error);
       handleError("Error al generar la evaluación con IA.");
     } finally {
-      setLoading(false);
+      dispatch(hideLoading());
     }
   };
 
   const handleRegenerateEvaluation = async (evaluationData) => {
-    setLoading(true);
+    dispatch(showLoading());
     try {
       const response = await quizzesGeneratorService.regenerateQuiz(evaluationData);
       console.log("Regenerating evaluation with data:", evaluationData);
@@ -180,7 +180,7 @@ const CourseEditPage = ({
       console.error("Error regenerating evaluation:", error);
       handleError("Error al regenerar la evaluación con IA.");
     } finally {
-      setLoading(false);
+      dispatch(hideLoading());
     }
   };
 
@@ -191,7 +191,10 @@ const CourseEditPage = ({
     // eslint-disable-next-line
   }, [courseId]);
 
-  if (loading || courseStructure == null) return <LoadingSpinner />;
+  if (courseStructure == null) {
+    // Still show a spinner on initial load, but don't block subsequent renders
+    return <LoadingSpinner />;
+  }
 
   return (
     <>
