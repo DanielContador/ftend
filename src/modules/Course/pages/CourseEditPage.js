@@ -140,8 +140,15 @@ const CourseEditPage = ({
     try {
       const response = await quizzesService.getQuizzesByActivityId(activityId);
       if (response && response.data && response.data.quizData) {
-        const parsedQuestions = JSON.parse(response.data.quizData).questions;
-        setExistingQuestions(parsedQuestions);
+        const parsedData = JSON.parse(response.data.quizData);
+        const transformedQuestions = parsedData.questions.map(question => ({
+          ...question,
+          answers: question.answers.map(answer => ({
+            ...answer,
+            correct: answer.valid
+          }))
+        }));
+        setExistingQuestions(transformedQuestions);
       } else {
         setExistingQuestions([]);
       }
@@ -156,13 +163,15 @@ const CourseEditPage = ({
   const handleGenerateEvaluation = async (evaluationData) => {
     dispatch(showLoading());
     try {
-      const response = await quizzesGeneratorService.generateQuiz(evaluationData);
+      const response = await quizzesGeneratorService.generateQuiz(
+        evaluationData
+      );
       console.log("Generating evaluation with data:", evaluationData);
-      
+
       if (response && response.data && response.data.questions) {
         setGeneratedQuestions(response.data.questions);
       }
-      
+
       fetchCourseStructure();
     } catch (error) {
       console.error("Error generating evaluation:", error);
@@ -175,13 +184,15 @@ const CourseEditPage = ({
   const handleRegenerateEvaluation = async (evaluationData) => {
     dispatch(showLoading());
     try {
-      const response = await quizzesGeneratorService.regenerateQuiz(evaluationData);
+      const response = await quizzesGeneratorService.regenerateQuiz(
+        evaluationData
+      );
       console.log("Regenerating evaluation with data:", evaluationData);
-      
+
       if (response && response.data && response.data.questions) {
         setGeneratedQuestions(response.data.questions);
       }
-      
+
       fetchCourseStructure();
     } catch (error) {
       console.error("Error regenerating evaluation:", error);
