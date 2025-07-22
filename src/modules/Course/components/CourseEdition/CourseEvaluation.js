@@ -85,7 +85,7 @@ const CourseEvaluation = ({
           </div>
           <div className={styles.headerActions}>
             <button className={styles.previewBtn}>
-              <FontAwesomeIcon icon={faEye} /> Preview
+              <FontAwesomeIcon icon={faEye} /> Visualizar
             </button>
           </div>
         </div>
@@ -114,9 +114,9 @@ const CourseEvaluation = ({
                   </div>
                 ))}
               </div>
-              <a className={styles.addOptionLink}>
-                <FontAwesomeIcon icon={faPlus} /> Add option
-              </a>
+              <button className={styles.addOptionBtn}>
+                <FontAwesomeIcon icon={faPlus} /> Agregar opción
+              </button>
             </div>
           ))
         ) : (
