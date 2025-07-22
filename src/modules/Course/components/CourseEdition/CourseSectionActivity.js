@@ -77,6 +77,7 @@ const CourseSectionActivity = ({
   existingQuestions,
   onGenerateEvaluation,
   onRegenerateEvaluation,
+  onAddQuizAnswers,
   generatedQuestions,
 }) => {
   console.log("CourseSectionActivity props:", courseStructure);
@@ -605,6 +606,7 @@ const CourseSectionActivity = ({
               moduleEvaluation={moduleEvaluation} 
               onGenerateEvaluation={onGenerateEvaluation}
               onRegenerateEvaluation={onRegenerateEvaluation}
+              onAddQuizAnswers={onAddQuizAnswers}
               generatedQuestions={generatedQuestions}
               existingQuestions={existingQuestions}
             />

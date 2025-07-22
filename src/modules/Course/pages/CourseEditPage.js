@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
 import LoadingSpinner from "../../../shared/components/LoadingSpinner";
 import quizzesService from "../services/quizzesService";
+import quizzesAnswersService from "../services/quizzesAnswersService";
 import courseService from "../services/courseService";
 import courseContentAIService from "../services/courseContentAIService";
 import quizzesGeneratorService from "../services/quizzesGeneratorService";
@@ -202,6 +203,24 @@ const CourseEditPage = ({
     }
   };
 
+  const handleAddQuizAnswers = async (quizAnswerData) => {
+    dispatch(showLoading());
+    try {
+      const response = await quizzesAnswersService.addQuizAnswers(quizAnswerData);
+      console.log("Adding quiz answer with data:", quizAnswerData);
+      
+      if (response && response.success) {
+        console.log("Quiz answer added successfully:", response.data);
+        // Optionally refresh data or update state here
+      }
+    } catch (error) {
+      console.error("Error adding quiz answer:", error);
+      handleError("Error al agregar la respuesta del quiz.");
+    } finally {
+      dispatch(hideLoading());
+    }
+  };
+
   useEffect(() => {
     if (courseId) {
       fetchCourseStructure();
@@ -222,6 +241,7 @@ const CourseEditPage = ({
           existingQuestions={existingQuestions}
           onGenerateEvaluation={handleGenerateEvaluation}
           onRegenerateEvaluation={handleRegenerateEvaluation}
+          onAddQuizAnswers={handleAddQuizAnswers}
           generatedQuestions={generatedQuestions}
           handleError={handleError}
           courseId={courseId}

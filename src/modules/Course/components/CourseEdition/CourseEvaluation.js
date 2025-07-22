@@ -11,6 +11,7 @@ const CourseEvaluation = ({
   moduleEvaluation,
   onGenerateEvaluation,
   onRegenerateEvaluation,
+  onAddQuizAnswers,
   generatedQuestions,
   existingQuestions,
 }) => {
@@ -21,6 +22,10 @@ const CourseEvaluation = ({
   );
   const [minScore, setMinScore] = useState(70);
   const [randomQuestions, setRandomQuestions] = useState(false);
+  const [showAddOptionForm, setShowAddOptionForm] = useState(false);
+  const [selectedQuestionId, setSelectedQuestionId] = useState(null);
+  const [newAnswerText, setNewAnswerText] = useState("");
+  const [isCorrectAnswer, setIsCorrectAnswer] = useState(false);
 
   useEffect(() => {
     let questionsToDisplay = null;
@@ -70,6 +75,36 @@ const CourseEvaluation = ({
     }
   };
 
+  const handleAddOption = (questionId) => {
+    setSelectedQuestionId(questionId);
+    setNewAnswerText("");
+    setIsCorrectAnswer(false);
+    setShowAddOptionForm(true);
+  };
+
+  const handleSaveOption = () => {
+    if (newAnswerText.trim()) {
+      const quizAnswerData = {
+        QuestionsId: selectedQuestionId,
+        answer: newAnswerText.trim(),
+        isCorrect: isCorrectAnswer
+      };
+      
+      if (onAddQuizAnswers) {
+        onAddQuizAnswers(quizAnswerData);
+      }
+      
+      handleCancelOption();
+    }
+  };
+
+  const handleCancelOption = () => {
+    setShowAddOptionForm(false);
+    setSelectedQuestionId(null);
+    setNewAnswerText("");
+    setIsCorrectAnswer(false);
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.mainContent}>
@@ -113,10 +148,53 @@ const CourseEvaluation = ({
                     <label htmlFor={`q${q.id}-opt${opt.id}`}>{opt.text}</label>
                   </div>
                 ))}
+                {showAddOptionForm && selectedQuestionId === q.id && (
+                  <div className={styles.addOptionForm}>
+                    <div className={styles.formRow}>
+                      <input
+                        type="text"
+                        placeholder="Texto de la nueva opción"
+                        value={newAnswerText}
+                        onChange={(e) => setNewAnswerText(e.target.value)}
+                        className={styles.optionInput}
+                      />
+                      <div className={styles.checkboxContainer}>
+                        <input
+                          type="checkbox"
+                          id="isCorrect"
+                          checked={isCorrectAnswer}
+                          onChange={(e) => setIsCorrectAnswer(e.target.checked)}
+                          className={styles.correctCheckbox}
+                        />
+                        <label htmlFor="isCorrect">Respuesta correcta</label>
+                      </div>
+                    </div>
+                    <div className={styles.formButtons}>
+                      <button 
+                        className={styles.saveBtn}
+                        onClick={handleSaveOption}
+                        disabled={!newAnswerText.trim()}
+                      >
+                        Guardar
+                      </button>
+                      <button 
+                        className={styles.cancelBtn}
+                        onClick={handleCancelOption}
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
-              <button className={styles.addOptionBtn}>
-                <FontAwesomeIcon icon={faPlus} /> Agregar opción
-              </button>
+              {(!showAddOptionForm || selectedQuestionId !== q.id) && (
+                <button 
+                  className={styles.addOptionBtn}
+                  onClick={() => handleAddOption(q.id)}
+                >
+                  <FontAwesomeIcon icon={faPlus} /> Agregar opción
+                </button>
+              )}
             </div>
           ))
         ) : (
