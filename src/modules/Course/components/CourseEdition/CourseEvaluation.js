@@ -144,6 +144,7 @@ const CourseEvaluation = ({
                       id={`q${q.id}-opt${opt.id}`}
                       name={`question-${q.id}`}
                       defaultChecked={opt.checked}
+                      disabled
                     />
                     <label htmlFor={`q${q.id}-opt${opt.id}`}>{opt.text}</label>
                   </div>
