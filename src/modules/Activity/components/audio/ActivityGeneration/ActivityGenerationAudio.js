@@ -309,11 +309,11 @@ const ActivityGenerationAudio = ({
                 className={styles.generateBtn}
                 type="button"
                 onClick={onClose}
-                disabled={!activityAudio || !activityAudio.audioUrl}
+                disabled={!activityAudio || !activityAudio.filePath}
                 style={{
-                  opacity: !activityAudio || !activityAudio.audioUrl ? 0.3 : 1,
+                  opacity: !activityAudio || !activityAudio.filePath ? 0.3 : 1,
                   cursor:
-                    !activityAudio || !activityAudio.audioUrl
+                    !activityAudio || !activityAudio.filePath
                       ? "not-allowed"
                       : "pointer",
                 }}

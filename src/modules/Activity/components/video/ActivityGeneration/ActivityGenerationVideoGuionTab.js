@@ -152,7 +152,7 @@ const ActivityGenerationVideoGuionTab = ({
   return (
     <div className={styles.guionTabWrapper}>
       <div className={styles.guionCard}>
-        <div className={styles.guionCardHeader}>{t("VideoScript")}</div>
+        <div className={styles.guionCardHeader}>Guión del video</div>
         <div className={styles.guionCardBody}>
           {guionEdit ? (
             <textarea
@@ -206,7 +206,7 @@ const ActivityGenerationVideoGuionTab = ({
               type="button"
             >
               <FontAwesomeIcon icon={faXmark} style={{ marginRight: 4 }} />
-              {t("cancel")}
+              Cancelar
             </button>
           </div>
         )}

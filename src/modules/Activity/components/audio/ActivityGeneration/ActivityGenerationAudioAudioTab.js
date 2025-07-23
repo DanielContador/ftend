@@ -18,7 +18,7 @@ const ActivityGenerationAudioAudioTab = ({
 
   return (
     <div className={styles.audioTabWrapper}>
-      <div className={styles.previewTitle}>Pre-reproduccion audio</div>
+      <div className={styles.previewTitle}>Pre-reproducción audio</div>
       {audioLoading ? (
         <div className={styles.loadingContainer}>
           <LoadingSpinner />
