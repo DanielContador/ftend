@@ -261,7 +261,7 @@ const ActivityGenerationVideoGuionTab = ({
                 menuPortal: (base) => ({ ...base, zIndex: 99999 }),
               }}
               isLoading={loadingVoices}
-              placeholder={t("selectAvatarVoice") || "Seleccionar"}
+              placeholder={t("Voz del avatar") || "Seleccionar"}
               isDisabled={voiceOptions.length === 0}
               isClearable
             />
