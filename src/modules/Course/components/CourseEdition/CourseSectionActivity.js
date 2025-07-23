@@ -106,7 +106,11 @@ const CourseSectionActivity = ({
     lo.format.toLowerCase().includes("evaluacion")
   );
 
-
+  const handleAddQuizAnswersWrapper = (quizAnswerData) => {
+    if (moduleEvaluation?.id) {
+      onAddQuizAnswers(quizAnswerData, moduleEvaluation.id);
+    }
+  };
 
   useEffect(() => {
     onEvaluationStatusChange(!!moduleEvaluation);
@@ -123,8 +127,6 @@ const CourseSectionActivity = ({
       if (!selectedModule || !selectedModule.learning_objects) {
         return;
       }
-
-
 
       const statusPromises = selectedModule.learning_objects.map(
         async (activity) => {
@@ -265,8 +267,8 @@ const CourseSectionActivity = ({
                 onClick={() => {
                   if (selectedTab === "evaluacion") {
                     const newModule = modules.find((m) => m.id === mod.id);
-                    const hasEvaluation = newModule?.learning_objects.some((lo) =>
-                      lo.format.toLowerCase().includes("evaluacion")
+                    const hasEvaluation = newModule?.learning_objects.some(
+                      (lo) => lo.format.toLowerCase().includes("evaluacion")
                     );
                     if (!hasEvaluation) {
                       handleError(
@@ -477,7 +479,11 @@ const CourseSectionActivity = ({
                                   className={styles.generateBtn}
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    if (res.format.toLowerCase().includes("evaluacion")) {
+                                    if (
+                                      res.format
+                                        .toLowerCase()
+                                        .includes("evaluacion")
+                                    ) {
                                       setSelectedTab("evaluacion");
                                     } else {
                                       handleGoToActivity(res.format, res.id);
@@ -602,11 +608,11 @@ const CourseSectionActivity = ({
             </>
           )}
           {selectedTab === "evaluacion" && moduleEvaluation && (
-            <CourseEvaluation 
-              moduleEvaluation={moduleEvaluation} 
+            <CourseEvaluation
+              moduleEvaluation={moduleEvaluation}
               onGenerateEvaluation={onGenerateEvaluation}
               onRegenerateEvaluation={onRegenerateEvaluation}
-              onAddQuizAnswers={onAddQuizAnswers}
+              onAddQuizAnswers={handleAddQuizAnswersWrapper}
               generatedQuestions={generatedQuestions}
               existingQuestions={existingQuestions}
             />
@@ -617,7 +623,6 @@ const CourseSectionActivity = ({
               <p>Aquí irá la funcionalidad para exportar el curso.</p>
             </div>
           )}
-
         </main>
       </div>
     </div>

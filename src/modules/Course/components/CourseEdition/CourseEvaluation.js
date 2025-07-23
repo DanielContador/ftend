@@ -28,38 +28,36 @@ const CourseEvaluation = ({
   const [isCorrectAnswer, setIsCorrectAnswer] = useState(false);
 
   useEffect(() => {
-    let questionsToDisplay = null;
-
+    let questionsSource = [];
     if (generatedQuestions && generatedQuestions.length > 0) {
-      questionsToDisplay = generatedQuestions;
+      questionsSource = generatedQuestions;
     } else if (existingQuestions && existingQuestions.length > 0) {
-      questionsToDisplay = existingQuestions;
+      questionsSource = existingQuestions;
     } else if (moduleEvaluation?.quizData) {
       try {
-        questionsToDisplay = JSON.parse(moduleEvaluation.quizData).questions;
+        questionsSource = JSON.parse(moduleEvaluation.quizData).questions;
       } catch (error) {
         console.error("Error parsing quizData:", error);
-        questionsToDisplay = [];
       }
     }
 
-    if (questionsToDisplay && Array.isArray(questionsToDisplay)) {
-      const transformedQuestions = questionsToDisplay.map((q, index) => ({
+    if (questionsSource && questionsSource.length > 0) {
+      const transformed = questionsSource.map((q, index) => ({
         id: q.questionId || `q-${index}`,
         text: q.question,
         type: "checkbox",
         points: 1,
-        options: q.answers.map((answer, aIndex) => ({
-          id: answer.answerId || `a-${index}-${aIndex}`,
-          text: answer.answer,
-          checked: answer.correct,
+        options: q.answers.map((ans, aIndex) => ({
+          id: ans.answerId || `a-${index}-${aIndex}`,
+          text: ans.answer,
+          checked: ans.correct,
         })),
       }));
-      setQuestions(transformedQuestions);
+      setQuestions(transformed);
     } else {
       setQuestions([]);
     }
-  }, [moduleEvaluation?.quizData, generatedQuestions, existingQuestions]);
+  }, [generatedQuestions, existingQuestions, moduleEvaluation]);
 
   const handleGenerateWithAI = () => {
     const evaluationData = {
@@ -87,13 +85,13 @@ const CourseEvaluation = ({
       const quizAnswerData = {
         QuestionsId: selectedQuestionId,
         answer: newAnswerText.trim(),
-        isCorrect: isCorrectAnswer
+        isCorrect: isCorrectAnswer,
       };
-      
+
       if (onAddQuizAnswers) {
         onAddQuizAnswers(quizAnswerData);
       }
-      
+
       handleCancelOption();
     }
   };
@@ -171,14 +169,14 @@ const CourseEvaluation = ({
                       </div>
                     </div>
                     <div className={styles.formButtons}>
-                      <button 
+                      <button
                         className={styles.saveBtn}
                         onClick={handleSaveOption}
                         disabled={!newAnswerText.trim()}
                       >
                         Guardar
                       </button>
-                      <button 
+                      <button
                         className={styles.cancelBtn}
                         onClick={handleCancelOption}
                       >
@@ -189,7 +187,7 @@ const CourseEvaluation = ({
                 )}
               </div>
               {(!showAddOptionForm || selectedQuestionId !== q.id) && (
-                <button 
+                <button
                   className={styles.addOptionBtn}
                   onClick={() => handleAddOption(q.id)}
                 >

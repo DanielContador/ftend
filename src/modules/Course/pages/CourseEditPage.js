@@ -140,16 +140,9 @@ const CourseEditPage = ({
     dispatch(showLoading());
     try {
       const response = await quizzesService.getQuizzesByActivityId(activityId);
-      if (response && response.data && response.data.quizData) {
-        const parsedData = JSON.parse(response.data.quizData);
-        const transformedQuestions = parsedData.questions.map(question => ({
-          ...question,
-          answers: question.answers.map(answer => ({
-            ...answer,
-            correct: answer.valid
-          }))
-        }));
-        setExistingQuestions(transformedQuestions);
+      console.log("Quizzes response:", response);
+      if (response && response.data) {
+        setExistingQuestions(response.data.questions);
       } else {
         setExistingQuestions([]);
       }
@@ -203,15 +196,20 @@ const CourseEditPage = ({
     }
   };
 
-  const handleAddQuizAnswers = async (quizAnswerData) => {
+  const handleAddQuizAnswers = async (quizAnswerData, activityId) => {
     dispatch(showLoading());
     try {
-      const response = await quizzesAnswersService.addQuizAnswers(quizAnswerData);
+      const response = await quizzesAnswersService.addQuizAnswers(
+        quizAnswerData
+      );
       console.log("Adding quiz answer with data:", quizAnswerData);
-      
-      if (response && response.success) {
-        console.log("Quiz answer added successfully:", response.data);
-        // Optionally refresh data or update state here
+
+      if (response) {
+        console.log("Quiz answer added successfully:", response);
+        console.log("Activity ID:", activityId);
+        if (activityId) {
+          handleFetchQuizzes(activityId);
+        }
       }
     } catch (error) {
       console.error("Error adding quiz answer:", error);
