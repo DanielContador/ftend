@@ -101,7 +101,22 @@ const RegisterForm = ({ onRegister, loading, error }) => {
     } catch (err) {
       console.log(err);
       if (err.response && err.response.status === 400) {
-        dispatch(showFloatingError(err.response.data));
+        const errorData = err.response.data;
+        if (
+          Array.isArray(errorData) &&
+          errorData.length > 0 &&
+          errorData[0].code === "DuplicateUserName"
+        ) {
+          dispatch(
+            showFloatingError(
+              "Este nombre de usuario ya está registrado. Por favor, utiliza otro."
+            )
+          );
+        } else {
+          dispatch(
+            showFloatingError("Error al registrar. Intenta nuevamente.")
+          );
+        }
       } else {
         dispatch(showFloatingError("Error al registrar. Intenta nuevamente."));
       }

@@ -151,7 +151,7 @@ const ResetPasswordForm = ({ onSubmit, loading, error }) => {
         <button
           type="button"
           className={styles.secondaryBtn}
-          onClick={() => router.push("/login")}
+          onClick={() => router.push("/welcome")}
         >
           Volver a home
         </button>

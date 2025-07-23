@@ -39,7 +39,7 @@ const RecoverPasswordForm = ({ onSubmit, loading, error }) => {
   if (success) {
     return (
       <div className={styles.container}>
-        <RecoverPasswordSendBrand onHomeClick={() => router.push("/login")} />
+        <RecoverPasswordSendBrand onHomeClick={() => router.push("/welcome")} />
       </div>
     );
   }
@@ -77,7 +77,7 @@ const RecoverPasswordForm = ({ onSubmit, loading, error }) => {
         <button
           type="button"
           className={styles.secondaryBtn}
-          onClick={() => router.push("/login")}
+          onClick={() => router.push("/welcome")}
         >
           Volver a home
         </button>

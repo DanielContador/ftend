@@ -17,6 +17,7 @@ const ActivityGenerationAudioGuionTab = ({
   similarity,
   setSimilarity,
   handleSaveScript,
+  isScriptGenerated,
 }) => {
   const [tempGuion, setTempGuion] = useState(guionInput);
 
@@ -86,6 +87,7 @@ const ActivityGenerationAudioGuionTab = ({
             className={styles.editGuionBtn}
             onClick={handleEditClick}
             type="button"
+            disabled={!isScriptGenerated}
           >
             <FontAwesomeIcon icon={faPen} style={{ marginRight: 6 }} />
             Editar

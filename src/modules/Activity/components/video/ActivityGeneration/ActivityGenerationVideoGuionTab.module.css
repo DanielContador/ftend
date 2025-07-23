@@ -169,6 +169,11 @@
   background: #d1c4f7;
 }
 
+.editGuionBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .editGuionActions {
   display: flex;
   gap: 12px;

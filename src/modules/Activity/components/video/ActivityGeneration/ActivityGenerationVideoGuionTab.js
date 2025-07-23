@@ -33,6 +33,7 @@ const ActivityGenerationVideoGuionTab = ({
   setSearchAvatar,
   selectedAvatar,
   handleSaveScript, // <-- nuevo prop
+  isScriptGenerated,
 }) => {
   const [voiceOptions, setVoiceOptions] = useState([]);
   const [loadingVoices, setLoadingVoices] = useState(false);
@@ -184,6 +185,7 @@ const ActivityGenerationVideoGuionTab = ({
             className={styles.editGuionBtn}
             onClick={handleEditClick}
             type="button"
+            disabled={!isScriptGenerated}
           >
             <FontAwesomeIcon icon={faPen} style={{ marginRight: 6 }} />
             {t("edit")}

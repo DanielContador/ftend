@@ -31,8 +31,7 @@ const TABS = [
   { key: "video", label: "Video" },
 ];
 
-const DEFAULT_GUIÓN = `¿Qué es la IA?
-La inteligencia artificial, o IA, se refiere a la capacidad de las máquinas y sistemas informáticos para realizar tareas que normalmente requieren inteligencia humana. Esto incluye procesos como el aprendizaje, el razonamiento, la resolución de problemas, la percepción y la toma de decisiones. En su esencia, la IA busca simular la forma en que los humanos piensan y actúan, utilizando algoritmos y modelos matemáticos para interpretar datos, aprender de la experiencia y adaptarse a nuevas situaciones......`;
+const DEFAULT_GUIÓN = "Aqui debe generarse el guion de la actividad.";
 
 const ActivityGenerationVideo = ({
   onClose,
@@ -410,6 +409,7 @@ const ActivityGenerationVideo = ({
               setSearchAvatar={setSearchAvatar}
               selectedAvatar={selectedAvatar}
               handleSaveScript={handleSaveScript} // <-- pasar el método
+              isScriptGenerated={!!activityVideo}
             />
           )}
           {activeTab === "video" && (
@@ -446,7 +446,9 @@ const ActivityGenerationVideo = ({
                 <button
                   className={styles.generateBtn}
                   disabled={!avatarVoice}
-                  onClick={handleGenerateVideoGuionTab}
+                  handleSaveScript={handleSaveScript}
+                  handleGenerateVideo={handleGenerateVideoGuionTab}
+                  isScriptGenerated={!!activityVideo}
                 >
                   Generar{" "}
                   <FontAwesomeIcon
