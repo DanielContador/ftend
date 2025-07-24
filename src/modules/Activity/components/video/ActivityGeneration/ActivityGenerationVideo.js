@@ -23,7 +23,10 @@ import ActivityGenerationVideoGuionTab from "./ActivityGenerationVideoGuionTab";
 import ActivityGenerationVideoVideoTab from "./ActivityGenerationVideoVideoTab";
 import LoadingSpinner from "../../../../../shared/components/LoadingSpinner";
 import { useDispatch } from "react-redux";
-import { showFloatingError } from "../../../../../shared/store/rootActions";
+import {
+  showFloatingError,
+  showFloatingSuccess,
+} from "../../../../../shared/store/rootActions";
 
 const TABS = [
   { key: "config", label: "Configuración" },
@@ -51,6 +54,7 @@ const ActivityGenerationVideo = ({
   const [fileToken, setFileToken] = useState(null);
   const [videoType, setVideoType] = useState("avatar");
   const [avatarVoice, setAvatarVoice] = useState(null);
+  const [videoCreatorApp, setVideoCreatorApp] = useState(null);
 
   // Avatar selection state
   const [showAvatarSelection, setShowAvatarSelection] = useState(false);
@@ -73,14 +77,12 @@ const ActivityGenerationVideo = ({
         setGuionInput(response.data.video.content);
         if (response.data.video.videoUrl == "rendering") {
           const videoId = response.data.video.videoId;
-          if (
-            typeof videoId === "string" &&
-            (videoId.match(/-/g) || []).length > 2
-          ) {
-            pollVideoStatus("videogen");
-          } else {
-            pollVideoStatus("elai");
-          }
+          const creatorApp =
+            typeof videoId === "string" && (videoId.match(/-/g) || []).length > 2
+              ? "videogen"
+              : "elai";
+          setVideoCreatorApp(creatorApp);
+          pollVideoStatus(creatorApp);
         }
       }
       if (response.data.token) {
@@ -112,16 +114,31 @@ const ActivityGenerationVideo = ({
             rawVideo: response.data.url,
           }));
           setVideoLoading(false);
-        } else if (response.data.content.status !== "rendering") {
+          setAvatarGenerateLoading(false);
+          setModalLoading(false);
+          setActiveTab("video");
+        } else if (response.data.content.status === "failed" || response.data.content.status === "cancelled") {
           clearInterval(interval);
           setVideoLoading(false);
-          handleError(t("errorGeneratingVideo"));
+          setAvatarGenerateLoading(false);
+          setModalLoading(false);
+          dispatch(
+          showFloatingError(
+            "No se pudo generar el video, hubo un problema en su generacion"
+          )
+        );
         }
       } catch (error) {
         clearInterval(interval);
         setVideoLoading(false);
+        setAvatarGenerateLoading(false);
+        setModalLoading(false);
         console.error("Error polling video status:", error.message);
-        handleError(t("errorGeneratingVideo") + ": " + error.message);
+        dispatch(
+          showFloatingError(
+            "El video aún está generándose, inténtelo más tarde"
+          )
+        );
       }
     }, 5000); // Poll every 5 seconds
   };
@@ -244,15 +261,25 @@ const ActivityGenerationVideo = ({
               : null,
         };
         const response = await generateElaiActivityVideo(data);
-        activityVideo.videoUrl = response.data.content;
-        setActivityVideo(activityVideo);
-        setActiveTab("video");
-        setVideoLoading(true);
+        dispatch(showFloatingSuccess("El video se está generando correctamente"));
+        setVideoCreatorApp("elai");
+        setActivityVideo((prev) => ({ ...prev, videoUrl: response.data.content }));
         pollVideoStatus("elai");
       } catch (error) {
         console.error("Error generating video:", error);
-        dispatch(showFloatingError(t("errorGeneratingVideo")));
-      } finally {
+        if (
+          error?.response?.data?.errorMessage?.includes(
+            "already has generated content"
+          )
+        ) {
+          dispatch(showFloatingError("Ya existe un video generado"));
+        } else {
+          dispatch(
+          showFloatingError(
+            "No se pudo generar el video, hubo un problema en su generacion"
+          )
+        );
+        }
         setAvatarGenerateLoading(false);
         setModalLoading(false);
       }
@@ -280,16 +307,25 @@ const ActivityGenerationVideo = ({
           BackgroundMusic: true,
         };
         const response = await generateVideogenActivityVideo(data);
-        console.log("Generated video response:", response);
-        activityVideo.videoUrl = response.data.content;
-        setActivityVideo(activityVideo);
-        setActiveTab("video");
-        setVideoLoading(true);
+        dispatch(showFloatingSuccess("El video se está generando correctamente"));
+        setVideoCreatorApp("videogen");
+        setActivityVideo((prev) => ({ ...prev, videoUrl: response.data.content }));
         pollVideoStatus("videogen");
       } catch (error) {
         console.error("Error generating scene video:", error);
-        dispatch(showFloatingError(t("errorGeneratingVideo")));
-      } finally {
+        if (
+          error?.response?.data?.errorMessage?.includes(
+            "already has generated content"
+          )
+        ) {
+          dispatch(showFloatingError("Ya existe un video generado"));
+        } else {
+          dispatch(
+          showFloatingError(
+            "No se pudo generar el video, hubo un problema en su generacion"
+          )
+        );
+        }
         setModalLoading(false);
       }
     }
@@ -302,7 +338,23 @@ const ActivityGenerationVideo = ({
   };
 
   // Manejar el cambio de tab y limpiar selección si es necesario
-  const handleTabClick = (tabKey) => {
+  const handleTabClick = async (tabKey) => {
+    if (tabKey === "video") {
+      if (videoLoading || avatarGenerateLoading) {
+        try {
+          // Realiza la misma llamada que el poll para verificar el estado real
+          await retrieveActivityVideoStatus(activityId, videoCreatorApp);
+        } catch (error) {
+          dispatch(
+            showFloatingError(
+              "El video aún está generándose, inténtelo más tarde"
+            )
+          );
+          return; // Si hay error (404), no cambiar de pestaña
+        }
+      }
+    }
+
     // Si estamos en guion/avatar selection y vamos a la izquierda, limpiar selección
     if (activeTab === "guion" && showAvatarSelection && tabKey !== "guion") {
       setShowAvatarSelection(false);
@@ -444,11 +496,9 @@ const ActivityGenerationVideo = ({
                 </button>
               ) : (
                 <button
+                  onClick={handleGenerateVideoGuionTab}
                   className={styles.generateBtn}
-                  disabled={!avatarVoice}
-                  handleSaveScript={handleSaveScript}
-                  handleGenerateVideo={handleGenerateVideoGuionTab}
-                  isScriptGenerated={!!activityVideo}
+                  disabled={!avatarVoice || guionInput === DEFAULT_GUIÓN}
                 >
                   Generar{" "}
                   <FontAwesomeIcon
