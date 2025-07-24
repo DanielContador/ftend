@@ -89,7 +89,7 @@ const RegisterForm = ({ onRegister, loading, error }) => {
         password,
       });
 
-      if (response && response.status === 200) {
+      if (response && response.success) {
         dispatch(
           showFloatingSuccess("Registro exitoso. Ahora puedes iniciar sesión.")
         );
@@ -99,10 +99,13 @@ const RegisterForm = ({ onRegister, loading, error }) => {
         });
       }
     } catch (err) {
-      console.log(err);
-      if (err.response && err.response.status === 400) {
+      if (err.response && err.response.data) {
         const errorData = err.response.data;
-        if (
+        // Nuevo manejo de errores para USEREXIST
+        if (errorData.code === "USEREXIST") {
+          dispatch(showFloatingError(errorData.errorMessage));
+        } else if (
+          // Mantenemos la lógica anterior por si acaso
           Array.isArray(errorData) &&
           errorData.length > 0 &&
           errorData[0].code === "DuplicateUserName"
@@ -114,11 +117,17 @@ const RegisterForm = ({ onRegister, loading, error }) => {
           );
         } else {
           dispatch(
-            showFloatingError("Error al registrar. Intenta nuevamente.")
+            showFloatingError(
+              errorData.errorMessage ||
+                "Error al registrar. Intenta nuevamente."
+            )
           );
         }
       } else {
-        dispatch(showFloatingError("Error al registrar. Intenta nuevamente."));
+        // Error genérico si no hay respuesta del servidor
+        dispatch(
+          showFloatingError("Error de conexión. Por favor, intenta nuevamente.")
+        );
       }
     }
   };
