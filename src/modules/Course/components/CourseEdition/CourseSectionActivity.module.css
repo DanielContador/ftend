@@ -282,6 +282,7 @@
 .iconPDF {
   background: #fef2f2;
   color: #e53e3e;
+  border-radius: 0;
 }
 
 .iconAudio {
@@ -292,6 +293,7 @@
 .iconPPT {
   background: #f3f0fd;
   color: #7c3aed;
+  border-radius: 0;
 }
 
 .resourceCardBody {
