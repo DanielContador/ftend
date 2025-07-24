@@ -160,6 +160,8 @@ const ActivityGenerationDocument = ({
     }
   };
 
+  const isFinishDisabled = !documentContent || documentContent.trim() === "";
+
   if (modalLoading) {
     return (
       <div className={styles.modalOverlay}>
@@ -260,6 +262,11 @@ const ActivityGenerationDocument = ({
                 className={styles.generateBtn}
                 onClick={onClose}
                 type="button"
+                disabled={isFinishDisabled}
+                style={{
+                  opacity: isFinishDisabled ? 0.5 : 1,
+                  cursor: isFinishDisabled ? "not-allowed" : "pointer",
+                }}
               >
                 Finalizar
               </button>

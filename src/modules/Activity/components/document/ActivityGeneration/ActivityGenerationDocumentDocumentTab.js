@@ -40,6 +40,8 @@ const ActivityGenerationDocumentDocumentTab = ({
   // Mostrar texto por defecto si no hay documento generado
   const isEmpty = !documentContent || documentContent.trim() === "";
 
+  const isEditDisabled = isEmpty;
+
   // Si no hay activityDocument o no tiene id, deshabilita el botón de guardar
   const canSave =
     activityDocument &&
@@ -141,10 +143,16 @@ const ActivityGenerationDocumentDocumentTab = ({
           <button
             className={styles.editBtn}
             onClick={() => {
+              if (isEditDisabled) return;
               setTempContent(documentContent);
               setEditMode(true);
             }}
             type="button"
+            disabled={isEditDisabled}
+            style={{
+              opacity: isEditDisabled ? 0.5 : 1,
+              cursor: isEditDisabled ? "not-allowed" : "pointer",
+            }}
           >
             <FontAwesomeIcon icon={faPen} style={{ marginRight: 6 }} />
             Editar
