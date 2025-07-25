@@ -26,6 +26,7 @@ import {
 } from "../../../Activity/services/activityService";
 import CourseEvaluation from "./CourseEvaluation";
 import EvaluationGeneration from "./EvaluationGeneration";
+import EvaluationEdition from "./EvaluationEdition";
 
 // Mapea el formato del backend a los iconos y colores igual que en CourseEdition
 const iconByType = {
@@ -117,25 +118,66 @@ const CourseSectionActivity = ({
   };
 
   // Función para manejar la generación de evaluación
-  const handleEvaluationGenerate = (evaluationConfig) => {
+  const handleEvaluationGenerate = async (evaluationConfig, onComplete) => {
     console.log('Generando evaluación con configuración:', evaluationConfig);
-    // Aquí se puede llamar a onGenerateEvaluation si es necesario
     if (onGenerateEvaluation && moduleEvaluation?.id) {
       const evaluationData = {
         ActivityId: moduleEvaluation.id,
-        Prompt: evaluationConfig.evaluationContent || "",
-        Multiple_Choise: true,
-        Cant_Answers: 5,
+        Prompt: evaluationConfig.Prompt || "",
+        Multiple_Choise: evaluationConfig.Multiple_Choise,
+        Cant_Answers: evaluationConfig.Cant_Answers,
+        QuestionCount: evaluationConfig.QuestionCount,
+        MinPassingScore: evaluationConfig.MinPassingScore,
       };
-      onGenerateEvaluation(evaluationData);
+
+      try {
+        await onGenerateEvaluation(evaluationData);
+        // Después de generar, se actualizan las preguntas y se llama al callback
+        if (onFetchQuizzes) {
+          await onFetchQuizzes(moduleEvaluation.id);
+          setShowEvaluationView(true);
+          if (onComplete) {
+            onComplete();
+          }
+          // Ahora la vista cambia a edición solo cuando las preguntas están listas y el loading desaparece
+        }
+      } catch (error) { 
+        console.error("Error during evaluation generation:", error);
+        // Si hay error, apaga el loading pero NO cambia la vista
+        if (onComplete) {
+          onComplete();
+        }
+      }
     }
-    // Después de generar, podríamos volver a la vista normal o mostrar resultados
-    setShowEvaluationView(false);
   };
 
   // Función para volver de EvaluationGeneration a section activities
   const handleBackToSectionActivities = () => {
     setShowEvaluationView(false);
+  };
+
+  // Verificar si ya existen preguntas de evaluación (similar a CourseEvaluation)
+  const hasExistingQuestions = () => {
+    // Verificar generatedQuestions
+    if (generatedQuestions && generatedQuestions.length > 0) {
+      return true;
+    }
+    // Verificar existingQuestions
+    if (existingQuestions && existingQuestions.length > 0) {
+      return true;
+    }
+    // Verificar quizData en moduleEvaluation
+    if (moduleEvaluation?.quizData) {
+      try {
+        const parsedData = JSON.parse(moduleEvaluation.quizData);
+        if (parsedData.questions && parsedData.questions.length > 0) {
+          return true;
+        }
+      } catch (error) {
+        console.error("Error parsing quizData:", error);
+      }
+    }
+    return false;
   };
 
 
@@ -378,11 +420,23 @@ const CourseSectionActivity = ({
             <>
 
               {showEvaluationView ? (
-                <EvaluationGeneration 
-                  onGenerate={handleEvaluationGenerate} 
-                  moduleEvaluation={moduleEvaluation}
-                  onBack={handleBackToSectionActivities}
-                />
+                hasExistingQuestions() ? (
+                  <EvaluationEdition 
+                    moduleEvaluation={moduleEvaluation}
+                    onBack={handleBackToSectionActivities}
+                    onSave={(questions) => {
+                      console.log('Saving questions:', questions);
+                      // Aquí se puede implementar la lógica para guardar las preguntas editadas
+                    }}
+                    questions={existingQuestions || generatedQuestions || []}
+                  />
+                ) : (
+                  <EvaluationGeneration 
+                    onGenerate={handleEvaluationGenerate} 
+                    moduleEvaluation={moduleEvaluation}
+                    onBack={handleBackToSectionActivities}
+                  />
+                )
               ) : (
                 <>
                   <div className={styles.sectionHeader}>

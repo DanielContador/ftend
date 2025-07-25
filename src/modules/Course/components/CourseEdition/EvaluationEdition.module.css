@@ -1,0 +1,324 @@
+/* Container */
+.container {
+    padding: 20px;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.backButton {
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.backButton:hover {
+    background-color: #e9ecef;
+}
+
+.saveButton {
+    background-color: #8e44ad;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.saveButton:hover {
+    background-color: #732d91;
+}
+
+/* Title Section */
+.titleSection {
+    margin-bottom: 32px;
+}
+
+.title {
+    font-size: 28px;
+    font-weight: 600;
+    color: #212529;
+    margin: 0 0 8px 0;
+}
+
+.subtitle {
+    font-size: 16px;
+    color: #6c757d;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Section */
+.section {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e9ecef;
+}
+
+.sectionTitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: #8e44ad;
+    margin: 0 0 16px 0;
+}
+
+/* Structure Row */
+.structureRow {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.structureInput {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #ffffff;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.structureInput:focus {
+    outline: none;
+    border-color: #8e44ad;
+    box-shadow: 0 0 0 2px rgba(142, 68, 173, 0.25);
+}
+
+.regenerateButton {
+    background-color: #8e44ad;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s ease;
+    white-space: nowrap;
+}
+
+.regenerateButton:hover:not(:disabled) {
+    background-color: #732d91;
+}
+
+.regenerateButton:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Questions Section */
+.questionsSection {
+    margin-bottom: 24px;
+}
+
+.questionCard {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e9ecef;
+}
+
+.questionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.questionNumber {
+    background-color: #8e44ad;
+    color: #ffffff;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.questionActions {
+    display: flex;
+    gap: 8px;
+}
+
+.editButton,
+.deleteButton {
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.editButton:hover {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+.deleteButton:hover {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Question Content */
+.questionContent {
+    margin-left: 0;
+}
+
+.questionText {
+    font-size: 16px;
+    font-weight: 500;
+    color: #212529;
+    margin: 0 0 16px 0;
+    line-height: 1.5;
+}
+
+.questionType {
+    margin-bottom: 16px;
+}
+
+.typeSelect {
+    padding: 6px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #ffffff;
+    color: #495057;
+}
+
+.typeSelect:disabled {
+    cursor: not-allowed;
+    /* Sin opacity para mantener apariencia normal */
+    background-color: #ffffff;
+    color: #495057;
+}
+
+/* Options */
+.options {
+    margin-left: 0;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.option:last-of-type {
+    border-bottom: none;
+}
+
+.optionRadio {
+    margin: 0;
+    accent-color: #8e44ad;
+}
+
+.optionRadio:disabled {
+    cursor: not-allowed;
+    /* Sin opacity para mantener apariencia normal */
+}
+
+.optionCheckbox {
+    margin: 0;
+    accent-color: #8e44ad;
+}
+
+.optionCheckbox:disabled {
+    cursor: not-allowed;
+    /* Sin opacity para mantener apariencia normal */
+}
+
+.optionLabel {
+    flex: 1;
+    font-size: 14px;
+    color: #495057;
+    margin: 0;
+    cursor: pointer;
+}
+
+.correctBadge {
+    background-color: #28a745;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+
+.addOptionButton {
+    background: none;
+    border: none;
+    color: #8e44ad;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 0;
+    margin-top: 8px;
+    transition: color 0.2s;
+}
+
+.addOptionButton:hover {
+    color: #732d91;
+}
+
+/* Add Question Section */
+.addQuestionSection {
+    display: flex;
+    justify-content: center;
+    margin-top: 32px;
+}
+
+.addQuestionButton {
+    background-color: #ffffff;
+    color: #8e44ad;
+    border: 2px dashed #8e44ad;
+    border-radius: 8px;
+    padding: 16px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.addQuestionButton:hover {
+    background-color: #f8f5ff;
+    border-color: #732d91;
+    color: #732d91;
+}

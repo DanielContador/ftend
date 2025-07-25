@@ -16,8 +16,10 @@ const EvaluationGeneration = ({ onGenerate, moduleEvaluation, onBack }) => {
     moduleEvaluation?.min_passing_score || 70
   );
   const [evaluationContent, setEvaluationContent] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const handleGenerate = () => {
+    setIsGenerating(true);
     // Create the evaluationData object that matches the backend API structure
     const evaluationData = {
       ActivityId: moduleEvaluation?.id,
@@ -30,9 +32,14 @@ const EvaluationGeneration = ({ onGenerate, moduleEvaluation, onBack }) => {
     };
 
     if (onGenerate && moduleEvaluation?.id) {
-      onGenerate(evaluationData);
+      // Pass callback to handle completion
+      onGenerate(evaluationData, () => {
+        setIsGenerating(false);
+        // The parent component will handle redirecting to EvaluationEdition
+      });
     } else {
       console.error("No moduleEvaluation ID available for generation");
+      setIsGenerating(false);
     }
 
     console.log(
@@ -114,20 +121,17 @@ const EvaluationGeneration = ({ onGenerate, moduleEvaluation, onBack }) => {
 
         <div className={styles.buttonContainer}>
           <button
-            className={`${styles.generateButton} ${
-              !isGenerateButtonEnabled ? styles.generateButtonDisabled : ""
-            }`}
+            className={styles.generateButton}
             onClick={handleGenerate}
-            disabled={!isGenerateButtonEnabled}
+            disabled={!isGenerateButtonEnabled || isGenerating}
           >
-            <FontAwesomeIcon
-              icon={faWandMagicSparkles}
-              className={styles.buttonIcon}
-            />
-            Generar con IA
+            <FontAwesomeIcon icon={faWandMagicSparkles} />
+            {isGenerating ? "Generando..." : "Generar con IA"}
           </button>
         </div>
       </div>
+
+
     </div>
   );
 };
