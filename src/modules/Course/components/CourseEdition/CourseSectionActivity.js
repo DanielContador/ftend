@@ -133,6 +133,11 @@ const CourseSectionActivity = ({
     setShowEvaluationView(false);
   };
 
+  // Función para volver de EvaluationGeneration a section activities
+  const handleBackToSectionActivities = () => {
+    setShowEvaluationView(false);
+  };
+
 
 
   useEffect(() => {
@@ -373,7 +378,11 @@ const CourseSectionActivity = ({
             <>
 
               {showEvaluationView ? (
-                <EvaluationGeneration onGenerate={handleEvaluationGenerate} />
+                <EvaluationGeneration 
+                  onGenerate={handleEvaluationGenerate} 
+                  moduleEvaluation={moduleEvaluation}
+                  onBack={handleBackToSectionActivities}
+                />
               ) : (
                 <>
                   <div className={styles.sectionHeader}>

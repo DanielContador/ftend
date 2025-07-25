@@ -6,32 +6,54 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import styles from "./EvaluationGeneration.module.css";
 
-const EvaluationGeneration = ({ onGenerate }) => {
-  const [questionCount, setQuestionCount] = useState(30);
-  const [minPassingScore, setMinPassingScore] = useState(70);
+const EvaluationGeneration = ({ onGenerate, moduleEvaluation, onBack }) => {
+  // Use real values from moduleEvaluation instead of hardcoded values
+  console.log("EvaluationGeneration", moduleEvaluation);
+  const [questionCount, setQuestionCount] = useState(
+    moduleEvaluation?.estimated_questions || 30
+  );
+  const [minPassingScore, setMinPassingScore] = useState(
+    moduleEvaluation?.min_passing_score || 70
+  );
   const [evaluationContent, setEvaluationContent] = useState(
-    "Las preguntas deben evaluar conceptos básicos como definición, diferencias clave, ventajas, desventajas y aplicaciones prácticas. El nivel de dificultad debe ser introductorio, pensado para estudiantes que recién comienzan en el área de inteligencia artificial..."
+    moduleEvaluation?.learning_goal ||
+      "Las preguntas deben evaluar conceptos básicos como definición, diferencias clave, ventajas, desventajas y aplicaciones prácticas. El nivel de dificultad debe ser introductorio, pensado para estudiantes que recién comienzan en el área de inteligencia artificial..."
   );
 
   const handleGenerate = () => {
-    const evaluationConfig = {
-      questionCount,
-      minPassingScore,
-      evaluationContent,
+    // Create the evaluationData object that matches the backend API structure
+    const evaluationData = {
+      ActivityId: moduleEvaluation?.id,
+      Prompt: evaluationContent || "",
+      Multiple_Choise: true,
+      Cant_Answers: 5, // Fixed at 5 options per question as per CourseEvaluation
+      // Additional parameters that might be useful
+      QuestionCount: questionCount,
+      MinPassingScore: minPassingScore,
     };
-    if (onGenerate) {
-      onGenerate(evaluationConfig);
+
+    if (onGenerate && moduleEvaluation?.id) {
+      onGenerate(evaluationData);
+    } else {
+      console.error("No moduleEvaluation ID available for generation");
     }
+
     console.log(
       "Generando evaluación con la siguiente configuración:",
-      evaluationConfig
+      evaluationData
     );
+  };
+
+  const handleBack = () => {
+    if (onBack) {
+      onBack();
+    }
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.breadcrumb}>
-        <button className={styles.backButton}>
+        <button className={styles.backButton} onClick={handleBack}>
           <FontAwesomeIcon icon={faArrowLeft} />
           Atrás
         </button>
