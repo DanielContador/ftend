@@ -10,15 +10,12 @@ const EvaluationGeneration = ({ onGenerate, moduleEvaluation, onBack }) => {
   // Use real values from moduleEvaluation instead of hardcoded values
   console.log("EvaluationGeneration", moduleEvaluation);
   const [questionCount, setQuestionCount] = useState(
-    moduleEvaluation?.estimated_questions || 30
+    moduleEvaluation?.estimated_time || 30
   );
   const [minPassingScore, setMinPassingScore] = useState(
     moduleEvaluation?.min_passing_score || 70
   );
-  const [evaluationContent, setEvaluationContent] = useState(
-    moduleEvaluation?.learning_goal ||
-      "Las preguntas deben evaluar conceptos básicos como definición, diferencias clave, ventajas, desventajas y aplicaciones prácticas. El nivel de dificultad debe ser introductorio, pensado para estudiantes que recién comienzan en el área de inteligencia artificial..."
-  );
+  const [evaluationContent, setEvaluationContent] = useState("");
 
   const handleGenerate = () => {
     // Create the evaluationData object that matches the backend API structure
@@ -50,6 +47,9 @@ const EvaluationGeneration = ({ onGenerate, moduleEvaluation, onBack }) => {
     }
   };
 
+  // Check if the generate button should be enabled
+  const isGenerateButtonEnabled = evaluationContent.trim().length > 0;
+
   return (
     <div className={styles.container}>
       <div className={styles.breadcrumb}>
@@ -61,11 +61,8 @@ const EvaluationGeneration = ({ onGenerate, moduleEvaluation, onBack }) => {
 
       {/* Main Title */}
       <div className={styles.header}>
-        <h1 className={styles.title}>Evaluación diagnóstica</h1>
-        <p className={styles.subtitle}>
-          Algunas preguntas para evaluar la comprensión de los estudiantes de
-          este módulo.
-        </p>
+        <h1 className={styles.title}>{moduleEvaluation.object_title}</h1>
+        <p className={styles.subtitle}>{moduleEvaluation.learning_goal}</p>
       </div>
 
       {/* Configuration Section */}
@@ -116,7 +113,13 @@ const EvaluationGeneration = ({ onGenerate, moduleEvaluation, onBack }) => {
         />
 
         <div className={styles.buttonContainer}>
-          <button className={styles.generateButton} onClick={handleGenerate}>
+          <button
+            className={`${styles.generateButton} ${
+              !isGenerateButtonEnabled ? styles.generateButtonDisabled : ""
+            }`}
+            onClick={handleGenerate}
+            disabled={!isGenerateButtonEnabled}
+          >
             <FontAwesomeIcon
               icon={faWandMagicSparkles}
               className={styles.buttonIcon}
