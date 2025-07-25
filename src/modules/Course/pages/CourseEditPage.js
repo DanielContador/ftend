@@ -25,6 +25,7 @@ const CourseEditPage = ({
   selectedTab,
   setSelectedTab,
   onEvaluationStatusChange,
+  triggerEvaluationView,
 }) => {
   const router = useRouter();
   const { t } = useTranslation();
@@ -250,6 +251,7 @@ const CourseEditPage = ({
           selectedTab={selectedTab}
           setSelectedTab={setSelectedTab}
           onEvaluationStatusChange={onEvaluationStatusChange}
+          triggerEvaluationView={triggerEvaluationView}
         />
       )}
       {showSection == "CourseEdition" && (

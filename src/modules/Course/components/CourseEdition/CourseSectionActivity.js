@@ -25,6 +25,7 @@ import {
   getActivityDocument,
 } from "../../../Activity/services/activityService";
 import CourseEvaluation from "./CourseEvaluation";
+import EvaluationGeneration from "./EvaluationGeneration";
 
 // Mapea el formato del backend a los iconos y colores igual que en CourseEdition
 const iconByType = {
@@ -36,7 +37,6 @@ const iconByType = {
 
 const tabs = [
   { key: "contenido", label: "Creación de contenido" },
-  { key: "evaluacion", label: "Evaluación" },
   { key: "exportar", label: "Exportar" },
 ];
 
@@ -79,6 +79,7 @@ const CourseSectionActivity = ({
   onRegenerateEvaluation,
   onAddQuizAnswers,
   generatedQuestions,
+  triggerEvaluationView,
 }) => {
   console.log("CourseSectionActivity props:", courseStructure);
   const router = useRouter();
@@ -98,6 +99,9 @@ const CourseSectionActivity = ({
   const [videoModalData, setVideoModalData] = useState(null);
   const [videoModalKey, setVideoModalKey] = useState(0); // <--- nuevo estado para forzar reinicio
   const [downloadableStatus, setDownloadableStatus] = useState({});
+  
+  // Estado para mostrar la vista de evaluación dentro del tab de contenido
+  const [showEvaluationView, setShowEvaluationView] = useState(false);
 
   const selectedModule =
     modules.find((mod) => mod.id === selectedModuleId) || modules[0];
@@ -112,15 +116,53 @@ const CourseSectionActivity = ({
     }
   };
 
+  // Función para manejar la generación de evaluación
+  const handleEvaluationGenerate = (evaluationConfig) => {
+    console.log('Generando evaluación con configuración:', evaluationConfig);
+    // Aquí se puede llamar a onGenerateEvaluation si es necesario
+    if (onGenerateEvaluation && moduleEvaluation?.id) {
+      const evaluationData = {
+        ActivityId: moduleEvaluation.id,
+        Prompt: evaluationConfig.evaluationContent || "",
+        Multiple_Choise: true,
+        Cant_Answers: 5,
+      };
+      onGenerateEvaluation(evaluationData);
+    }
+    // Después de generar, podríamos volver a la vista normal o mostrar resultados
+    setShowEvaluationView(false);
+  };
+
+
+
   useEffect(() => {
     onEvaluationStatusChange(!!moduleEvaluation);
   }, [moduleEvaluation, onEvaluationStatusChange]);
 
+  // Reset evaluation view when changing modules or tabs
   useEffect(() => {
-    if (selectedTab === "evaluacion" && moduleEvaluation?.id) {
+    setShowEvaluationView(false);
+  }, [selectedModule, selectedTab]);
+
+  // Fetch quizzes when evaluation view is shown and there's a module evaluation
+  useEffect(() => {
+    if (showEvaluationView && moduleEvaluation?.id) {
       onFetchQuizzes(moduleEvaluation.id);
     }
-  }, [selectedTab, moduleEvaluation?.id]);
+  }, [showEvaluationView, moduleEvaluation?.id]);
+
+  // Handle trigger from parent component ("Siguiente" button)
+  useEffect(() => {
+    if (triggerEvaluationView) {
+      // Use the same logic as moduleEvaluation to check for evaluation activity
+      if (moduleEvaluation) {
+        console.log('Triggering evaluation view from Siguiente button');
+        setShowEvaluationView(true);
+      } else {
+        console.log('No evaluation activity found when triggering from Siguiente button');
+      }
+    }
+  }, [triggerEvaluationView, moduleEvaluation]);
 
   useEffect(() => {
     const checkAllActivitiesDownloadStatus = async () => {
@@ -329,23 +371,28 @@ const CourseSectionActivity = ({
         >
           {selectedTab === "contenido" && (
             <>
-              <div className={styles.sectionHeader}>
-                <div>
-                  <h2 className={styles.sectionTitle}>
-                    {selectedModule?.module_title
-                      ? selectedModule.module_title
-                      : `Módulo ${selectedModule?.id}`}
-                  </h2>
-                  <div className={styles.sectionSubtitle}>
-                    {selectedModule?.learning_objects
-                      ? `Recursos: ${selectedModule.learning_objects.length}`
-                      : ""}
+
+              {showEvaluationView ? (
+                <EvaluationGeneration onGenerate={handleEvaluationGenerate} />
+              ) : (
+                <>
+                  <div className={styles.sectionHeader}>
+                    <div>
+                      <h2 className={styles.sectionTitle}>
+                        {selectedModule?.module_title
+                          ? selectedModule.module_title
+                          : `Módulo ${selectedModule?.id}`}
+                      </h2>
+                      <div className={styles.sectionSubtitle}>
+                        {selectedModule?.learning_objects
+                          ? `Recursos: ${selectedModule.learning_objects.length}`
+                          : ""}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div className={styles.resourceList}>
-                {selectedModule?.learning_objects &&
-                  selectedModule.learning_objects.map((res) => {
+                  <div className={styles.resourceList}>
+                    {selectedModule?.learning_objects &&
+                      selectedModule.learning_objects.map((res) => {
                     const expanded = expandedResource === res.id;
                     const isEditing = editingResource[res.id]?.editing;
                     const editValue =
@@ -484,7 +531,7 @@ const CourseSectionActivity = ({
                                         .toLowerCase()
                                         .includes("evaluacion")
                                     ) {
-                                      setSelectedTab("evaluacion");
+                                      setShowEvaluationView(true);
                                     } else {
                                       handleGoToActivity(res.format, res.id);
                                     }
@@ -584,38 +631,30 @@ const CourseSectionActivity = ({
                       </div>
                     );
                   })}
-              </div>
-              <div className={styles.addContentBar}>
-                <input
-                  className={styles.addContentInput}
-                  placeholder="Agregar Contenido..."
-                  value={contentInput}
-                  onChange={(e) => setContentInput(e.target.value)}
-                />
-                <button className={styles.addContentBtn}>
-                  <FontAwesomeIcon icon={faPlus} />
-                </button>
-                <div className={styles.addContentType}>
-                  <span className={styles.addContentTypeLabel}>
-                    {selectedType}
-                  </span>
-                  <FontAwesomeIcon
-                    icon={faChevronDown}
-                    className={styles.chevronIcon}
-                  />
                 </div>
-              </div>
+                <div className={styles.addContentBar}>
+                    <input
+                      className={styles.addContentInput}
+                      placeholder="Agregar Contenido..."
+                      value={contentInput}
+                      onChange={(e) => setContentInput(e.target.value)}
+                    />
+                    <button className={styles.addContentBtn}>
+                      <FontAwesomeIcon icon={faPlus} />
+                    </button>
+                    <div className={styles.addContentType}>
+                      <span className={styles.addContentTypeLabel}>
+                        {selectedType}
+                      </span>
+                      <FontAwesomeIcon
+                        icon={faChevronDown}
+                        className={styles.chevronIcon}
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
             </>
-          )}
-          {selectedTab === "evaluacion" && moduleEvaluation && (
-            <CourseEvaluation
-              moduleEvaluation={moduleEvaluation}
-              onGenerateEvaluation={onGenerateEvaluation}
-              onRegenerateEvaluation={onRegenerateEvaluation}
-              onAddQuizAnswers={handleAddQuizAnswersWrapper}
-              generatedQuestions={generatedQuestions}
-              existingQuestions={existingQuestions}
-            />
           )}
           {selectedTab === "exportar" && (
             <div style={{ padding: "2rem", color: "#888" }}>
@@ -624,6 +663,7 @@ const CourseSectionActivity = ({
             </div>
           )}
         </main>
+
       </div>
     </div>
   );

@@ -15,6 +15,7 @@ const EditCoursePage = () => {
   const [showSection, setShowSection] = useState(components[index]);
   const [selectedTab, setSelectedTab] = useState("contenido"); // Estado para la pestaña
   const [isEvaluationAvailable, setIsEvaluationAvailable] = useState(false);
+  const [triggerEvaluationView, setTriggerEvaluationView] = useState(false);
   const router = useRouter();
 
   // Obtener el estado global actualComponent
@@ -49,7 +50,10 @@ const EditCoursePage = () => {
       setShowSection("CourseSectionActivity");
     } else if (showSection === "CourseSectionActivity" && selectedTab === "contenido") {
       if (isEvaluationAvailable) {
-        setSelectedTab("evaluacion");
+        // Trigger evaluation view instead of switching tabs
+        setTriggerEvaluationView(true);
+        // Reset the trigger after a brief moment to allow for re-triggering
+        setTimeout(() => setTriggerEvaluationView(false), 100);
       } else {
         handleError("No hay evaluación en este módulo para poder continuar.");
       }
@@ -86,6 +90,7 @@ const EditCoursePage = () => {
         selectedTab={selectedTab}
         setSelectedTab={setSelectedTab}
         onEvaluationStatusChange={handleEvaluationStatusChange}
+        triggerEvaluationView={triggerEvaluationView}
       />
     </ManagementLayout>
   );
