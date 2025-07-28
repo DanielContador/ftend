@@ -10,7 +10,7 @@
 /* Header */
 .header {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   margin-bottom: 24px;
 }
@@ -423,4 +423,80 @@
 
 .cancelBtn:hover {
   background-color: #545b62;
+}
+
+/* Option Styles */
+.option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.option:hover {
+  background-color: #f8f9fa;
+}
+
+.optionLabel {
+  flex: 1;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+}
+
+.correctBadge {
+  background-color: #28a745;
+  color: white;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+/* Option Actions Styles */
+.optionActions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.option:hover .optionActions {
+  opacity: 1;
+}
+
+.editOptionBtn,
+.deleteOptionBtn {
+  background: none;
+  border: none;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.editOptionBtn {
+  color: #6c757d;
+}
+
+.editOptionBtn:hover {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.deleteOptionBtn {
+  color: #6c757d;
+}
+
+.deleteOptionBtn:hover {
+  background-color: #ffebee;
+  color: #d32f2f;
 }

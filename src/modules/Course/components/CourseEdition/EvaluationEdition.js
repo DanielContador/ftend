@@ -7,6 +7,7 @@ import {
   faEdit,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
+import DeleteConfirmationPopup from "../../../../shared/components/DeleteConfirmationPopup";
 import styles from "./EvaluationEdition.module.css";
 
 const EvaluationEdition = ({
@@ -16,6 +17,8 @@ const EvaluationEdition = ({
   questions = [],
   onRegenerateEvaluation,
   onAddQuizAnswers,
+  onUpdateQuizAnswers,
+  onDeleteQuizAnswers,
 }) => {
   const [structureInput, setStructureInput] = useState("");
   const [editingQuestions, setEditingQuestions] = useState(questions);
@@ -25,6 +28,16 @@ const EvaluationEdition = ({
   const [selectedQuestionId, setSelectedQuestionId] = useState(null);
   const [newAnswerText, setNewAnswerText] = useState("");
   const [isCorrectAnswer, setIsCorrectAnswer] = useState(false);
+  
+  // Estados para editar opciones existentes
+  const [showEditOptionForm, setShowEditOptionForm] = useState(false);
+  const [editingAnswerId, setEditingAnswerId] = useState(null);
+  const [editAnswerText, setEditAnswerText] = useState("");
+  const [editIsCorrectAnswer, setEditIsCorrectAnswer] = useState(false);
+  
+  // Estados para modal de confirmación de eliminación
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [answerToDelete, setAnswerToDelete] = useState(null);
   
   // Sincronizar editingQuestions cuando cambien las questions prop
   useEffect(() => {
@@ -94,6 +107,67 @@ const EvaluationEdition = ({
     setSelectedQuestionId(null);
     setNewAnswerText("");
     setIsCorrectAnswer(false);
+  };
+
+  // Funciones para editar opciones existentes
+  const handleEditOption = (answer) => {
+    setEditingAnswerId(answer.answerId);
+    setEditAnswerText(answer.answer);
+    setEditIsCorrectAnswer(answer.correct);
+    setShowEditOptionForm(true);
+    // Cerrar el formulario de agregar si está abierto
+    setShowAddOptionForm(false);
+  };
+
+  const handleSaveEditOption = () => {
+    if (editAnswerText.trim() && editingAnswerId) {
+      const quizAnswerData = {
+        answer: editAnswerText.trim(),
+      };
+
+      // Llamar a la función onUpdateQuizAnswers si está disponible
+      if (onUpdateQuizAnswers) {
+        onUpdateQuizAnswers(editingAnswerId, quizAnswerData);
+      }
+
+      handleCancelEditOption();
+    }
+  };
+
+  const handleCancelEditOption = () => {
+    setShowEditOptionForm(false);
+    setEditingAnswerId(null);
+    setEditAnswerText("");
+    setEditIsCorrectAnswer(false);
+  };
+
+  const handleDeleteOption = (answerId) => {
+    setAnswerToDelete(answerId);
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (onDeleteQuizAnswers && answerToDelete) {
+      // Actualizar UI localmente primero (optimistic update)
+      setEditingQuestions(prevQuestions => 
+        prevQuestions.map(question => ({
+          ...question,
+          answers: question.answers?.filter(answer => answer.answerId !== answerToDelete) || []
+        }))
+      );
+      
+      // Llamar al servicio para eliminar en el backend
+      await onDeleteQuizAnswers(answerToDelete);
+    }
+    
+    // Cerrar modal y limpiar estado
+    setShowDeleteModal(false);
+    setAnswerToDelete(null);
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteModal(false);
+    setAnswerToDelete(null);
   };
 
   // Función para determinar el tipo de pregunta basado en respuestas correctas
@@ -223,28 +297,76 @@ const EvaluationEdition = ({
 
                     return (
                       <div key={answer.answerId} className={styles.option}>
-                        <input
-                          type={inputType}
-                          name={
-                            inputType === "radio"
-                              ? `question-${question.questionId}`
-                              : undefined
-                          }
-                          id={`q${question.questionId}-opt${answer.answerId}`}
-                          className={inputClass}
-                          checked={answer.correct}
-                          disabled={true}
-                          style={{ pointerEvents: "none" }}
-                          readOnly
-                        />
-                        <label
-                          htmlFor={`q${question.questionId}-opt${answer.answerId}`}
-                          className={styles.optionLabel}
-                        >
-                          {answer.answer}
-                        </label>
-                        {answer.correct && (
-                          <span className={styles.correctBadge}>Correcta</span>
+                        {showEditOptionForm && editingAnswerId === answer.answerId ? (
+                          // Formulario de edición
+                          <div className={styles.addOptionForm}>
+                            <div className={styles.formRow}>
+                              <input
+                                type="text"
+                                className={styles.optionInput}
+                                value={editAnswerText}
+                                onChange={(e) => setEditAnswerText(e.target.value)}
+                                placeholder="Texto de la opción"
+                              />
+                            </div>
+                            <div className={styles.formButtons}>
+                              <button
+                                className={styles.saveBtn}
+                                onClick={handleSaveEditOption}
+                              >
+                                Guardar
+                              </button>
+                              <button
+                                className={styles.cancelBtn}
+                                onClick={handleCancelEditOption}
+                              >
+                                Cancelar
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          // Vista normal de la opción
+                          <>
+                            <input
+                              type={inputType}
+                              name={
+                                inputType === "radio"
+                                  ? `question-${question.questionId}`
+                                  : undefined
+                              }
+                              id={`q${question.questionId}-opt${answer.answerId}`}
+                              className={inputClass}
+                              checked={answer.correct}
+                              disabled={true}
+                              style={{ pointerEvents: "none" }}
+                              readOnly
+                            />
+                            <label
+                              htmlFor={`q${question.questionId}-opt${answer.answerId}`}
+                              className={styles.optionLabel}
+                            >
+                              {answer.answer}
+                            </label>
+                            {answer.correct && (
+                              <span className={styles.correctBadge}>Correcta</span>
+                            )}
+                            <div className={styles.optionActions}>
+                              <button
+                                className={styles.editOptionBtn}
+                                onClick={() => handleEditOption(answer)}
+                                title="Editar opción"
+                              >
+                                <FontAwesomeIcon icon={faEdit} />
+                              </button>
+                              <button
+                                className={styles.deleteOptionBtn}
+                                onClick={() => handleDeleteOption(answer.answerId)}
+                                title="Eliminar opción"
+                              >
+                                <FontAwesomeIcon icon={faTrash} />
+                              </button>
+                            </div>
+                          </>
                         )}
                       </div>
                     );
@@ -499,6 +621,15 @@ const EvaluationEdition = ({
           Agregar nueva pregunta
         </button>
       </div>
+      
+      {/* Modal de confirmación de eliminación */}
+      <DeleteConfirmationPopup
+        isOpen={showDeleteModal}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        title="Eliminar opción"
+        message="¿Estás seguro de que quieres eliminar esta opción? Esta acción no se puede deshacer."
+      />
     </div>
   );
 };

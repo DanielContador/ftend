@@ -223,6 +223,51 @@ const CourseEditPage = ({
     }
   };
 
+  const handleUpdateQuizAnswers = async (answerId, quizAnswerData, activityId) => {
+    dispatch(showLoading());
+    try {
+      const response = await quizzesAnswersService.updateQuizAnswers(
+        answerId,
+        quizAnswerData
+      );
+      console.log("Updating quiz answer with data:", quizAnswerData);
+
+      if (response) {
+        console.log("Quiz answer updated successfully:", response);
+        console.log("Activity ID:", activityId);
+        if (activityId) {
+          handleFetchQuizzes(activityId);
+        }
+      }
+    } catch (error) {
+      console.error("Error updating quiz answer:", error);
+      handleError("Error al actualizar la respuesta del quiz.");
+    } finally {
+      dispatch(hideLoading());
+    }
+  };
+
+  const handleDeleteQuizAnswers = async (answerId, activityId) => {
+    dispatch(showLoading());
+    try {
+      const response = await quizzesAnswersService.deleteQuizAnswers(answerId);
+      console.log("Deleting quiz answer with ID:", answerId);
+
+      if (response) {
+        console.log("Quiz answer deleted successfully:", response);
+        console.log("Activity ID:", activityId);
+        if (activityId) {
+          handleFetchQuizzes(activityId);
+        }
+      }
+    } catch (error) {
+      console.error("Error deleting quiz answer:", error);
+      handleError("Error al eliminar la respuesta del quiz.");
+    } finally {
+      dispatch(hideLoading());
+    }
+  };
+
   useEffect(() => {
     if (courseId) {
       fetchCourseStructure();
@@ -244,6 +289,8 @@ const CourseEditPage = ({
           onGenerateEvaluation={handleGenerateEvaluation}
           onRegenerateEvaluation={handleRegenerateEvaluation}
           onAddQuizAnswers={handleAddQuizAnswers}
+          onUpdateQuizAnswers={handleUpdateQuizAnswers}
+          onDeleteQuizAnswers={handleDeleteQuizAnswers}
           generatedQuestions={generatedQuestions}
           handleError={handleError}
           courseId={courseId}
