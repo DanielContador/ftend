@@ -81,6 +81,9 @@ const CourseSectionActivity = ({
   onAddQuizAnswers,
   onUpdateQuizAnswers,
   onDeleteQuizAnswers,
+  onAddQuizQuestions,
+  onUpdateQuizQuestions,
+  onDeleteQuizQuestions,
   generatedQuestions,
   triggerEvaluationView,
 }) => {
@@ -128,6 +131,24 @@ const CourseSectionActivity = ({
   const handleDeleteQuizAnswersWrapper = (answerId) => {
     if (moduleEvaluation?.id) {
       onDeleteQuizAnswers(answerId, moduleEvaluation.id);
+    }
+  };
+
+  const handleAddQuizQuestionsWrapper = (quizQuestionData) => {
+    if (moduleEvaluation?.id) {
+      onAddQuizQuestions(quizQuestionData, moduleEvaluation.id);
+    }
+  };
+
+  const handleUpdateQuizQuestionsWrapper = (questionId, quizQuestionData) => {
+    if (moduleEvaluation?.id) {
+      onUpdateQuizQuestions(questionId, quizQuestionData, moduleEvaluation.id);
+    }
+  };
+
+  const handleDeleteQuizQuestionsWrapper = (questionId) => {
+    if (moduleEvaluation?.id) {
+      onDeleteQuizQuestions(questionId, moduleEvaluation.id);
     }
   };
 
@@ -447,6 +468,9 @@ const CourseSectionActivity = ({
                     onAddQuizAnswers={handleAddQuizAnswersWrapper}
                     onUpdateQuizAnswers={handleUpdateQuizAnswersWrapper}
                     onDeleteQuizAnswers={handleDeleteQuizAnswersWrapper}
+                    onAddQuizQuestions={handleAddQuizQuestionsWrapper}
+                    onUpdateQuizQuestions={handleUpdateQuizQuestionsWrapper}
+                    onDeleteQuizQuestions={handleDeleteQuizQuestionsWrapper}
                   />
                 ) : (
                   <EvaluationGeneration 

@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import LoadingSpinner from "../../../shared/components/LoadingSpinner";
 import quizzesService from "../services/quizzesService";
 import quizzesAnswersService from "../services/quizzesAnswersService";
+import quizzesQuestionsService from "../services/quizzesQuestionsService";
 import courseService from "../services/courseService";
 import courseContentAIService from "../services/courseContentAIService";
 import quizzesGeneratorService from "../services/quizzesGeneratorService";
@@ -268,6 +269,74 @@ const CourseEditPage = ({
     }
   };
 
+  const handleAddQuizQuestions = async (quizQuestionData, activityId) => {
+    dispatch(showLoading());
+    try {
+      const response = await quizzesQuestionsService.addQuizQuestions(
+        quizQuestionData
+      );
+      console.log("Adding quiz question with data:", quizQuestionData);
+
+      if (response) {
+        console.log("Quiz question added successfully:", response);
+        console.log("Activity ID:", activityId);
+        if (activityId) {
+          handleFetchQuizzes(activityId);
+        }
+      }
+    } catch (error) {
+      console.error("Error adding quiz question:", error);
+      handleError("Error al agregar la pregunta del quiz.");
+    } finally {
+      dispatch(hideLoading());
+    }
+  };
+
+  const handleUpdateQuizQuestions = async (questionId, quizQuestionData, activityId) => {
+    dispatch(showLoading());
+    try {
+      const response = await quizzesQuestionsService.updateQuizQuestions(
+        questionId,
+        quizQuestionData
+      );
+      console.log("Updating quiz question with data:", quizQuestionData);
+
+      if (response) {
+        console.log("Quiz question updated successfully:", response);
+        console.log("Activity ID:", activityId);
+        if (activityId) {
+          handleFetchQuizzes(activityId);
+        }
+      }
+    } catch (error) {
+      console.error("Error updating quiz question:", error);
+      handleError("Error al actualizar la pregunta del quiz.");
+    } finally {
+      dispatch(hideLoading());
+    }
+  };
+
+  const handleDeleteQuizQuestions = async (questionId, activityId) => {
+    dispatch(showLoading());
+    try {
+      const response = await quizzesQuestionsService.deleteQuizQuestions(questionId);
+      console.log("Deleting quiz question with ID:", questionId);
+
+      if (response) {
+        console.log("Quiz question deleted successfully:", response);
+        console.log("Activity ID:", activityId);
+        if (activityId) {
+          handleFetchQuizzes(activityId);
+        }
+      }
+    } catch (error) {
+      console.error("Error deleting quiz question:", error);
+      handleError("Error al eliminar la pregunta del quiz.");
+    } finally {
+      dispatch(hideLoading());
+    }
+  };
+
   useEffect(() => {
     if (courseId) {
       fetchCourseStructure();
@@ -291,6 +360,9 @@ const CourseEditPage = ({
           onAddQuizAnswers={handleAddQuizAnswers}
           onUpdateQuizAnswers={handleUpdateQuizAnswers}
           onDeleteQuizAnswers={handleDeleteQuizAnswers}
+          onAddQuizQuestions={handleAddQuizQuestions}
+          onUpdateQuizQuestions={handleUpdateQuizQuestions}
+          onDeleteQuizQuestions={handleDeleteQuizQuestions}
           generatedQuestions={generatedQuestions}
           handleError={handleError}
           courseId={courseId}

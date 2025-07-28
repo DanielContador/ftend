@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { showLoading, hideLoading } from "../../../../shared/store/uiSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowLeft,
@@ -19,7 +21,11 @@ const EvaluationEdition = ({
   onAddQuizAnswers,
   onUpdateQuizAnswers,
   onDeleteQuizAnswers,
+  onAddQuizQuestions,
+  onUpdateQuizQuestions,
+  onDeleteQuizQuestions,
 }) => {
+  const dispatch = useDispatch();
   const [structureInput, setStructureInput] = useState("");
   const [editingQuestions, setEditingQuestions] = useState(questions);
   
@@ -38,6 +44,15 @@ const EvaluationEdition = ({
   // Estados para modal de confirmación de eliminación
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [answerToDelete, setAnswerToDelete] = useState(null);
+  
+  // Estados para editar preguntas
+  const [showEditQuestionForm, setShowEditQuestionForm] = useState(false);
+  const [editingQuestionId, setEditingQuestionId] = useState(null);
+  const [editQuestionText, setEditQuestionText] = useState("");
+  
+  // Estados para modal de confirmación de eliminación de preguntas
+  const [showDeleteQuestionModal, setShowDeleteQuestionModal] = useState(false);
+  const [questionToDelete, setQuestionToDelete] = useState(null);
   
   // Sincronizar editingQuestions cuando cambien las questions prop
   useEffect(() => {
@@ -85,20 +100,28 @@ const EvaluationEdition = ({
     setShowAddOptionForm(true);
   };
 
-  const handleSaveOption = () => {
+  const handleSaveOption = async () => {
     if (newAnswerText.trim()) {
-      const quizAnswerData = {
-        QuestionsId: selectedQuestionId,
-        answer: newAnswerText.trim(),
-        isCorrect: isCorrectAnswer,
-      };
+      dispatch(showLoading());
+      try {
+        const quizAnswerData = {
+          QuestionsId: selectedQuestionId,
+          answer: newAnswerText.trim(),
+          isCorrect: isCorrectAnswer,
+        };
 
-      // Llamar a la función onAddQuizAnswers si está disponible
-      if (onAddQuizAnswers) {
-        onAddQuizAnswers(quizAnswerData);
+        // Llamar a la función onAddQuizAnswers si está disponible
+        if (onAddQuizAnswers) {
+          await onAddQuizAnswers(quizAnswerData);
+        }
+
+        handleCancelOption();
+      } catch (error) {
+        console.error("Error adding option:", error);
+        alert("Error al agregar la opción. Por favor, intenta de nuevo.");
+      } finally {
+        dispatch(hideLoading());
       }
-
-      handleCancelOption();
     }
   };
 
@@ -119,18 +142,26 @@ const EvaluationEdition = ({
     setShowAddOptionForm(false);
   };
 
-  const handleSaveEditOption = () => {
+  const handleSaveEditOption = async () => {
     if (editAnswerText.trim() && editingAnswerId) {
-      const quizAnswerData = {
-        answer: editAnswerText.trim(),
-      };
+      dispatch(showLoading());
+      try {
+        const quizAnswerData = {
+          answer: editAnswerText.trim(),
+        };
 
-      // Llamar a la función onUpdateQuizAnswers si está disponible
-      if (onUpdateQuizAnswers) {
-        onUpdateQuizAnswers(editingAnswerId, quizAnswerData);
+        // Llamar a la función onUpdateQuizAnswers si está disponible
+        if (onUpdateQuizAnswers) {
+          await onUpdateQuizAnswers(editingAnswerId, quizAnswerData);
+        }
+
+        handleCancelEditOption();
+      } catch (error) {
+        console.error("Error updating option:", error);
+        alert("Error al actualizar la opción. Por favor, intenta de nuevo.");
+      } finally {
+        dispatch(hideLoading());
       }
-
-      handleCancelEditOption();
     }
   };
 
@@ -148,16 +179,27 @@ const EvaluationEdition = ({
 
   const handleConfirmDelete = async () => {
     if (onDeleteQuizAnswers && answerToDelete) {
-      // Actualizar UI localmente primero (optimistic update)
-      setEditingQuestions(prevQuestions => 
-        prevQuestions.map(question => ({
-          ...question,
-          answers: question.answers?.filter(answer => answer.answerId !== answerToDelete) || []
-        }))
-      );
-      
-      // Llamar al servicio para eliminar en el backend
-      await onDeleteQuizAnswers(answerToDelete);
+      dispatch(showLoading());
+      try {
+        // Actualizar UI localmente primero (optimistic update)
+        setEditingQuestions(prevQuestions => 
+          prevQuestions.map(question => ({
+            ...question,
+            answers: question.answers?.filter(answer => answer.answerId !== answerToDelete) || []
+          }))
+        );
+        
+        // Llamar al servicio para eliminar en el backend
+        await onDeleteQuizAnswers(answerToDelete);
+        
+        console.log(`Answer with ID ${answerToDelete} deleted successfully`);
+      } catch (error) {
+        console.error("Error deleting answer:", error);
+        // Revertir el cambio optimista en caso de error
+        alert("Error al eliminar la opción. Por favor, recarga la página.");
+      } finally {
+        dispatch(hideLoading());
+      }
     }
     
     // Cerrar modal y limpiar estado
@@ -168,6 +210,103 @@ const EvaluationEdition = ({
   const handleCancelDelete = () => {
     setShowDeleteModal(false);
     setAnswerToDelete(null);
+  };
+
+  // Funciones para editar preguntas
+  const handleEditQuestion = (question) => {
+    setEditingQuestionId(question.questionId);
+    setEditQuestionText(question.question);
+    setShowEditQuestionForm(true);
+    // Cerrar formularios de opciones si están abiertos
+    setShowAddOptionForm(false);
+    setShowEditOptionForm(false);
+  };
+
+  const handleSaveEditQuestion = async () => {
+    if (editQuestionText.trim() && editingQuestionId) {
+      dispatch(showLoading());
+      try {
+        const questionData = {
+          question: editQuestionText.trim(),
+        };
+
+        // Actualizar UI localmente primero (optimistic update)
+        setEditingQuestions(prevQuestions => 
+          prevQuestions.map(q => 
+            q.questionId === editingQuestionId 
+              ? { ...q, question: editQuestionText.trim() }
+              : q
+          )
+        );
+
+        // Llamar al servicio para actualizar en el backend
+        if (onUpdateQuizQuestions) {
+          await onUpdateQuizQuestions(editingQuestionId, questionData);
+        }
+
+        handleCancelEditQuestion();
+      } catch (error) {
+        console.error("Error updating question:", error);
+        // Revertir el cambio optimista en caso de error
+        setEditingQuestions(prevQuestions => 
+          prevQuestions.map(q => 
+            q.questionId === editingQuestionId 
+              ? { ...q, question: editQuestionText }
+              : q
+          )
+        );
+      } finally {
+        dispatch(hideLoading());
+      }
+    }
+  };
+
+  const handleCancelEditQuestion = () => {
+    setShowEditQuestionForm(false);
+    setEditingQuestionId(null);
+    setEditQuestionText("");
+  };
+
+  const handleDeleteQuestion = (questionId) => {
+    console.log('handleDeleteQuestion called with ID:', questionId);
+    console.log('Question object:', editingQuestions.find(q => q.questionId === questionId));
+    setQuestionToDelete(questionId);
+    setShowDeleteQuestionModal(true);
+  };
+
+  const handleConfirmDeleteQuestion = async () => {
+    if (onDeleteQuizQuestions && questionToDelete) {
+      dispatch(showLoading());
+      try {
+        // Actualizar UI localmente primero (optimistic update)
+        const questionToDeleteCopy = questionToDelete;
+        setEditingQuestions(prevQuestions => 
+          prevQuestions.filter(q => q.questionId !== questionToDelete)
+        );
+        
+        // Llamar al servicio para eliminar en el backend
+        console.log('Calling onDeleteQuizQuestions with ID:', questionToDelete);
+        await onDeleteQuizQuestions(questionToDelete);
+        
+        console.log(`Question with ID ${questionToDeleteCopy} deleted successfully`);
+      } catch (error) {
+        console.error("Error deleting question:", error);
+        // Revertir el cambio optimista en caso de error
+        // Necesitaríamos restaurar la pregunta, pero por simplicidad mostramos error
+        alert("Error al eliminar la pregunta. Por favor, recarga la página.");
+      } finally {
+        dispatch(hideLoading());
+      }
+    }
+    
+    // Cerrar modal y limpiar estado
+    setShowDeleteQuestionModal(false);
+    setQuestionToDelete(null);
+  };
+
+  const handleCancelDeleteQuestion = () => {
+    setShowDeleteQuestionModal(false);
+    setQuestionToDelete(null);
   };
 
   // Función para determinar el tipo de pregunta basado en respuestas correctas
@@ -258,20 +397,59 @@ const EvaluationEdition = ({
               <div className={styles.questionHeader}>
                 <div className={styles.questionNumber}>{index + 1}</div>
                 <div className={styles.questionActions}>
-                  <button className={styles.editButton}>
+                  <button 
+                    className={styles.editButton}
+                    onClick={() => handleEditQuestion(question)}
+                    title="Editar pregunta"
+                  >
                     <FontAwesomeIcon icon={faEdit} />
                   </button>
-                  <button className={styles.deleteButton}>
+                  <button 
+                    className={styles.deleteButton}
+                    onClick={() => handleDeleteQuestion(question.questionId)}
+                    title="Eliminar pregunta"
+                  >
                     <FontAwesomeIcon icon={faTrash} />
                   </button>
                 </div>
               </div>
 
               <div className={styles.questionContent}>
-                <p className={styles.questionText}>
-                  {question.question ||
-                    "¿Cuál es el concepto fundamental de la inteligencia artificial?"}
-                </p>
+                {showEditQuestionForm && editingQuestionId === question.questionId ? (
+                  // Formulario de edición de pregunta
+                  <div className={styles.editQuestionForm}>
+                    <div className={styles.formRow}>
+                      <input
+                        type="text"
+                        className={styles.questionInput}
+                        value={editQuestionText}
+                        onChange={(e) => setEditQuestionText(e.target.value)}
+                        placeholder="Texto de la pregunta"
+                      />
+                    </div>
+                    <div className={styles.formButtons}>
+                      <button
+                        className={styles.saveBtn}
+                        onClick={handleSaveEditQuestion}
+                        disabled={!editQuestionText.trim()}
+                      >
+                        Guardar
+                      </button>
+                      <button
+                        className={styles.cancelBtn}
+                        onClick={handleCancelEditQuestion}
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  // Vista normal de la pregunta
+                  <p className={styles.questionText}>
+                    {question.question ||
+                      "¿Cuál es el concepto fundamental de la inteligencia artificial?"}
+                  </p>
+                )}
 
                 <div className={styles.questionType}>
                   <select
@@ -622,13 +800,22 @@ const EvaluationEdition = ({
         </button>
       </div>
       
-      {/* Modal de confirmación de eliminación */}
+      {/* Modal de confirmación de eliminación de opciones */}
       <DeleteConfirmationPopup
         isOpen={showDeleteModal}
         onClose={handleCancelDelete}
         onConfirm={handleConfirmDelete}
         title="Eliminar opción"
         message="¿Estás seguro de que quieres eliminar esta opción? Esta acción no se puede deshacer."
+      />
+      
+      {/* Modal de confirmación de eliminación de preguntas */}
+      <DeleteConfirmationPopup
+        isOpen={showDeleteQuestionModal}
+        onClose={handleCancelDeleteQuestion}
+        onConfirm={handleConfirmDeleteQuestion}
+        title="Eliminar pregunta"
+        message="¿Estás seguro de que quieres eliminar esta pregunta? Se eliminarán también todas sus opciones. Esta acción no se puede deshacer."
       />
     </div>
   );
