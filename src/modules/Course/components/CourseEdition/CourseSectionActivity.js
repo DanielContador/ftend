@@ -429,6 +429,8 @@ const CourseSectionActivity = ({
                       // Aquí se puede implementar la lógica para guardar las preguntas editadas
                     }}
                     questions={existingQuestions || generatedQuestions || []}
+                    onRegenerateEvaluation={onRegenerateEvaluation}
+                    onAddQuizAnswers={handleAddQuizAnswersWrapper}
                   />
                 ) : (
                   <EvaluationGeneration 

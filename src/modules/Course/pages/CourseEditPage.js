@@ -186,9 +186,12 @@ const CourseEditPage = ({
 
       if (response && response.data && response.data.questions) {
         setGeneratedQuestions(response.data.questions);
+        // También actualizar las preguntas existentes para que se reflejen inmediatamente
+        setExistingQuestions(response.data.questions);
       }
 
-      fetchCourseStructure();
+      // No llamar fetchCourseStructure() para evitar resetear el estado de navegación
+      // fetchCourseStructure();
     } catch (error) {
       console.error("Error regenerating evaluation:", error);
       handleError("Error al regenerar la evaluación con IA.");

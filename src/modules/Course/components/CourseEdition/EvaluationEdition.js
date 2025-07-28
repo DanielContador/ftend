@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowLeft,
@@ -14,19 +14,92 @@ const EvaluationEdition = ({
   onBack,
   onSave,
   questions = [],
+  onRegenerateEvaluation,
+  onAddQuizAnswers,
 }) => {
   const [structureInput, setStructureInput] = useState("");
   const [editingQuestions, setEditingQuestions] = useState(questions);
+  
+  // Estados para agregar opciones (similar a CourseEvaluation)
+  const [showAddOptionForm, setShowAddOptionForm] = useState(false);
+  const [selectedQuestionId, setSelectedQuestionId] = useState(null);
+  const [newAnswerText, setNewAnswerText] = useState("");
+  const [isCorrectAnswer, setIsCorrectAnswer] = useState(false);
+  
+  // Sincronizar editingQuestions cuando cambien las questions prop
+  useEffect(() => {
+    setEditingQuestions(questions);
+  }, [questions]);
+  
   console.log("questions", questions);
-  const handleRegenerateStructure = () => {
+  const handleRegenerateStructure = async () => {
+    if (!structureInput.trim()) {
+      console.log("No structure input provided");
+      return;
+    }
+
+    if (!onRegenerateEvaluation) {
+      console.log("No regenerate function provided");
+      return;
+    }
+
     console.log("Regenerating structure with:", structureInput);
-    // Aquí se llamaría a la función para regenerar la estructura
+
+    // Crear el objeto de datos de evaluación similar al usado en EvaluationGeneration
+    const evaluationData = {
+      ActivityId: moduleEvaluation?.id,
+      Prompt: structureInput,
+      Multiple_Choise: true, // Por defecto, se puede hacer configurable más adelante
+      Multiple_Select: false,
+      True_False: false,
+      Open_Question: false,
+    };
+
+    try {
+      await onRegenerateEvaluation(evaluationData);
+      // Limpiar el input después de regenerar exitosamente
+      setStructureInput("");
+    } catch (error) {
+      console.error("Error regenerating evaluation:", error);
+    }
+  };
+
+  // Funciones para agregar opciones (similar a CourseEvaluation)
+  const handleAddOption = (questionId) => {
+    setSelectedQuestionId(questionId);
+    setNewAnswerText("");
+    setIsCorrectAnswer(false);
+    setShowAddOptionForm(true);
+  };
+
+  const handleSaveOption = () => {
+    if (newAnswerText.trim()) {
+      const quizAnswerData = {
+        QuestionsId: selectedQuestionId,
+        answer: newAnswerText.trim(),
+        isCorrect: isCorrectAnswer,
+      };
+
+      // Llamar a la función onAddQuizAnswers si está disponible
+      if (onAddQuizAnswers) {
+        onAddQuizAnswers(quizAnswerData);
+      }
+
+      handleCancelOption();
+    }
+  };
+
+  const handleCancelOption = () => {
+    setShowAddOptionForm(false);
+    setSelectedQuestionId(null);
+    setNewAnswerText("");
+    setIsCorrectAnswer(false);
   };
 
   // Función para determinar el tipo de pregunta basado en respuestas correctas
   const getQuestionType = (answers) => {
     if (!answers || answers.length === 0) return "multiple_choice";
-    const correctCount = answers.filter(answer => answer.correct).length;
+    const correctCount = answers.filter((answer) => answer.correct).length;
     return correctCount > 1 ? "multiple_select" : "multiple_choice";
   };
 
@@ -62,9 +135,6 @@ const EvaluationEdition = ({
         <button className={styles.backButton} onClick={handleBack}>
           <FontAwesomeIcon icon={faArrowLeft} />
           Atrás
-        </button>
-        <button className={styles.saveButton} onClick={handleSave}>
-          Guardar
         </button>
       </div>
 
@@ -107,7 +177,10 @@ const EvaluationEdition = ({
       <div className={styles.questionsSection}>
         {editingQuestions.length > 0 ? (
           editingQuestions.map((question, index) => (
-            <div key={question.questionId || question.id || index} className={styles.questionCard}>
+            <div
+              key={question.questionId || question.id || index}
+              className={styles.questionCard}
+            >
               <div className={styles.questionHeader}>
                 <div className={styles.questionNumber}>{index + 1}</div>
                 <div className={styles.questionActions}>
@@ -131,30 +204,37 @@ const EvaluationEdition = ({
                     className={styles.typeSelect}
                     value={getQuestionType(question.answers)}
                     disabled={true}
-                    style={{ pointerEvents: 'none' }}
+                    style={{ pointerEvents: "none" }}
                   >
                     <option value="multiple_choice">Opción única</option>
                     <option value="multiple_select">Opción múltiple</option>
-                    <option value="true_false">Verdadero/Falso</option>
                   </select>
                 </div>
 
                 <div className={styles.options}>
                   {question.answers?.map((answer, optIndex) => {
                     const questionType = getQuestionType(question.answers);
-                    const inputType = questionType === "multiple_select" ? "checkbox" : "radio";
-                    const inputClass = questionType === "multiple_select" ? styles.optionCheckbox : styles.optionRadio;
-                    
+                    const inputType =
+                      questionType === "multiple_select" ? "checkbox" : "radio";
+                    const inputClass =
+                      questionType === "multiple_select"
+                        ? styles.optionCheckbox
+                        : styles.optionRadio;
+
                     return (
                       <div key={answer.answerId} className={styles.option}>
                         <input
                           type={inputType}
-                          name={inputType === "radio" ? `question-${question.questionId}` : undefined}
+                          name={
+                            inputType === "radio"
+                              ? `question-${question.questionId}`
+                              : undefined
+                          }
                           id={`q${question.questionId}-opt${answer.answerId}`}
                           className={inputClass}
                           checked={answer.correct}
                           disabled={true}
-                          style={{ pointerEvents: 'none' }}
+                          style={{ pointerEvents: "none" }}
                           readOnly
                         />
                         <label
@@ -182,40 +262,106 @@ const EvaluationEdition = ({
                           correct: false,
                           answerId: 2,
                         },
-                        { answer: "Análisis de datos", correct: false, answerId: 3 },
+                        {
+                          answer: "Análisis de datos",
+                          correct: false,
+                          answerId: 3,
+                        },
                       ];
                       const questionType = getQuestionType(fallbackAnswers);
-                      const inputType = questionType === "multiple_select" ? "checkbox" : "radio";
-                      const inputClass = questionType === "multiple_select" ? styles.optionCheckbox : styles.optionRadio;
-                      
+                      const inputType =
+                        questionType === "multiple_select"
+                          ? "checkbox"
+                          : "radio";
+                      const inputClass =
+                        questionType === "multiple_select"
+                          ? styles.optionCheckbox
+                          : styles.optionRadio;
+
                       return fallbackAnswers.map((answer, optIndex) => (
                         <div key={answer.answerId} className={styles.option}>
                           <input
                             type={inputType}
-                            name={inputType === "radio" ? `question-${question.questionId || 'default'}` : undefined}
-                            id={`q${question.questionId || 'default'}-opt${answer.answerId}`}
+                            name={
+                              inputType === "radio"
+                                ? `question-${question.questionId || "default"}`
+                                : undefined
+                            }
+                            id={`q${question.questionId || "default"}-opt${
+                              answer.answerId
+                            }`}
                             className={inputClass}
                             checked={answer.correct}
                             disabled={true}
-                            style={{ pointerEvents: 'none' }}
+                            style={{ pointerEvents: "none" }}
                             readOnly
                           />
                           <label
-                            htmlFor={`q${question.questionId || 'default'}-opt${answer.answerId}`}
+                            htmlFor={`q${question.questionId || "default"}-opt${
+                              answer.answerId
+                            }`}
                             className={styles.optionLabel}
                           >
                             {answer.answer}
                           </label>
                           {answer.correct && (
-                            <span className={styles.correctBadge}>Correcta</span>
+                            <span className={styles.correctBadge}>
+                              Correcta
+                            </span>
                           )}
                         </div>
                       ));
                     })()}
 
-                  <button className={styles.addOptionButton}>
-                    + Agregar opción
-                  </button>
+                  {/* Formulario para agregar opción (similar a CourseEvaluation) */}
+                  {showAddOptionForm && selectedQuestionId === (question.questionId || question.id) && (
+                    <div className={styles.addOptionForm}>
+                      <div className={styles.formRow}>
+                        <input
+                          type="text"
+                          placeholder="Texto de la nueva opción"
+                          value={newAnswerText}
+                          onChange={(e) => setNewAnswerText(e.target.value)}
+                          className={styles.optionInput}
+                        />
+                        <div className={styles.checkboxContainer}>
+                          <input
+                            type="checkbox"
+                            id="isCorrect"
+                            checked={isCorrectAnswer}
+                            onChange={(e) => setIsCorrectAnswer(e.target.checked)}
+                            className={styles.correctCheckbox}
+                          />
+                          <label htmlFor="isCorrect">Respuesta correcta</label>
+                        </div>
+                      </div>
+                      <div className={styles.formButtons}>
+                        <button
+                          className={styles.saveBtn}
+                          onClick={handleSaveOption}
+                          disabled={!newAnswerText.trim()}
+                        >
+                          Guardar
+                        </button>
+                        <button
+                          className={styles.cancelBtn}
+                          onClick={handleCancelOption}
+                        >
+                          Cancelar
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Botón agregar opción (solo se muestra cuando no hay formulario activo) */}
+                  {(!showAddOptionForm || selectedQuestionId !== (question.questionId || question.id)) && (
+                    <button
+                      className={styles.addOptionButton}
+                      onClick={() => handleAddOption(question.questionId || question.id)}
+                    >
+                      <FontAwesomeIcon icon={faPlus} /> Agregar opción
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -288,9 +434,55 @@ const EvaluationEdition = ({
                   </label>
                 </div>
 
-                <button className={styles.addOptionButton}>
-                  + Agregar opción
-                </button>
+                {/* Formulario para agregar opción en pregunta de ejemplo */}
+                {showAddOptionForm && selectedQuestionId === "example-1" && (
+                  <div className={styles.addOptionForm}>
+                    <div className={styles.formRow}>
+                      <input
+                        type="text"
+                        placeholder="Texto de la nueva opción"
+                        value={newAnswerText}
+                        onChange={(e) => setNewAnswerText(e.target.value)}
+                        className={styles.optionInput}
+                      />
+                      <div className={styles.checkboxContainer}>
+                        <input
+                          type="checkbox"
+                          id="isCorrectExample"
+                          checked={isCorrectAnswer}
+                          onChange={(e) => setIsCorrectAnswer(e.target.checked)}
+                          className={styles.correctCheckbox}
+                        />
+                        <label htmlFor="isCorrectExample">Respuesta correcta</label>
+                      </div>
+                    </div>
+                    <div className={styles.formButtons}>
+                      <button
+                        className={styles.saveBtn}
+                        onClick={handleSaveOption}
+                        disabled={!newAnswerText.trim()}
+                      >
+                        Guardar
+                      </button>
+                      <button
+                        className={styles.cancelBtn}
+                        onClick={handleCancelOption}
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Botón agregar opción para pregunta de ejemplo */}
+                {(!showAddOptionForm || selectedQuestionId !== "example-1") && (
+                  <button
+                    className={styles.addOptionButton}
+                    onClick={() => handleAddOption("example-1")}
+                  >
+                    <FontAwesomeIcon icon={faPlus} /> Agregar opción
+                  </button>
+                )}
               </div>
             </div>
           </div>
