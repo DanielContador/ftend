@@ -6,7 +6,7 @@ import {
   faArrowLeft,
   faPlus,
   faWandMagicSparkles,
-  faEdit,
+  faPencil,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import DeleteConfirmationPopup from "../../../../shared/components/DeleteConfirmationPopup";
@@ -602,7 +602,7 @@ const EvaluationEdition = ({
                     onClick={() => handleEditQuestion(question)}
                     title="Editar pregunta"
                   >
-                    <FontAwesomeIcon icon={faEdit} />
+                    <FontAwesomeIcon icon={faPencil} />
                   </button>
                   <button
                     className={styles.deleteButton}
@@ -740,7 +740,7 @@ const EvaluationEdition = ({
                                 onClick={() => handleEditOption(answer)}
                                 title="Editar opción"
                               >
-                                <FontAwesomeIcon icon={faEdit} />
+                                <FontAwesomeIcon icon={faPencil} />
                               </button>
                               <button
                                 className={styles.deleteOptionBtn}
