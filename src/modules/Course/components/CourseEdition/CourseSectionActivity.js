@@ -24,7 +24,6 @@ import {
   getActivityAudio,
   getActivityDocument,
 } from "../../../Activity/services/activityService";
-import CourseEvaluation from "./CourseEvaluation";
 import EvaluationGeneration from "./EvaluationGeneration";
 import EvaluationEdition from "./EvaluationEdition";
 
@@ -76,6 +75,7 @@ const CourseSectionActivity = ({
   onEvaluationStatusChange,
   onFetchQuizzes,
   existingQuestions,
+  quizzesId,
   onGenerateEvaluation,
   onRegenerateEvaluation,
   onAddQuizAnswers,
@@ -105,7 +105,7 @@ const CourseSectionActivity = ({
   const [videoModalData, setVideoModalData] = useState(null);
   const [videoModalKey, setVideoModalKey] = useState(0); // <--- nuevo estado para forzar reinicio
   const [downloadableStatus, setDownloadableStatus] = useState({});
-  
+
   // Estado para mostrar la vista de evaluación dentro del tab de contenido
   const [showEvaluationView, setShowEvaluationView] = useState(false);
 
@@ -134,10 +134,11 @@ const CourseSectionActivity = ({
     }
   };
 
-  const handleAddQuizQuestionsWrapper = (quizQuestionData) => {
+  const handleAddQuizQuestionsWrapper = async (quizQuestionData) => {
     if (moduleEvaluation?.id) {
-      onAddQuizQuestions(quizQuestionData, moduleEvaluation.id);
+      return await onAddQuizQuestions(quizQuestionData, moduleEvaluation.id);
     }
+    return null;
   };
 
   const handleUpdateQuizQuestionsWrapper = (questionId, quizQuestionData) => {
@@ -154,7 +155,7 @@ const CourseSectionActivity = ({
 
   // Función para manejar la generación de evaluación
   const handleEvaluationGenerate = async (evaluationConfig, onComplete) => {
-    console.log('Generando evaluación con configuración:', evaluationConfig);
+    console.log("Generando evaluación con configuración:", evaluationConfig);
     if (onGenerateEvaluation && moduleEvaluation?.id) {
       const evaluationData = {
         ActivityId: moduleEvaluation.id,
@@ -176,7 +177,7 @@ const CourseSectionActivity = ({
           }
           // Ahora la vista cambia a edición solo cuando las preguntas están listas y el loading desaparece
         }
-      } catch (error) { 
+      } catch (error) {
         console.error("Error during evaluation generation:", error);
         // Si hay error, apaga el loading pero NO cambia la vista
         if (onComplete) {
@@ -191,7 +192,6 @@ const CourseSectionActivity = ({
     setShowEvaluationView(false);
   };
 
-  // Verificar si ya existen preguntas de evaluación (similar a CourseEvaluation)
   const hasExistingQuestions = () => {
     // Verificar generatedQuestions
     if (generatedQuestions && generatedQuestions.length > 0) {
@@ -215,8 +215,6 @@ const CourseSectionActivity = ({
     return false;
   };
 
-
-
   useEffect(() => {
     onEvaluationStatusChange(!!moduleEvaluation);
   }, [moduleEvaluation, onEvaluationStatusChange]);
@@ -238,10 +236,12 @@ const CourseSectionActivity = ({
     if (triggerEvaluationView) {
       // Use the same logic as moduleEvaluation to check for evaluation activity
       if (moduleEvaluation) {
-        console.log('Triggering evaluation view from Siguiente button');
+        console.log("Triggering evaluation view from Siguiente button");
         setShowEvaluationView(true);
       } else {
-        console.log('No evaluation activity found when triggering from Siguiente button');
+        console.log(
+          "No evaluation activity found when triggering from Siguiente button"
+        );
       }
     }
   }, [triggerEvaluationView, moduleEvaluation]);
@@ -453,17 +453,17 @@ const CourseSectionActivity = ({
         >
           {selectedTab === "contenido" && (
             <>
-
               {showEvaluationView ? (
                 hasExistingQuestions() ? (
-                  <EvaluationEdition 
+                  <EvaluationEdition
                     moduleEvaluation={moduleEvaluation}
                     onBack={handleBackToSectionActivities}
                     onSave={(questions) => {
-                      console.log('Saving questions:', questions);
+                      console.log("Saving questions:", questions);
                       // Aquí se puede implementar la lógica para guardar las preguntas editadas
                     }}
                     questions={existingQuestions || generatedQuestions || []}
+                    quizzesId={quizzesId}
                     onRegenerateEvaluation={onRegenerateEvaluation}
                     onAddQuizAnswers={handleAddQuizAnswersWrapper}
                     onUpdateQuizAnswers={handleUpdateQuizAnswersWrapper}
@@ -473,8 +473,8 @@ const CourseSectionActivity = ({
                     onDeleteQuizQuestions={handleDeleteQuizQuestionsWrapper}
                   />
                 ) : (
-                  <EvaluationGeneration 
-                    onGenerate={handleEvaluationGenerate} 
+                  <EvaluationGeneration
+                    onGenerate={handleEvaluationGenerate}
                     moduleEvaluation={moduleEvaluation}
                     onBack={handleBackToSectionActivities}
                   />
@@ -498,246 +498,261 @@ const CourseSectionActivity = ({
                   <div className={styles.resourceList}>
                     {selectedModule?.learning_objects &&
                       selectedModule.learning_objects.map((res) => {
-                    const expanded = expandedResource === res.id;
-                    const isEditing = editingResource[res.id]?.editing;
-                    const editValue =
-                      editingResource[res.id]?.value ?? res.object_title;
-                    return (
-                      <div
-                        key={res.id}
-                        className={
-                          expanded
-                            ? `${styles.resourceCard} ${styles.resourceCardExpanded}`
-                            : styles.resourceCard
-                        }
-                        onClick={() => handleCardToggle(res.id)}
-                        style={{ cursor: "pointer" }}
-                      >
-                        <div className="d-flex">
-                          <div className="mt-4">
-                            {iconByType[res.format] || (
-                              <FontAwesomeIcon
-                                className={styles.iconPPT}
-                                icon={faFilePowerpoint}
-                              />
-                            )}
-                          </div>
-                          <div className="w-100">
-                            <div className={styles.resourceCardHeader}>
-                              <div className={styles.resourceCardTitle}>
-                                {isEditing ? (
-                                  <>
-                                    <input
-                                      type="text"
-                                      value={editValue}
-                                      onChange={(e) =>
-                                        handleResourceTitleChange(res.id, e)
-                                      }
-                                      className={styles.input}
-                                      style={{
-                                        fontWeight: 600,
-                                        fontSize: "1.09rem",
-                                        padding: "4px 8px",
-                                        minWidth: 120,
-                                        maxWidth: 400,
-                                        marginRight: 8,
-                                      }}
-                                      autoFocus
-                                      onClick={(e) => e.stopPropagation()}
-                                    />
-                                    <button
-                                      className={styles.editIcon}
-                                      title="Guardar"
-                                      style={{
-                                        background: "none",
-                                        border: "none",
-                                        color: "#7c3aed",
-                                        marginLeft: 2,
-                                        fontSize: 18,
-                                        cursor: "pointer",
-                                      }}
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleSaveClick(
-                                          selectedModule.id,
-                                          res.id
-                                        );
-                                      }}
-                                    >
-                                      <FontAwesomeIcon icon={faFloppyDisk} />
-                                    </button>
-                                    <button
-                                      className={styles.editIcon}
-                                      title="Cancelar"
-                                      style={{
-                                        background: "none",
-                                        border: "none",
-                                        color: "#e53e3e",
-                                        marginLeft: 2,
-                                        fontSize: 18,
-                                        cursor: "pointer",
-                                      }}
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleCancelClick(res.id);
-                                      }}
-                                    >
-                                      <FontAwesomeIcon icon={faXmark} />
-                                    </button>
-                                  </>
-                                ) : (
-                                  <>
-                                    <span className={styles.resourceTitleText}>
-                                      {res.object_title}
-                                    </span>
-                                    <FontAwesomeIcon
-                                      icon={faPen}
-                                      className={styles.editIcon}
-                                      title="Editar"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleEditClick(
-                                          res.id,
-                                          res.object_title
-                                        );
-                                      }}
-                                    />
-                                  </>
+                        const expanded = expandedResource === res.id;
+                        const isEditing = editingResource[res.id]?.editing;
+                        const editValue =
+                          editingResource[res.id]?.value ?? res.object_title;
+                        return (
+                          <div
+                            key={res.id}
+                            className={
+                              expanded
+                                ? `${styles.resourceCard} ${styles.resourceCardExpanded}`
+                                : styles.resourceCard
+                            }
+                            onClick={() => handleCardToggle(res.id)}
+                            style={{ cursor: "pointer" }}
+                          >
+                            <div className="d-flex">
+                              <div className="mt-4">
+                                {iconByType[res.format] || (
+                                  <FontAwesomeIcon
+                                    className={styles.iconPPT}
+                                    icon={faFilePowerpoint}
+                                  />
                                 )}
                               </div>
-                              <div className={styles.resourceCardActions}>
-                                <button
-                                  className={`${styles.downloadBtn} ${
-                                    !downloadableStatus[res.id]
-                                      ? styles.disabled
-                                      : ""
-                                  }`}
-                                  title={
-                                    downloadableStatus[res.id]
-                                      ? "Descargar"
-                                      : "No hay contenido para descargar"
-                                  }
-                                  disabled={!downloadableStatus[res.id]}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    if (downloadableStatus[res.id]) {
-                                      handleDownload(res);
-                                    }
-                                  }}
-                                >
-                                  <FontAwesomeIcon icon={faDownload} />
-                                </button>
-                                <button
-                                  className={styles.generateBtn}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    if (
-                                      res.format
-                                        .toLowerCase()
-                                        .includes("evaluacion")
-                                    ) {
-                                      setShowEvaluationView(true);
-                                    } else {
-                                      handleGoToActivity(res.format, res.id);
-                                    }
-                                  }}
-                                >
-                                  <FontAwesomeIcon icon={faWandMagicSparkles} />
-                                  <span>Generar</span>
-                                </button>
-                              </div>
-                            </div>
-                            <div className={styles.resourceCardBody}>
-                              {expanded ? (
-                                <>
-                                  {res.estimated_time && (
-                                    <div className={styles.resourceDetail}>
-                                      Duración: {res.estimated_time} minutos
-                                    </div>
-                                  )}
-                                  {res.format && (
-                                    <div className={styles.resourceDetail}>
-                                      <span
-                                        className={styles.resourceDetailLabel}
-                                      >
-                                        Formato:
-                                      </span>{" "}
-                                      {res.format}
-                                    </div>
-                                  )}
-                                  {/* Arreglo para parsear correctamente el contenido */}
-                                  {res.content &&
-                                    Array.isArray(res.content) &&
-                                    (() => {
-                                      let parsedContent = [];
-                                      try {
-                                        // El backend envía un array con un string JSON adentro
-                                        if (
-                                          res.content.length === 1 &&
-                                          typeof res.content[0] === "string"
-                                        ) {
-                                          parsedContent = JSON.parse(
-                                            res.content[0]
-                                          );
-                                        } else {
-                                          parsedContent = res.content;
-                                        }
-                                      } catch (e) {
-                                        parsedContent = [];
+                              <div className="w-100">
+                                <div className={styles.resourceCardHeader}>
+                                  <div className={styles.resourceCardTitle}>
+                                    {isEditing ? (
+                                      <>
+                                        <input
+                                          type="text"
+                                          value={editValue}
+                                          onChange={(e) =>
+                                            handleResourceTitleChange(res.id, e)
+                                          }
+                                          className={styles.input}
+                                          style={{
+                                            fontWeight: 600,
+                                            fontSize: "1.09rem",
+                                            padding: "4px 8px",
+                                            minWidth: 120,
+                                            maxWidth: 400,
+                                            marginRight: 8,
+                                          }}
+                                          autoFocus
+                                          onClick={(e) => e.stopPropagation()}
+                                        />
+                                        <button
+                                          className={styles.editIcon}
+                                          title="Guardar"
+                                          style={{
+                                            background: "none",
+                                            border: "none",
+                                            color: "#7c3aed",
+                                            marginLeft: 2,
+                                            fontSize: 18,
+                                            cursor: "pointer",
+                                          }}
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleSaveClick(
+                                              selectedModule.id,
+                                              res.id
+                                            );
+                                          }}
+                                        >
+                                          <FontAwesomeIcon
+                                            icon={faFloppyDisk}
+                                          />
+                                        </button>
+                                        <button
+                                          className={styles.editIcon}
+                                          title="Cancelar"
+                                          style={{
+                                            background: "none",
+                                            border: "none",
+                                            color: "#e53e3e",
+                                            marginLeft: 2,
+                                            fontSize: 18,
+                                            cursor: "pointer",
+                                          }}
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleCancelClick(res.id);
+                                          }}
+                                        >
+                                          <FontAwesomeIcon icon={faXmark} />
+                                        </button>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <span
+                                          className={styles.resourceTitleText}
+                                        >
+                                          {res.object_title}
+                                        </span>
+                                        <FontAwesomeIcon
+                                          icon={faPen}
+                                          className={styles.editIcon}
+                                          title="Editar"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleEditClick(
+                                              res.id,
+                                              res.object_title
+                                            );
+                                          }}
+                                        />
+                                      </>
+                                    )}
+                                  </div>
+                                  <div className={styles.resourceCardActions}>
+                                    <button
+                                      className={`${styles.downloadBtn} ${
+                                        !downloadableStatus[res.id]
+                                          ? styles.disabled
+                                          : ""
+                                      }`}
+                                      title={
+                                        downloadableStatus[res.id]
+                                          ? "Descargar"
+                                          : "No hay contenido para descargar"
                                       }
-                                      return parsedContent.length > 0 ? (
-                                        <>
-                                          <div
-                                            className={styles.resourceDetail}
-                                          >
-                                            <span
-                                              className={
-                                                styles.resourceDetailLabel
-                                              }
-                                            >
-                                              Resumen de contenido:
-                                            </span>
-                                          </div>
-                                          <ul
+                                      disabled={!downloadableStatus[res.id]}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (downloadableStatus[res.id]) {
+                                          handleDownload(res);
+                                        }
+                                      }}
+                                    >
+                                      <FontAwesomeIcon icon={faDownload} />
+                                    </button>
+                                    <button
+                                      className={styles.generateBtn}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (
+                                          res.format
+                                            .toLowerCase()
+                                            .includes("evaluacion")
+                                        ) {
+                                          setShowEvaluationView(true);
+                                        } else {
+                                          handleGoToActivity(
+                                            res.format,
+                                            res.id
+                                          );
+                                        }
+                                      }}
+                                    >
+                                      <FontAwesomeIcon
+                                        icon={faWandMagicSparkles}
+                                      />
+                                      <span>Generar</span>
+                                    </button>
+                                  </div>
+                                </div>
+                                <div className={styles.resourceCardBody}>
+                                  {expanded ? (
+                                    <>
+                                      {res.estimated_time && (
+                                        <div className={styles.resourceDetail}>
+                                          Duración: {res.estimated_time} minutos
+                                        </div>
+                                      )}
+                                      {res.format && (
+                                        <div className={styles.resourceDetail}>
+                                          <span
                                             className={
-                                              styles.resourceSummaryList
+                                              styles.resourceDetailLabel
                                             }
                                           >
-                                            {parsedContent.map((item, idx) => (
-                                              <li
-                                                key={idx}
+                                            Formato:
+                                          </span>{" "}
+                                          {res.format}
+                                        </div>
+                                      )}
+                                      {/* Arreglo para parsear correctamente el contenido */}
+                                      {res.content &&
+                                        Array.isArray(res.content) &&
+                                        (() => {
+                                          let parsedContent = [];
+                                          try {
+                                            // El backend envía un array con un string JSON adentro
+                                            if (
+                                              res.content.length === 1 &&
+                                              typeof res.content[0] === "string"
+                                            ) {
+                                              parsedContent = JSON.parse(
+                                                res.content[0]
+                                              );
+                                            } else {
+                                              parsedContent = res.content;
+                                            }
+                                          } catch (e) {
+                                            parsedContent = [];
+                                          }
+                                          return parsedContent.length > 0 ? (
+                                            <>
+                                              <div
                                                 className={
-                                                  styles.resourceSummaryItem
+                                                  styles.resourceDetail
                                                 }
                                               >
-                                                {item}
-                                              </li>
-                                            ))}
-                                          </ul>
-                                        </>
-                                      ) : null;
-                                    })()}
-                                </>
-                              ) : (
-                                res.format && (
-                                  <div className={styles.resourceDetail}>
-                                    <span
-                                      className={styles.resourceDetailLabel}
-                                    >
-                                      Formato:
-                                    </span>{" "}
-                                    {res.format}
-                                  </div>
-                                )
-                              )}
+                                                <span
+                                                  className={
+                                                    styles.resourceDetailLabel
+                                                  }
+                                                >
+                                                  Resumen de contenido:
+                                                </span>
+                                              </div>
+                                              <ul
+                                                className={
+                                                  styles.resourceSummaryList
+                                                }
+                                              >
+                                                {parsedContent.map(
+                                                  (item, idx) => (
+                                                    <li
+                                                      key={idx}
+                                                      className={
+                                                        styles.resourceSummaryItem
+                                                      }
+                                                    >
+                                                      {item}
+                                                    </li>
+                                                  )
+                                                )}
+                                              </ul>
+                                            </>
+                                          ) : null;
+                                        })()}
+                                    </>
+                                  ) : (
+                                    res.format && (
+                                      <div className={styles.resourceDetail}>
+                                        <span
+                                          className={styles.resourceDetailLabel}
+                                        >
+                                          Formato:
+                                        </span>{" "}
+                                        {res.format}
+                                      </div>
+                                    )
+                                  )}
+                                </div>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-                <div className={styles.addContentBar}>
+                        );
+                      })}
+                  </div>
+                  <div className={styles.addContentBar}>
                     <input
                       className={styles.addContentInput}
                       placeholder="Agregar Contenido..."
@@ -768,7 +783,6 @@ const CourseSectionActivity = ({
             </div>
           )}
         </main>
-
       </div>
     </div>
   );

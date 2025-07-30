@@ -17,6 +17,7 @@ const EvaluationEdition = ({
   onBack,
   onSave,
   questions = [],
+  quizzesId,
   onRegenerateEvaluation,
   onAddQuizAnswers,
   onUpdateQuizAnswers,
@@ -28,37 +29,49 @@ const EvaluationEdition = ({
   const dispatch = useDispatch();
   const [structureInput, setStructureInput] = useState("");
   const [editingQuestions, setEditingQuestions] = useState(questions);
-  
+
   // Estados para agregar opciones (similar a CourseEvaluation)
   const [showAddOptionForm, setShowAddOptionForm] = useState(false);
   const [selectedQuestionId, setSelectedQuestionId] = useState(null);
   const [newAnswerText, setNewAnswerText] = useState("");
   const [isCorrectAnswer, setIsCorrectAnswer] = useState(false);
-  
+
   // Estados para editar opciones existentes
   const [showEditOptionForm, setShowEditOptionForm] = useState(false);
   const [editingAnswerId, setEditingAnswerId] = useState(null);
   const [editAnswerText, setEditAnswerText] = useState("");
   const [editIsCorrectAnswer, setEditIsCorrectAnswer] = useState(false);
-  
+
   // Estados para modal de confirmación de eliminación
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [answerToDelete, setAnswerToDelete] = useState(null);
-  
+
   // Estados para editar preguntas
   const [showEditQuestionForm, setShowEditQuestionForm] = useState(false);
   const [editingQuestionId, setEditingQuestionId] = useState(null);
   const [editQuestionText, setEditQuestionText] = useState("");
-  
+
   // Estados para modal de confirmación de eliminación de preguntas
   const [showDeleteQuestionModal, setShowDeleteQuestionModal] = useState(false);
   const [questionToDelete, setQuestionToDelete] = useState(null);
-  
+
+  // Estados para crear nueva pregunta
+  const [showNewQuestionForm, setShowNewQuestionForm] = useState(false);
+  const [newQuestion, setNewQuestion] = useState({
+    text: "",
+    type: "multiple", // "multiple" or "single"
+    answers: [],
+  });
+  const [newQuestionAnswerText, setNewQuestionAnswerText] = useState("");
+  const [newQuestionIsCorrect, setNewQuestionIsCorrect] = useState(false);
+  const [floatingError, setFloatingError] = useState("");
+  const [showFloatingError, setShowFloatingError] = useState(false);
+
   // Sincronizar editingQuestions cuando cambien las questions prop
   useEffect(() => {
     setEditingQuestions(questions);
   }, [questions]);
-  
+
   console.log("questions", questions);
   const handleRegenerateStructure = async () => {
     if (!structureInput.trim()) {
@@ -182,16 +195,19 @@ const EvaluationEdition = ({
       dispatch(showLoading());
       try {
         // Actualizar UI localmente primero (optimistic update)
-        setEditingQuestions(prevQuestions => 
-          prevQuestions.map(question => ({
+        setEditingQuestions((prevQuestions) =>
+          prevQuestions.map((question) => ({
             ...question,
-            answers: question.answers?.filter(answer => answer.answerId !== answerToDelete) || []
+            answers:
+              question.answers?.filter(
+                (answer) => answer.answerId !== answerToDelete
+              ) || [],
           }))
         );
-        
+
         // Llamar al servicio para eliminar en el backend
         await onDeleteQuizAnswers(answerToDelete);
-        
+
         console.log(`Answer with ID ${answerToDelete} deleted successfully`);
       } catch (error) {
         console.error("Error deleting answer:", error);
@@ -201,7 +217,7 @@ const EvaluationEdition = ({
         dispatch(hideLoading());
       }
     }
-    
+
     // Cerrar modal y limpiar estado
     setShowDeleteModal(false);
     setAnswerToDelete(null);
@@ -231,9 +247,9 @@ const EvaluationEdition = ({
         };
 
         // Actualizar UI localmente primero (optimistic update)
-        setEditingQuestions(prevQuestions => 
-          prevQuestions.map(q => 
-            q.questionId === editingQuestionId 
+        setEditingQuestions((prevQuestions) =>
+          prevQuestions.map((q) =>
+            q.questionId === editingQuestionId
               ? { ...q, question: editQuestionText.trim() }
               : q
           )
@@ -248,9 +264,9 @@ const EvaluationEdition = ({
       } catch (error) {
         console.error("Error updating question:", error);
         // Revertir el cambio optimista en caso de error
-        setEditingQuestions(prevQuestions => 
-          prevQuestions.map(q => 
-            q.questionId === editingQuestionId 
+        setEditingQuestions((prevQuestions) =>
+          prevQuestions.map((q) =>
+            q.questionId === editingQuestionId
               ? { ...q, question: editQuestionText }
               : q
           )
@@ -268,8 +284,11 @@ const EvaluationEdition = ({
   };
 
   const handleDeleteQuestion = (questionId) => {
-    console.log('handleDeleteQuestion called with ID:', questionId);
-    console.log('Question object:', editingQuestions.find(q => q.questionId === questionId));
+    console.log("handleDeleteQuestion called with ID:", questionId);
+    console.log(
+      "Question object:",
+      editingQuestions.find((q) => q.questionId === questionId)
+    );
     setQuestionToDelete(questionId);
     setShowDeleteQuestionModal(true);
   };
@@ -280,15 +299,17 @@ const EvaluationEdition = ({
       try {
         // Actualizar UI localmente primero (optimistic update)
         const questionToDeleteCopy = questionToDelete;
-        setEditingQuestions(prevQuestions => 
-          prevQuestions.filter(q => q.questionId !== questionToDelete)
+        setEditingQuestions((prevQuestions) =>
+          prevQuestions.filter((q) => q.questionId !== questionToDelete)
         );
-        
+
         // Llamar al servicio para eliminar en el backend
-        console.log('Calling onDeleteQuizQuestions with ID:', questionToDelete);
+        console.log("Calling onDeleteQuizQuestions with ID:", questionToDelete);
         await onDeleteQuizQuestions(questionToDelete);
-        
-        console.log(`Question with ID ${questionToDeleteCopy} deleted successfully`);
+
+        console.log(
+          `Question with ID ${questionToDeleteCopy} deleted successfully`
+        );
       } catch (error) {
         console.error("Error deleting question:", error);
         // Revertir el cambio optimista en caso de error
@@ -298,7 +319,7 @@ const EvaluationEdition = ({
         dispatch(hideLoading());
       }
     }
-    
+
     // Cerrar modal y limpiar estado
     setShowDeleteQuestionModal(false);
     setQuestionToDelete(null);
@@ -317,16 +338,195 @@ const EvaluationEdition = ({
   };
 
   const handleAddQuestion = () => {
-    const newQuestion = {
-      questionId: Date.now(),
-      question: "",
-      answers: [
-        { answerId: Date.now() + 1, answer: "", correct: false },
-        { answerId: Date.now() + 2, answer: "", correct: false },
-        { answerId: Date.now() + 3, answer: "", correct: true },
-      ],
+    setShowNewQuestionForm(true);
+    setNewQuestion({
+      text: "",
+      type: "multiple",
+      answers: [],
+    });
+  };
+
+  // Funciones para crear nueva pregunta
+  const handleNewQuestionTypeChange = (type) => {
+    // Si está cambiando a opción única, verificar que no haya múltiples respuestas correctas
+    if (type === "single") {
+      const correctAnswersCount = newQuestion.answers.filter(
+        (answer) => answer.correct
+      ).length;
+      if (correctAnswersCount > 1) {
+        // Mostrar error flotante
+        setFloatingError(
+          "Debe haber solo una respuesta correcta para cambiar a opción única"
+        );
+        setShowFloatingError(true);
+
+        // Ocultar el error después de 3 segundos
+        setTimeout(() => {
+          setShowFloatingError(false);
+        }, 3000);
+
+        return; // No cambiar el tipo
+      }
+    }
+
+    setNewQuestion((prev) => ({
+      ...prev,
+      type,
+      answers: prev.answers.map((answer) => ({
+        ...answer,
+        correct: type === "single" ? false : answer.correct,
+      })),
+    }));
+  };
+
+  const handleAddNewQuestionAnswer = () => {
+    if (newQuestionAnswerText.trim()) {
+      const newAnswer = {
+        id: Date.now(),
+        text: newQuestionAnswerText.trim(),
+        correct: newQuestionIsCorrect,
+      };
+
+      setNewQuestion((prev) => ({
+        ...prev,
+        answers: [...prev.answers, newAnswer],
+      }));
+
+      setNewQuestionAnswerText("");
+      setNewQuestionIsCorrect(false);
+    }
+  };
+
+  const handleRemoveNewQuestionAnswer = (answerId) => {
+    setNewQuestion((prev) => ({
+      ...prev,
+      answers: prev.answers.filter((answer) => answer.id !== answerId),
+    }));
+  };
+
+  const handleNewQuestionAnswerCorrectChange = (answerId, isCorrect) => {
+    setNewQuestion((prev) => ({
+      ...prev,
+      answers: prev.answers.map((answer) => {
+        if (newQuestion.type === "single") {
+          // Para opción única, solo una puede ser correcta
+          return {
+            ...answer,
+            correct: answer.id === answerId ? isCorrect : false,
+          };
+        } else {
+          // Para opción múltiple, múltiples pueden ser correctas
+          return answer.id === answerId
+            ? { ...answer, correct: isCorrect }
+            : answer;
+        }
+      }),
+    }));
+  };
+
+  const handleSaveNewQuestion = async () => {
+    // Función helper para mostrar error flotante
+    const showFloatingErrorMessage = (message) => {
+      setFloatingError(message);
+      setShowFloatingError(true);
+      setTimeout(() => {
+        setShowFloatingError(false);
+      }, 4000);
     };
-    setEditingQuestions([...editingQuestions, newQuestion]);
+
+    // Validación: texto de pregunta y al menos una opción
+    if (!newQuestion.text.trim() || newQuestion.answers.length === 0) {
+      showFloatingErrorMessage(
+        "Por favor, ingresa el texto de la pregunta y al menos una opción."
+      );
+      return;
+    }
+
+    // Validación: al menos una respuesta correcta
+    if (!newQuestion.answers.some((answer) => answer.correct)) {
+      showFloatingErrorMessage(
+        "Por favor, marca al menos una respuesta como correcta."
+      );
+      return;
+    }
+
+    // Validación: al menos una respuesta incorrecta
+    if (!newQuestion.answers.some((answer) => !answer.correct)) {
+      showFloatingErrorMessage(
+        "Por favor, debe haber al menos una respuesta incorrecta."
+      );
+      return;
+    }
+
+    dispatch(showLoading());
+    try {
+      // Primero crear la pregunta
+      // Usar quizzesId pasado como prop, con fallback a moduleEvaluation si no está disponible
+      const targetQuizzesId =
+        quizzesId ||
+        (questions.length > 0 ? questions[0]?.quizzesId : null) ||
+        moduleEvaluation?.quizzesId ||
+        moduleEvaluation?.id;
+      const questionData = {
+        quizzesId: targetQuizzesId,
+        question: newQuestion.text.trim(),
+      };
+
+      if (onAddQuizQuestions) {
+        const createdQuestion = await onAddQuizQuestions(questionData);
+
+        // Intentar diferentes estructuras de respuesta
+        const questionId =
+          createdQuestion?.id ||
+          createdQuestion?.data?.id ||
+          createdQuestion?.questionId ||
+          createdQuestion?.data?.questionId;
+
+        // Luego crear todas las respuestas vinculadas a la pregunta
+        if (createdQuestion && questionId) {
+          // Crear todas las respuestas secuencialmente
+          for (let i = 0; i < newQuestion.answers.length; i++) {
+            const answer = newQuestion.answers[i];
+            const answerData = {
+              QuestionsId: questionId,
+              answer: answer.text.trim(),
+              isCorrect: answer.correct,
+            };
+            await onAddQuizAnswers(answerData);
+          }
+        } else {
+          showFloatingErrorMessage(
+            "Error al crear la pregunta. Por favor, intenta de nuevo."
+          );
+          return;
+        }
+      } else {
+        showFloatingErrorMessage(
+          "Error al crear la pregunta. Por favor, intenta de nuevo."
+        );
+        return;
+      }
+
+      // Resetear el formulario solo si todo fue exitoso
+      handleCancelNewQuestion();
+    } catch (error) {
+      showFloatingErrorMessage(
+        "Error al crear la pregunta. Por favor, intenta de nuevo."
+      );
+    } finally {
+      dispatch(hideLoading());
+    }
+  };
+
+  const handleCancelNewQuestion = () => {
+    setShowNewQuestionForm(false);
+    setNewQuestion({
+      text: "",
+      type: "multiple",
+      answers: [],
+    });
+    setNewQuestionAnswerText("");
+    setNewQuestionIsCorrect(false);
   };
 
   const handleSave = () => {
@@ -397,14 +597,14 @@ const EvaluationEdition = ({
               <div className={styles.questionHeader}>
                 <div className={styles.questionNumber}>{index + 1}</div>
                 <div className={styles.questionActions}>
-                  <button 
+                  <button
                     className={styles.editButton}
                     onClick={() => handleEditQuestion(question)}
                     title="Editar pregunta"
                   >
                     <FontAwesomeIcon icon={faEdit} />
                   </button>
-                  <button 
+                  <button
                     className={styles.deleteButton}
                     onClick={() => handleDeleteQuestion(question.questionId)}
                     title="Eliminar pregunta"
@@ -415,7 +615,8 @@ const EvaluationEdition = ({
               </div>
 
               <div className={styles.questionContent}>
-                {showEditQuestionForm && editingQuestionId === question.questionId ? (
+                {showEditQuestionForm &&
+                editingQuestionId === question.questionId ? (
                   // Formulario de edición de pregunta
                   <div className={styles.editQuestionForm}>
                     <div className={styles.formRow}>
@@ -475,7 +676,8 @@ const EvaluationEdition = ({
 
                     return (
                       <div key={answer.answerId} className={styles.option}>
-                        {showEditOptionForm && editingAnswerId === answer.answerId ? (
+                        {showEditOptionForm &&
+                        editingAnswerId === answer.answerId ? (
                           // Formulario de edición
                           <div className={styles.addOptionForm}>
                             <div className={styles.formRow}>
@@ -483,7 +685,9 @@ const EvaluationEdition = ({
                                 type="text"
                                 className={styles.optionInput}
                                 value={editAnswerText}
-                                onChange={(e) => setEditAnswerText(e.target.value)}
+                                onChange={(e) =>
+                                  setEditAnswerText(e.target.value)
+                                }
                                 placeholder="Texto de la opción"
                               />
                             </div>
@@ -526,7 +730,9 @@ const EvaluationEdition = ({
                               {answer.answer}
                             </label>
                             {answer.correct && (
-                              <span className={styles.correctBadge}>Correcta</span>
+                              <span className={styles.correctBadge}>
+                                Correcta
+                              </span>
                             )}
                             <div className={styles.optionActions}>
                               <button
@@ -538,7 +744,9 @@ const EvaluationEdition = ({
                               </button>
                               <button
                                 className={styles.deleteOptionBtn}
-                                onClick={() => handleDeleteOption(answer.answerId)}
+                                onClick={() =>
+                                  handleDeleteOption(answer.answerId)
+                                }
                                 title="Eliminar opción"
                               >
                                 <FontAwesomeIcon icon={faTrash} />
@@ -614,50 +822,60 @@ const EvaluationEdition = ({
                     })()}
 
                   {/* Formulario para agregar opción (similar a CourseEvaluation) */}
-                  {showAddOptionForm && selectedQuestionId === (question.questionId || question.id) && (
-                    <div className={styles.addOptionForm}>
-                      <div className={styles.formRow}>
-                        <input
-                          type="text"
-                          placeholder="Texto de la nueva opción"
-                          value={newAnswerText}
-                          onChange={(e) => setNewAnswerText(e.target.value)}
-                          className={styles.optionInput}
-                        />
-                        <div className={styles.checkboxContainer}>
+                  {showAddOptionForm &&
+                    selectedQuestionId ===
+                      (question.questionId || question.id) && (
+                      <div className={styles.addOptionForm}>
+                        <div className={styles.formRow}>
                           <input
-                            type="checkbox"
-                            id="isCorrect"
-                            checked={isCorrectAnswer}
-                            onChange={(e) => setIsCorrectAnswer(e.target.checked)}
-                            className={styles.correctCheckbox}
+                            type="text"
+                            placeholder="Texto de la nueva opción"
+                            value={newAnswerText}
+                            onChange={(e) => setNewAnswerText(e.target.value)}
+                            className={styles.optionInput}
                           />
-                          <label htmlFor="isCorrect">Respuesta correcta</label>
+                          <div className={styles.checkboxContainer}>
+                            <input
+                              type="checkbox"
+                              id="isCorrect"
+                              checked={isCorrectAnswer}
+                              onChange={(e) =>
+                                setIsCorrectAnswer(e.target.checked)
+                              }
+                              className={styles.correctCheckbox}
+                            />
+                            <label htmlFor="isCorrect">
+                              Respuesta correcta
+                            </label>
+                          </div>
+                        </div>
+                        <div className={styles.formButtons}>
+                          <button
+                            className={styles.saveBtn}
+                            onClick={handleSaveOption}
+                            disabled={!newAnswerText.trim()}
+                          >
+                            Guardar
+                          </button>
+                          <button
+                            className={styles.cancelBtn}
+                            onClick={handleCancelOption}
+                          >
+                            Cancelar
+                          </button>
                         </div>
                       </div>
-                      <div className={styles.formButtons}>
-                        <button
-                          className={styles.saveBtn}
-                          onClick={handleSaveOption}
-                          disabled={!newAnswerText.trim()}
-                        >
-                          Guardar
-                        </button>
-                        <button
-                          className={styles.cancelBtn}
-                          onClick={handleCancelOption}
-                        >
-                          Cancelar
-                        </button>
-                      </div>
-                    </div>
-                  )}
+                    )}
 
                   {/* Botón agregar opción (solo se muestra cuando no hay formulario activo) */}
-                  {(!showAddOptionForm || selectedQuestionId !== (question.questionId || question.id)) && (
+                  {(!showAddOptionForm ||
+                    selectedQuestionId !==
+                      (question.questionId || question.id)) && (
                     <button
                       className={styles.addOptionButton}
-                      onClick={() => handleAddOption(question.questionId || question.id)}
+                      onClick={() =>
+                        handleAddOption(question.questionId || question.id)
+                      }
                     >
                       <FontAwesomeIcon icon={faPlus} /> Agregar opción
                     </button>
@@ -753,7 +971,9 @@ const EvaluationEdition = ({
                           onChange={(e) => setIsCorrectAnswer(e.target.checked)}
                           className={styles.correctCheckbox}
                         />
-                        <label htmlFor="isCorrectExample">Respuesta correcta</label>
+                        <label htmlFor="isCorrectExample">
+                          Respuesta correcta
+                        </label>
                       </div>
                     </div>
                     <div className={styles.formButtons}>
@@ -789,17 +1009,174 @@ const EvaluationEdition = ({
         )}
       </div>
 
+      {/* New Question Creation Form */}
+      {showNewQuestionForm && (
+        <div className={styles.questionCard}>
+          <div className={styles.questionHeader}>
+            <span className={styles.questionNumber}>Nueva</span>
+          </div>
+
+          {/* Floating Error Message */}
+          {showFloatingError && (
+            <div className={styles.floatingError}>{floatingError}</div>
+          )}
+
+          <div className={styles.questionContent}>
+            {/* Question Text Input */}
+            <div className={styles.questionTextContainer}>
+              <input
+                type="text"
+                placeholder="Ingrese la pregunta aquí"
+                value={newQuestion.text}
+                onChange={(e) =>
+                  setNewQuestion((prev) => ({ ...prev, text: e.target.value }))
+                }
+                className={styles.questionInput}
+              />
+            </div>
+
+            {/* Question Type Dropdown */}
+            <div className={styles.questionType}>
+              <select
+                className={styles.typeSelect}
+                value={
+                  newQuestion.type === "multiple"
+                    ? "multiple_select"
+                    : "multiple_choice"
+                }
+                onChange={(e) =>
+                  handleNewQuestionTypeChange(
+                    e.target.value === "multiple_select" ? "multiple" : "single"
+                  )
+                }
+              >
+                <option value="multiple_choice">Opción única</option>
+                <option value="multiple_select">Opción múltiple</option>
+              </select>
+            </div>
+
+            {/* Answers List */}
+            <div className={styles.options}>
+              {newQuestion.answers.map((answer) => (
+                <div key={answer.id} className={styles.option}>
+                  {newQuestion.type === "single" ? (
+                    <input
+                      type="radio"
+                      name="new-question-answers"
+                      checked={answer.correct}
+                      onChange={(e) =>
+                        handleNewQuestionAnswerCorrectChange(
+                          answer.id,
+                          e.target.checked
+                        )
+                      }
+                      className={styles.optionRadio}
+                    />
+                  ) : (
+                    <input
+                      type="checkbox"
+                      checked={answer.correct}
+                      onChange={(e) =>
+                        handleNewQuestionAnswerCorrectChange(
+                          answer.id,
+                          e.target.checked
+                        )
+                      }
+                      className={styles.optionCheckbox}
+                    />
+                  )}
+                  <label className={styles.optionLabel}>{answer.text}</label>
+                  {answer.correct && (
+                    <span className={styles.correctBadge}>Correcta</span>
+                  )}
+                  <button
+                    className={styles.deleteOptionBtn}
+                    onClick={() => handleRemoveNewQuestionAnswer(answer.id)}
+                    title="Eliminar opción"
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
+                  </button>
+                </div>
+              ))}
+
+              {/* Add New Answer Form */}
+              <div className={styles.addOptionForm}>
+                <div className={styles.formRow}>
+                  <input
+                    type="text"
+                    placeholder="Texto de la nueva opción"
+                    value={newQuestionAnswerText}
+                    onChange={(e) => setNewQuestionAnswerText(e.target.value)}
+                    className={styles.optionInput}
+                    onKeyPress={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleAddNewQuestionAnswer();
+                      }
+                    }}
+                  />
+                  <div className={styles.checkboxContainer}>
+                    <input
+                      type="checkbox"
+                      id="newQuestionCorrect"
+                      checked={newQuestionIsCorrect}
+                      onChange={(e) =>
+                        setNewQuestionIsCorrect(e.target.checked)
+                      }
+                      className={styles.correctCheckbox}
+                    />
+                    <label htmlFor="newQuestionCorrect">
+                      Respuesta correcta
+                    </label>
+                  </div>
+                </div>
+                <div className={styles.formButtons}>
+                  <button
+                    className={styles.saveBtn}
+                    onClick={handleAddNewQuestionAnswer}
+                    disabled={!newQuestionAnswerText.trim()}
+                  >
+                    Agregar
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Save/Cancel Buttons */}
+            <div className={styles.newQuestionActions}>
+              <button
+                className={styles.saveBtn}
+                onClick={handleSaveNewQuestion}
+                disabled={
+                  !newQuestion.text.trim() || newQuestion.answers.length === 0
+                }
+              >
+                Guardar
+              </button>
+              <button
+                className={styles.cancelBtn}
+                onClick={handleCancelNewQuestion}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Add New Question Button */}
-      <div className={styles.addQuestionSection}>
-        <button
-          className={styles.addQuestionButton}
-          onClick={handleAddQuestion}
-        >
-          <FontAwesomeIcon icon={faPlus} />
-          Agregar nueva pregunta
-        </button>
-      </div>
-      
+      {!showNewQuestionForm && (
+        <div className={styles.addQuestionSection}>
+          <button
+            className={styles.addQuestionButton}
+            onClick={handleAddQuestion}
+          >
+            <FontAwesomeIcon icon={faPlus} />
+            Agregar nueva pregunta
+          </button>
+        </div>
+      )}
+
       {/* Modal de confirmación de eliminación de opciones */}
       <DeleteConfirmationPopup
         isOpen={showDeleteModal}
@@ -808,7 +1185,7 @@ const EvaluationEdition = ({
         title="Eliminar opción"
         message="¿Estás seguro de que quieres eliminar esta opción? Esta acción no se puede deshacer."
       />
-      
+
       {/* Modal de confirmación de eliminación de preguntas */}
       <DeleteConfirmationPopup
         isOpen={showDeleteQuestionModal}

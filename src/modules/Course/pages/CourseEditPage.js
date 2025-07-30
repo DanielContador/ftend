@@ -34,6 +34,7 @@ const CourseEditPage = ({
   const [courseStructure, setCourseStructure] = useState(null);
   const [generatedQuestions, setGeneratedQuestions] = useState(null);
   const [existingQuestions, setExistingQuestions] = useState(null);
+  const [quizzesId, setQuizzesId] = useState(null);
 
   const dispatch = useDispatch();
   const crud = useCrudManager(courseService, handleError, t, {
@@ -145,12 +146,19 @@ const CourseEditPage = ({
       console.log("Quizzes response:", response);
       if (response && response.data) {
         setExistingQuestions(response.data.questions);
+        // Capture quizzesId for question creation
+        if (response.data.quizzesId) {
+          setQuizzesId(response.data.quizzesId);
+          console.log("QuizzesId captured:", response.data.quizzesId);
+        }
       } else {
         setExistingQuestions([]);
+        setQuizzesId(null);
       }
     } catch (error) {
       console.error("Error fetching quizzes:", error);
       setExistingQuestions([]);
+      setQuizzesId(null);
     } finally {
       dispatch(hideLoading());
     }
@@ -270,7 +278,7 @@ const CourseEditPage = ({
   };
 
   const handleAddQuizQuestions = async (quizQuestionData, activityId) => {
-    dispatch(showLoading());
+    // No manejar loading aquí ya que EvaluationEdition lo maneja
     try {
       const response = await quizzesQuestionsService.addQuizQuestions(
         quizQuestionData
@@ -283,12 +291,14 @@ const CourseEditPage = ({
         if (activityId) {
           handleFetchQuizzes(activityId);
         }
+        // Retornar la pregunta creada para que pueda ser usada por EvaluationEdition
+        return response.data || response;
       }
+      return null;
     } catch (error) {
       console.error("Error adding quiz question:", error);
       handleError("Error al agregar la pregunta del quiz.");
-    } finally {
-      dispatch(hideLoading());
+      throw error; // Re-lanzar el error para que EvaluationEdition pueda manejarlo
     }
   };
 
@@ -355,6 +365,7 @@ const CourseEditPage = ({
         <CourseSectionActivity
           onFetchQuizzes={handleFetchQuizzes}
           existingQuestions={existingQuestions}
+          quizzesId={quizzesId}
           onGenerateEvaluation={handleGenerateEvaluation}
           onRegenerateEvaluation={handleRegenerateEvaluation}
           onAddQuizAnswers={handleAddQuizAnswers}

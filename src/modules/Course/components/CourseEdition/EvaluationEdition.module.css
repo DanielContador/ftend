@@ -536,3 +536,80 @@
 .questionInput::placeholder {
   color: #6c757d;
 }
+
+/* New Question Creation Form Styles */
+.questionTextContainer {
+  margin-bottom: 16px;
+}
+
+.newQuestionActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #e9ecef;
+}
+
+.newQuestionActions .saveBtn,
+.newQuestionActions .cancelBtn {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 100px;
+}
+
+.newQuestionActions .saveBtn {
+  background-color: #8e44ad;
+  color: #ffffff;
+  border: none;
+}
+
+.newQuestionActions .saveBtn:hover:not(:disabled) {
+  background-color: #732d91;
+}
+
+.newQuestionActions .saveBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.newQuestionActions .cancelBtn {
+  background-color: #6c757d;
+  color: #ffffff;
+  border: none;
+}
+
+.newQuestionActions .cancelBtn:hover {
+  background-color: #545b62;
+}
+
+/* Floating Error Message Styles */
+.floatingError {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin: 12px 0;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  animation: slideInError 0.3s ease-out;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes slideInError {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
