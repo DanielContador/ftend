@@ -1,5 +1,4 @@
 import ManagementLayout from "../../../../shared/layouts/managementlayout/ManagementLayout";
-import ErrorMessage from "../../../../shared/layouts/components/ErrorMessage";
 import CourseEditPage from "../../../../modules/Course/pages/CourseEditPage";
 import SaveContinueButton from "../../../../shared/layouts/components/management/SaveContinueButton";
 import { useState, useEffect } from "react";
@@ -48,7 +47,10 @@ const EditCoursePage = () => {
     if (showSection === "CourseEdition") {
       setIndex(1);
       setShowSection("CourseSectionActivity");
-    } else if (showSection === "CourseSectionActivity" && selectedTab === "contenido") {
+    } else if (
+      showSection === "CourseSectionActivity" &&
+      selectedTab === "contenido"
+    ) {
       if (isEvaluationAvailable) {
         // Trigger evaluation view instead of switching tabs
         setTriggerEvaluationView(true);

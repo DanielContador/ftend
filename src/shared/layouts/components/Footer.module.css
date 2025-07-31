@@ -1,8 +1,0 @@
-.footer {
-    background-color: #f1f1f1; /* Light background for the footer */
-    padding: 1em 0;
-    text-align: center; /* Center text in the footer */
-    position: relative; /* Ensure footer is positioned relative to content */
-    bottom: 0; /* Align to the bottom of the content */
-    width: 100%; /* Full width for the footer */
-}

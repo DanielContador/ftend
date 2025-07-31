@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
+import { showFloatingError } from "../shared/store/rootActions";
 import { useAuth } from "../shared/utils/authProvider";
 import CourseListFormPage from "../modules/Course/pages/CourseListFormPage";
-import ErrorMessage from "../shared/layouts/components/ErrorMessage";
 import SidebarLayout from "../shared/layouts/sidebarlayout/SidebarLayout";
 import { useTranslation } from "react-i18next"; // Importing useTranslation
 import SidebarHelpButton from "../shared/layouts/components/sidebar/SidebarHelpButton";
@@ -12,7 +13,7 @@ const HomePage = () => {
   const { t } = useTranslation(); // Using the translation hook
   const router = useRouter();
   const { isLoggedIn, isLoading } = useAuth();
-  const [error, setError] = useState(null); // State to hold error messages
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!isLoading && !isLoggedIn) {
@@ -25,12 +26,11 @@ const HomePage = () => {
   }
 
   const handleError = (errorMessage) => {
-    setError(errorMessage);
+    dispatch(showFloatingError(errorMessage));
   };
 
   return (
     <SidebarLayout menuButtons={[SidebarHomeButton, SidebarHelpButton]}>
-      {error && <ErrorMessage error={error} />}{" "}
       <CourseListFormPage handleError={handleError} />
     </SidebarLayout>
   );
