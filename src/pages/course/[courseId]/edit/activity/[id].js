@@ -1,25 +1,24 @@
-import CourseLayout from '../../../../../shared/layouts/CourseLayout'; // Importing CourseLayout
-import { useRouter } from 'next/router';
-import ErrorMessage from '../../../../../shared/layouts/components/ErrorMessage'; // Importing ErrorMessage
-import { useState } from 'react';
-import EditActivityPage from '../../../../../modules/Activity/pages/EditActivityPage'; // Importing EditActivityPage
+import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
+import { showFloatingError } from "../../../../../shared/store/rootActions";
+import EditActivityPage from "../../../../../modules/Activity/pages/EditActivityPage"; // Importing EditActivityPage
+import ManagementLayout from "../../../../../shared/layouts/managementlayout/ManagementLayout";
+import SaveContinueButton from "../../../../../shared/layouts/components/management/SaveContinueButton";
 
 const ActivityEditorPage = () => {
-    const router = useRouter();
-    const { courseId } = router.query;
-    const [error, setError] = useState(null); // State to hold error messages
+  const router = useRouter();
+  const { courseId } = router.query;
+  const dispatch = useDispatch();
 
-    // Example error handling logic
-    const handleError = (errorMessage) => {
-        setError(errorMessage);
-    };
-    
-    return (
-        <CourseLayout courseId={courseId} currentPage="ActivityEditorPage">
-            {error && <ErrorMessage error={error} />} {/* Display error message if exists */}
-            <EditActivityPage courseId={courseId} handleError={handleError} /> {/* Render EditActivityPage */}
-        </CourseLayout>
-    );
+  const handleError = (errorMessage) => {
+    dispatch(showFloatingError(errorMessage));
+  };
+
+  return (
+    <ManagementLayout menuButtons={[SaveContinueButton]}>
+      <EditActivityPage courseId={courseId} handleError={handleError} />
+    </ManagementLayout>
+  );
 };
 
 export default ActivityEditorPage;

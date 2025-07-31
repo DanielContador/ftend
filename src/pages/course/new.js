@@ -1,24 +1,19 @@
-// import CourseLayout from "../../shared/layouts/CourseLayout";
-// import CourseFormPage from "../../modules/Course/pages/CourseFormPage";
 import CourseCreationFormPage from "../../modules/Course/pages/CourseCreationFormPage";
-import { useState } from "react";
-import ErrorMessage from "../../shared/layouts/components/ErrorMessage"; // Importing ErrorMessage
+import { useDispatch } from "react-redux";
+import { showFloatingError } from "../../shared/store/rootActions";
 import SidebarHelpButton from "../../shared/layouts/components/sidebar/SidebarHelpButton";
 import SidebarHomeButton from "../../shared/layouts/components/sidebar/SidebarHomeButton";
 import SidebarLayout from "../../shared/layouts/sidebarlayout/SidebarLayout";
 
 const NewCoursePage = () => {
-  const [error, setError] = useState(null); // State to hold error messages
+  const dispatch = useDispatch();
 
-  // Example error handling logic
   const handleError = (errorMessage) => {
-    setError(errorMessage);
+    dispatch(showFloatingError(errorMessage));
   };
 
   return (
     <SidebarLayout menuButtons={[SidebarHomeButton, SidebarHelpButton]}>
-      {error && <ErrorMessage error={error} />}{" "}
-      {/* Display error message if exists */}
       <CourseCreationFormPage handleError={handleError} />
     </SidebarLayout>
   );
