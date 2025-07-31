@@ -48,6 +48,8 @@ const ActivityGenerationAudio = ({
   const [activityAudio, setActivityAudio] = useState(null);
   const [fileToken, setFileToken] = useState(null);
   const [audioLoading, setAudioLoading] = useState(false);
+  const [scriptRegenerated, setScriptRegenerated] = useState(false); // Track if script has been regenerated
+  const [audioGenerated, setAudioGenerated] = useState(false); // Track if audio has been generated
   const dispatch = useDispatch();
 
   // Estado para voz y sliders
@@ -65,6 +67,12 @@ const ActivityGenerationAudio = ({
       if (response.data.audio) {
         setActivityAudio(response.data.audio);
         setGuionInput(response.data.audio.content);
+        // If audio exists, set appropriate initial states
+        if (response.data.audio.filePath) {
+          // Audio is already generated, so enable regeneration if script allows it
+          setAudioGenerated(true);
+          setScriptRegenerated(false); // Initially false, will be set to true when script is modified
+        }
       }
       if (response.data.token) {
         setFileToken(response.data.token);
@@ -103,6 +111,7 @@ const ActivityGenerationAudio = ({
         ActivityId: activityId,
       });
       await fetchActivity();
+      setScriptRegenerated(true); // Mark script as regenerated
       setActiveTab("guion");
     } catch (error) {
       dispatch(showFloatingError(t("errorGeneratingActivityScript")));
@@ -120,6 +129,7 @@ const ActivityGenerationAudio = ({
         ActivityId: activityId,
       });
       await fetchActivity();
+      setScriptRegenerated(true); // Mark script as regenerated
       setActiveTab("guion");
     } catch (error) {
       dispatch(showFloatingError(t("errorGeneratingActivityScript")));
@@ -132,10 +142,10 @@ const ActivityGenerationAudio = ({
   const handleSaveScript = async (text) => {
     setModalLoading(true);
     try {
-      const dataToUpdate = {
+      await updateAudioContent(activityAudio.id, {
         content: text || guionInput,
-      };
-      await updateAudioContent(activityAudio.id, dataToUpdate);
+      });
+      setScriptRegenerated(true); // Mark script as regenerated when manually edited
     } catch (error) {
       dispatch(showFloatingError(t("errorUpdatingDocumentContent")));
     } finally {
@@ -180,8 +190,40 @@ const ActivityGenerationAudio = ({
       }
       if (audioReady && audioData) {
         setActivityAudio(audioData);
+        setAudioGenerated(true); // Mark audio as generated
+        setScriptRegenerated(false); // Reset script regeneration state
       }
       setActiveTab("audio");
+    } catch (error) {
+      dispatch(showFloatingError(t("errorGeneratingAudio")));
+    } finally {
+      setAudioLoading(false);
+      setModalLoading(false);
+    }
+  };
+
+  // Regenerar audio
+  const handleRegenerateAudio = async () => {
+    setModalLoading(true);
+    setAudioLoading(true);
+    try {
+      // TODO: Implement regeneration service call when available
+      // const response = await regenerateActivityAudio({
+      //   ActivityId: activityId,
+      //   VoiceId: selectedVoice ? selectedVoice.value : null,
+      //   Stability: stability / 100,
+      //   Similarity_Boost: similarity / 100,
+      // });
+      
+      // Placeholder: Show message that regeneration is not yet available
+      dispatch(showFloatingError("La funcionalidad de regeneración de audio aún no está disponible"));
+      
+      // TODO: Remove these lines when service is implemented
+      // Polling logic would go here similar to handleGenerateAudio
+      // setActivityAudio(audioData);
+      // setAudioGenerated(true);
+      // setScriptRegenerated(false);
+      // setActiveTab("audio");
     } catch (error) {
       dispatch(showFloatingError(t("errorGeneratingAudio")));
     } finally {
@@ -294,13 +336,16 @@ const ActivityGenerationAudio = ({
             {activeTab === "guion" && (
               <button
                 className={styles.generateBtn}
-                disabled={!selectedVoice}
-                onClick={handleGenerateAudio}
+                disabled={!selectedVoice || guionInput === DEFAULT_GUIÓN || (activityAudio && !scriptRegenerated)}
+                style={{
+                  opacity: (!selectedVoice || guionInput === DEFAULT_GUIÓN || (activityAudio && !scriptRegenerated)) ? 0.3 : 1
+                }}
+                onClick={(activityAudio && scriptRegenerated) ? handleRegenerateAudio : handleGenerateAudio}
               >
-                Continuar{" "}
+                {activityAudio ? "Regenerar" : "Generar"}{" "}
                 <FontAwesomeIcon
                   className={styles.sparkles}
-                  icon={faArrowRight}
+                  icon={faWandSparkles}
                 />
               </button>
             )}
