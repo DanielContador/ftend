@@ -890,7 +890,7 @@ const EvaluationEdition = ({
               <div className={styles.questionNumber}>1</div>
               <div className={styles.questionActions}>
                 <button className={styles.editButton}>
-                  <FontAwesomeIcon icon={faEdit} />
+                  <FontAwesomeIcon icon={faPencil} />
                 </button>
                 <button className={styles.deleteButton}>
                   <FontAwesomeIcon icon={faTrash} />
