@@ -64,6 +64,8 @@ const ActivityGenerationVideo = ({
   const [selectedAvatar, setSelectedAvatar] = useState(null);
   const [avatarGenerateLoading, setAvatarGenerateLoading] = useState(false); // <-- nuevo estado
   const [videoLoading, setVideoLoading] = useState(false);
+  const [scriptRegenerated, setScriptRegenerated] = useState(false); // Track if script has been regenerated
+  const [videoGenerated, setVideoGenerated] = useState(false); // Track if video has been generated
   const dispatch = useDispatch();
 
   const fetchActivity = async () => {
@@ -75,6 +77,12 @@ const ActivityGenerationVideo = ({
       if (response.data.video) {
         setActivityVideo(response.data.video);
         setGuionInput(response.data.video.content);
+        // If video exists, set appropriate initial states
+        if (response.data.video.videoUrl && response.data.video.videoUrl !== "rendering") {
+          // Video is already generated, so enable regeneration if script allows it
+          setVideoGenerated(true);
+          setScriptRegenerated(false); // Initially false, will be set to true when script is modified
+        }
         if (response.data.video.videoUrl == "rendering") {
           const videoId = response.data.video.videoId;
           const creatorApp =
@@ -153,6 +161,8 @@ const ActivityGenerationVideo = ({
       };
       await generateVideoScript(data);
       await fetchActivity();
+      setScriptRegenerated(true); // Mark script as regenerated
+      // Only reset videoGenerated if no video exists yet
       setActiveTab("guion"); // <-- Cambia automáticamente al tab de guion
     } catch (error) {
       console.error("Error generating script:", error);
@@ -172,6 +182,8 @@ const ActivityGenerationVideo = ({
       };
       await regenerateVideoScript(data);
       await fetchActivity();
+      setScriptRegenerated(true); // Mark script as regenerated
+      // Only reset videoGenerated if no video exists yet
       setActiveTab("guion"); // <-- Cambia automáticamente al tab de guion
     } catch (error) {
       console.error("Error regenerating script:", error);
@@ -264,6 +276,8 @@ const ActivityGenerationVideo = ({
         dispatch(showFloatingSuccess("El video se está generando correctamente"));
         setVideoCreatorApp("elai");
         setActivityVideo((prev) => ({ ...prev, videoUrl: response.data.content }));
+        setVideoGenerated(true); // Mark video as generated
+        setScriptRegenerated(false); // Reset script regeneration state
         pollVideoStatus("elai");
       } catch (error) {
         console.error("Error generating video:", error);
@@ -310,6 +324,8 @@ const ActivityGenerationVideo = ({
         dispatch(showFloatingSuccess("El video se está generando correctamente"));
         setVideoCreatorApp("videogen");
         setActivityVideo((prev) => ({ ...prev, videoUrl: response.data.content }));
+        setVideoGenerated(true); // Mark video as generated
+        setScriptRegenerated(false); // Reset script regeneration state
         pollVideoStatus("videogen");
       } catch (error) {
         console.error("Error generating scene video:", error);
@@ -326,6 +342,96 @@ const ActivityGenerationVideo = ({
           )
         );
         }
+        setModalLoading(false);
+      }
+    }
+  };
+
+  // Handler for "Regenerar" button in avatar selection screen
+  const handleRegenerateVideoAvatarScreen = async () => {
+    if (videoType === "avatar" && avatarVoice && selectedAvatar) {
+      setAvatarGenerateLoading(true);
+      setModalLoading(true);
+      try {
+        // TODO: Implement regeneration service call when available
+        // const data = {
+        //   ActivityId: activityId,
+        //   Language: "Spanish",
+        //   Voice: avatarVoice.value,
+        //   VoiceProvider: avatarVoice.voiceProvider || null,
+        //   AvatarCode: selectedAvatar.raw?.code
+        //     ? `${selectedAvatar.raw.code}.${selectedAvatar.raw.variants[0].code}`
+        //     : null,
+        //   AvatarGender: selectedAvatar.raw?.gender || null,
+        //   AvatarCanvas:
+        //     selectedAvatar.raw?.variants &&
+        //     selectedAvatar.raw.variants[0]?.canvas
+        //       ? selectedAvatar.raw.variants[0].canvas
+        //       : null,
+        // };
+        // const response = await regenerateElaiActivityVideo(data);
+        
+        // Placeholder: Show message that regeneration is not yet available
+        dispatch(showFloatingError("La funcionalidad de regeneración aún no está disponible"));
+        
+        // TODO: Remove these lines when service is implemented
+        // dispatch(showFloatingSuccess("El video se está regenerando correctamente"));
+        // setVideoCreatorApp("elai");
+        // setActivityVideo((prev) => ({ ...prev, videoUrl: response.data.content }));
+        // pollVideoStatus("elai");
+      } catch (error) {
+        console.error("Error regenerating video:", error);
+        dispatch(
+          showFloatingError(
+            "No se pudo regenerar el video, hubo un problema en su regeneración"
+          )
+        );
+      } finally {
+        setAvatarGenerateLoading(false);
+        setModalLoading(false);
+      }
+    }
+  };
+
+  // Handler for "Regenerar" button in guion tab (scene)
+  const handleRegenerateVideoGuionTab = async () => {
+    if (videoType === "avatar" && avatarVoice) {
+      setModalLoading(true);
+      try {
+        setShowAvatarSelection(true);
+      } finally {
+        setModalLoading(false);
+      }
+    } else if (videoType === "scene" && avatarVoice) {
+      setModalLoading(true);
+      try {
+        // TODO: Implement regeneration service call when available
+        // const data = {
+        //   ActivityId: activityId,
+        //   Language: "Spanish",
+        //   Voice: avatarVoice.value,
+        //   Subtitles: true,
+        //   CaptionFontName: "Verdana",
+        //   BackgroundMusic: true,
+        // };
+        // const response = await regenerateVideogenActivityVideo(data);
+        
+        // Placeholder: Show message that regeneration is not yet available
+        dispatch(showFloatingError("La funcionalidad de regeneración aún no está disponible"));
+        
+        // TODO: Remove these lines when service is implemented
+        // dispatch(showFloatingSuccess("El video se está regenerando correctamente"));
+        // setVideoCreatorApp("videogen");
+        // setActivityVideo((prev) => ({ ...prev, videoUrl: response.data.content }));
+        // pollVideoStatus("videogen");
+      } catch (error) {
+        console.error("Error regenerating scene video:", error);
+        dispatch(
+          showFloatingError(
+            "No se pudo regenerar el video, hubo un problema en su regeneración"
+          )
+        );
+      } finally {
         setModalLoading(false);
       }
     }
@@ -378,6 +484,8 @@ const ActivityGenerationVideo = ({
         content: text || guionInput, // Usa el texto pasado o el estado actual
       };
       await updateVideoContent(activityVideo.id, dataToUpdate);
+      setScriptRegenerated(true); // Mark script as regenerated when manually edited
+      // Don't reset videoGenerated if video already exists - keep it true to enable regeneration
       // Puedes mostrar un mensaje de éxito si lo deseas
     } catch (error) {
       console.error("Error updating script content:", error);
@@ -496,11 +604,14 @@ const ActivityGenerationVideo = ({
                 </button>
               ) : (
                 <button
-                  onClick={handleGenerateVideoGuionTab}
+                  onClick={(activityVideo && scriptRegenerated) ? handleRegenerateVideoGuionTab : handleGenerateVideoGuionTab}
                   className={styles.generateBtn}
-                  disabled={!avatarVoice || guionInput === DEFAULT_GUIÓN}
+                  disabled={!avatarVoice || guionInput === DEFAULT_GUIÓN || (activityVideo && !scriptRegenerated)}
+                  style={{
+                    opacity: (!avatarVoice || guionInput === DEFAULT_GUIÓN || (activityVideo && !scriptRegenerated)) ? 0.3 : 1
+                  }}
                 >
-                  Generar{" "}
+                  {activityVideo ? "Regenerar" : "Generar"}{" "}
                   <FontAwesomeIcon
                     className={styles.sparkles}
                     icon={faWandSparkles}
@@ -513,17 +624,17 @@ const ActivityGenerationVideo = ({
                 <button
                   className={styles.generateBtn}
                   disabled={
-                    !avatarVoice || !selectedAvatar || avatarGenerateLoading
+                    !avatarVoice || !selectedAvatar || avatarGenerateLoading || (activityVideo && !scriptRegenerated)
                   }
                   style={{
                     opacity:
-                      !avatarVoice || !selectedAvatar || avatarGenerateLoading
-                        ? 0.1
+                      !avatarVoice || !selectedAvatar || avatarGenerateLoading || (activityVideo && !scriptRegenerated)
+                        ? 0.3
                         : 1,
                   }}
-                  onClick={handleGenerateVideoAvatarScreen}
+                  onClick={(activityVideo && scriptRegenerated) ? handleRegenerateVideoAvatarScreen : handleGenerateVideoAvatarScreen}
                 >
-                  {avatarGenerateLoading ? "Generando..." : "Generar"}{" "}
+                  {avatarGenerateLoading ? (activityVideo ? "Regenerando..." : "Generando...") : (activityVideo ? "Regenerar" : "Generar")}{" "}
                   <FontAwesomeIcon
                     className={styles.sparkles}
                     icon={faWandSparkles}
