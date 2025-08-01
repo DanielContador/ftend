@@ -5,6 +5,7 @@ import ActivityGenerationVideo from "./video/ActivityGeneration/ActivityGenerati
 import ActivityGenerationAudio from "./audio/ActivityGeneration/ActivityGenerationAudio";
 import ActivityGenerationDocument from "./document/ActivityGeneration/ActivityGenerationDocument";
 import ActivityGenerationPPT from "./ppt/ActivityGeneration/ActivityGenerationPPT";
+import ActivityGenerationScorm from "./scorm/ActivityGeneration/ActivityGenerationScorm";
 
 const ActivityEditor = ({ courseId, handleError, onClose }) => {
   const router = useRouter();
@@ -49,6 +50,17 @@ const ActivityEditor = ({ courseId, handleError, onClose }) => {
     case "ppt":
       return (
         <ActivityGenerationPPT
+          onClose={onClose}
+          activityId={id}
+          format={format}
+          courseId={courseId}
+          handleError={handleError}
+        />
+      );
+    case "scorm":
+    case "diapositiva_scorm":
+      return (
+        <ActivityGenerationScorm
           onClose={onClose}
           activityId={id}
           format={format}

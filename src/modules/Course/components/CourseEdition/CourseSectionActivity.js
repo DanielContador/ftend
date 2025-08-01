@@ -17,6 +17,7 @@ import {
   faFilePdf,
   faHeadphones,
   faFilePowerpoint,
+  faDesktop,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   getActivityPPT,
@@ -33,6 +34,7 @@ const iconByType = {
   PDF: <FontAwesomeIcon className={styles.iconPDF} icon={faFilePdf} />,
   Audio: <FontAwesomeIcon className={styles.iconAudio} icon={faHeadphones} />,
   PPT: <FontAwesomeIcon className={styles.iconPPT} icon={faFilePowerpoint} />,
+  SCORM: <FontAwesomeIcon className={styles.iconSCORM} icon={faDesktop} />,
 };
 
 const tabs = [
@@ -61,6 +63,11 @@ const serviceMap = {
     get: getActivityDocument,
     checker: (data) => data.documents && data.documents.length > 0,
     urlPath: "pdf",
+  },
+  SCORM: {
+    get: getActivityDocument, // Using document service for now as requested
+    checker: (data) => data.documents && data.documents.length > 0,
+    urlPath: "scorm",
   },
 };
 

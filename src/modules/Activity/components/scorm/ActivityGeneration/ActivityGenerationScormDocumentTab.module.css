@@ -1,0 +1,277 @@
+.documentTabWrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.titleSection {
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.titleLabel {
+  font-size: 1.13rem;
+  font-weight: 700;
+  color: #22223b;
+  margin-bottom: 8px;
+}
+
+.titleDisplay {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #22223b;
+  padding: 12px 16px;
+  background: #f8f8fd;
+  border-radius: 12px;
+  border: 1.5px solid #ececec;
+}
+
+.titleInput {
+  width: 100%;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #22223b;
+  padding: 12px 16px;
+  background: #fafbfc;
+  border-radius: 12px;
+  border: 1.5px solid #7c3aed;
+  outline: none;
+}
+
+.editTitleBtn {
+  background: none;
+  border: none;
+  color: #7c3aed;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.editTitleBtn:hover {
+  background: #ede9fe;
+}
+
+.contentContainer {
+  width: 100%;
+  display: flex;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.imageSection {
+  flex: 1;
+}
+
+.contentSection {
+  flex: 1;
+}
+
+.imageLabel,
+.contentLabel {
+  font-size: 1.13rem;
+  font-weight: 700;
+  color: #22223b;
+  margin-bottom: 8px;
+}
+
+.imageUploadArea {
+  border: 2px dashed #d1d5db;
+  border-radius: 12px;
+  padding: 32px 16px;
+  text-align: center;
+  background: #fafbfc;
+  transition: border-color 0.2s;
+}
+
+.imageUploadArea:hover {
+  border-color: #7c3aed;
+}
+
+.imageIcon {
+  font-size: 2.5rem;
+  color: #9ca3af;
+  margin-bottom: 16px;
+}
+
+.uploadTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #22223b;
+  margin-bottom: 4px;
+}
+
+.uploadSubtitle {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin-bottom: 16px;
+}
+
+.selectFileBtn {
+  background: #7c3aed;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: background 0.2s;
+}
+
+.selectFileBtn:hover {
+  background: #6230ed;
+}
+
+.fileFormats {
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+.toolbar {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+  padding: 8px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.toolbarBtn {
+  background: none;
+  border: none;
+  padding: 6px 8px;
+  border-radius: 4px;
+  color: #495057;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.toolbarBtn:hover {
+  background: #e9ecef;
+}
+
+.contentCard {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 18px 0 rgba(127, 86, 217, 0.1);
+  overflow: hidden;
+}
+
+.contentTextarea {
+  width: 100%;
+  min-height: 200px;
+  max-height: 300px;
+  border: none;
+  background: #fafbfc;
+  font-size: 1.07rem;
+  color: #22223b;
+  padding: 16px 18px;
+  font-weight: 500;
+  overflow-y: auto;
+  outline: none;
+  white-space: pre-wrap;
+  transition: border 0.2s;
+}
+
+.contentTextarea:focus {
+  background: #fff;
+}
+
+.contentDisplay {
+  min-height: 200px;
+  max-height: 300px;
+  background: #fafbfc;
+  color: #22223b;
+  font-size: 1.07rem;
+  padding: 16px 18px;
+  white-space: pre-wrap;
+  font-weight: 500;
+  cursor: default;
+  overflow-y: auto;
+}
+
+.actionButtons {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.editBtn {
+  background: #ede9fe;
+  color: #7c3aed;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1.01rem;
+  padding: 7px 18px 7px 14px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  transition: 0.18s;
+}
+
+.editBtn:hover {
+  background: #d1c4f7;
+}
+
+.editActions {
+  display: flex;
+  gap: 12px;
+}
+
+.saveBtn {
+  background: #7c3aed;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1.01rem;
+  padding: 7px 18px 7px 14px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  transition: 0.18s;
+}
+
+.saveBtn:hover {
+  background: #6230ed;
+}
+
+.cancelBtn {
+  background: #fef7ec;
+  color: #f59e42;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1.01rem;
+  padding: 7px 18px 7px 14px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  transition: 0.18s;
+}
+
+.cancelBtn:hover {
+  background: #fcd9b6;
+  color: #f59e42;
+}
+
+.downloadLink {
+  color: #7c3aed;
+  font-size: 1.08rem;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  text-decoration: none;
+  display: inline-block;
+  font-weight: 600;
+}

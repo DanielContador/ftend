@@ -258,7 +258,8 @@
 .iconVideo,
 .iconPDF,
 .iconAudio,
-.iconPPT {
+.iconPPT,
+.iconSCORM {
   border-radius: 50%;
   width: 25px !important;
   height: 25px !important;
@@ -291,6 +292,11 @@
   background: #f3f0fd;
   color: #7c3aed;
   border-radius: 0;
+}
+
+.iconSCORM {
+  background: #f0fdf4;
+  color: #16a34a;
 }
 
 .resourceCardBody {
