@@ -207,23 +207,46 @@ const ActivityGenerationAudio = ({
     setModalLoading(true);
     setAudioLoading(true);
     try {
-      // TODO: Implement regeneration service call when available
-      // const response = await regenerateActivityAudio({
-      //   ActivityId: activityId,
-      //   VoiceId: selectedVoice ? selectedVoice.value : null,
-      //   Stability: stability / 100,
-      //   Similarity_Boost: similarity / 100,
-      // });
-      
-      // Placeholder: Show message that regeneration is not yet available
-      dispatch(showFloatingError("La funcionalidad de regeneración de audio aún no está disponible"));
-      
-      // TODO: Remove these lines when service is implemented
-      // Polling logic would go here similar to handleGenerateAudio
-      // setActivityAudio(audioData);
-      // setAudioGenerated(true);
-      // setScriptRegenerated(false);
-      // setActiveTab("audio");
+      // Reset audio state for regeneration - clear current audio
+      setActivityAudio((prev) => ({ ...prev, filePath: null }));
+      setAudioGenerated(false); // Reset audio generated state until new audio is ready
+
+      // Use the same service call as initial generation
+      const response = await generateActivityAudio({
+        ActivityId: activityId,
+        VoiceId: selectedVoice ? selectedVoice.value : null,
+        Stability: stability / 100,
+        Similarity_Boost: similarity / 100,
+      });
+
+      // Polling para esperar a que el audio esté listo (same as initial generation)
+      let audioReady = false;
+      let pollCount = 0;
+      let audioData = null;
+      while (!audioReady && pollCount < 30) {
+        // Máximo 30 intentos (~2.5 minutos)
+        // Espera 5 segundos entre cada intento
+        // eslint-disable-next-line no-await-in-loop
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+        // eslint-disable-next-line no-await-in-loop
+        const pollResponse = await getActivityAudio(activityId);
+        if (
+          pollResponse.data.audio &&
+          pollResponse.data.audio.filePath &&
+          pollResponse.data.token
+        ) {
+          audioReady = true;
+          audioData = pollResponse.data.audio;
+          setFileToken(pollResponse.data.token);
+        }
+        pollCount++;
+      }
+      if (audioReady && audioData) {
+        setActivityAudio(audioData);
+        setAudioGenerated(true); // Mark audio as generated
+        setScriptRegenerated(false); // Reset script regeneration state
+      }
+      setActiveTab("audio");
     } catch (error) {
       dispatch(showFloatingError(t("errorGeneratingAudio")));
     } finally {

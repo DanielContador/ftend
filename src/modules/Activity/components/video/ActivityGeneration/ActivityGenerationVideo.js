@@ -353,32 +353,30 @@ const ActivityGenerationVideo = ({
       setAvatarGenerateLoading(true);
       setModalLoading(true);
       try {
-        // TODO: Implement regeneration service call when available
-        // const data = {
-        //   ActivityId: activityId,
-        //   Language: "Spanish",
-        //   Voice: avatarVoice.value,
-        //   VoiceProvider: avatarVoice.voiceProvider || null,
-        //   AvatarCode: selectedAvatar.raw?.code
-        //     ? `${selectedAvatar.raw.code}.${selectedAvatar.raw.variants[0].code}`
-        //     : null,
-        //   AvatarGender: selectedAvatar.raw?.gender || null,
-        //   AvatarCanvas:
-        //     selectedAvatar.raw?.variants &&
-        //     selectedAvatar.raw.variants[0]?.canvas
-        //       ? selectedAvatar.raw.variants[0].canvas
-        //       : null,
-        // };
-        // const response = await regenerateElaiActivityVideo(data);
-        
-        // Placeholder: Show message that regeneration is not yet available
-        dispatch(showFloatingError("La funcionalidad de regeneración aún no está disponible"));
-        
-        // TODO: Remove these lines when service is implemented
-        // dispatch(showFloatingSuccess("El video se está regenerando correctamente"));
-        // setVideoCreatorApp("elai");
-        // setActivityVideo((prev) => ({ ...prev, videoUrl: response.data.content }));
-        // pollVideoStatus("elai");
+        const data = {
+          ActivityId: activityId,
+          Language: "Spanish",
+          Voice: avatarVoice.value,
+          VoiceProvider: avatarVoice.voiceProvider || null,
+          AvatarCode: selectedAvatar.raw?.code
+            ? `${selectedAvatar.raw.code}.${selectedAvatar.raw.variants[0].code}`
+            : null,
+          AvatarGender: selectedAvatar.raw?.gender || null,
+          AvatarCanvas:
+            selectedAvatar.raw?.variants &&
+            selectedAvatar.raw.variants[0]?.canvas
+              ? selectedAvatar.raw.variants[0].canvas
+              : null,
+        };
+        const response = await generateElaiActivityVideo(data);
+        dispatch(showFloatingSuccess("El video se está regenerando correctamente"));
+        setVideoCreatorApp("elai");
+        // Reset video state for regeneration - set video URL to response content like initial generation
+        setActivityVideo((prev) => ({ ...prev, videoUrl: response.data.content }));
+        setVideoLoading(true); // Set loading state like initial generation
+        setVideoGenerated(false); // Reset video generated state until new video is ready
+        setScriptRegenerated(false); // Reset script regeneration state
+        pollVideoStatus("elai");
       } catch (error) {
         console.error("Error regenerating video:", error);
         dispatch(
@@ -405,32 +403,38 @@ const ActivityGenerationVideo = ({
     } else if (videoType === "scene" && avatarVoice) {
       setModalLoading(true);
       try {
-        // TODO: Implement regeneration service call when available
-        // const data = {
-        //   ActivityId: activityId,
-        //   Language: "Spanish",
-        //   Voice: avatarVoice.value,
-        //   Subtitles: true,
-        //   CaptionFontName: "Verdana",
-        //   BackgroundMusic: true,
-        // };
-        // const response = await regenerateVideogenActivityVideo(data);
-        
-        // Placeholder: Show message that regeneration is not yet available
-        dispatch(showFloatingError("La funcionalidad de regeneración aún no está disponible"));
-        
-        // TODO: Remove these lines when service is implemented
-        // dispatch(showFloatingSuccess("El video se está regenerando correctamente"));
-        // setVideoCreatorApp("videogen");
-        // setActivityVideo((prev) => ({ ...prev, videoUrl: response.data.content }));
-        // pollVideoStatus("videogen");
+        const data = {
+          ActivityId: activityId,
+          Language: "Spanish",
+          Voice: avatarVoice.value,
+          Subtitles: true,
+          CaptionFontName: "Verdana",
+          BackgroundMusic: true,
+        };
+        const response = await generateVideogenActivityVideo(data);
+        dispatch(showFloatingSuccess("El video se está regenerando correctamente"));
+        setVideoCreatorApp("videogen");
+        // Reset video state for regeneration - set video URL to response content like initial generation
+        setActivityVideo((prev) => ({ ...prev, videoUrl: response.data.content }));
+        setVideoLoading(true); // Set loading state like initial generation
+        setVideoGenerated(false); // Reset video generated state until new video is ready
+        setScriptRegenerated(false); // Reset script regeneration state
+        pollVideoStatus("videogen");
       } catch (error) {
         console.error("Error regenerating scene video:", error);
-        dispatch(
+        if (
+          error?.response?.data?.errorMessage?.includes(
+            "already has generated content"
+          )
+        ) {
+          dispatch(showFloatingError("Ya existe un video generado"));
+        } else {
+          dispatch(
           showFloatingError(
             "No se pudo regenerar el video, hubo un problema en su regeneración"
           )
         );
+        }
       } finally {
         setModalLoading(false);
       }
