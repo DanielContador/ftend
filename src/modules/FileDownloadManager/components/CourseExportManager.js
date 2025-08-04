@@ -73,13 +73,41 @@ const CourseExportManager = ({
 
     try {
       let response;
+      let filename;
+      let mimeType;
+
+      // Helper function to generate filename with proper extension
+      const generateFilename = (userInput, defaultName, extension) => {
+        if (userInput && userInput.trim()) {
+          const cleanInput = userInput.trim();
+          // Check if user already included the extension
+          if (cleanInput.toLowerCase().endsWith(extension.toLowerCase())) {
+            return cleanInput;
+          }
+          // Add extension if not present
+          return `${cleanInput}${extension}`;
+        }
+        return defaultName;
+      };
 
       switch (selectedFormat) {
         case "moodle":
           response = await fileDownloadService.downloadCourseMBZ(courseId);
+          filename = generateFilename(
+            archiveName, 
+            `${courseName || 'course'}_moodle.mbz`, 
+            '.mbz'
+          );
+          mimeType = 'application/zip';
           break;
         case "independent":
           response = await fileDownloadService.downloadCourseZip(courseId);
+          filename = generateFilename(
+            archiveName, 
+            `${courseName || 'course'}_independent.zip`, 
+            '.zip'
+          );
+          mimeType = 'application/zip';
           break;
         case "scorm":
           if (!activityId || !fileType) {
@@ -91,18 +119,37 @@ const CourseExportManager = ({
             activityId,
             fileType
           );
+          filename = generateFilename(
+            archiveName, 
+            `${courseName || 'activity'}_scorm.zip`, 
+            '.zip'
+          );
+          mimeType = 'application/zip';
           break;
         default:
           throw new Error("Invalid export format selected");
       }
 
-      // If the response is successful, the download should have started automatically
-      console.log("Export completed successfully:", {
-        format: selectedFormat,
-        courseId,
-        activityId,
-        fileType,
-      });
+      // Create blob from response data and trigger download
+      if (response) {
+        const blob = new Blob([response], { type: mimeType });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+
+        console.log("Export completed successfully:", {
+          format: selectedFormat,
+          courseId,
+          activityId,
+          fileType,
+          filename,
+        });
+      }
     } catch (error) {
       console.error("Export failed:", error);
       // TODO: Show error message to user
