@@ -161,7 +161,7 @@ const EvaluationEdition = ({
       try {
         const quizAnswerData = {
           answer: editAnswerText.trim(),
-          correct: editIsCorrectAnswer,
+          isCorrect: editIsCorrectAnswer,
         };
 
         // Llamar a la función onUpdateQuizAnswers si está disponible
@@ -701,7 +701,9 @@ const EvaluationEdition = ({
                                   }
                                   className={styles.correctCheckbox}
                                 />
-                                <label htmlFor={`editCorrect-${answer.answerId}`}>
+                                <label
+                                  htmlFor={`editCorrect-${answer.answerId}`}
+                                >
                                   Respuesta correcta
                                 </label>
                               </div>

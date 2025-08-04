@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import styles from "./ActivityGenerationScormDocumentTab.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -17,7 +17,6 @@ import {
 import UploadDocumentPopup from "../../../../../shared/components/UploadDocumentPopup";
 
 const DEFAULT_SLIDE_TITLE = "Introducción al Tema";
-const DEFAULT_SLIDE_CONTENT = `Este es el contenido de ejemplo para la diapositiva SCORM. **Puntos principales:** • Concepto fundamental del tema • Aplicaciones prácticas • Ejemplos relevantes El contenido debe ser claro y estructurado para facilitar el aprendizaje del estudiante.`;
 
 const ActivityGenerationScormDocumentTab = ({
   documentContent,
@@ -32,10 +31,11 @@ const ActivityGenerationScormDocumentTab = ({
   data,
 }) => {
   const [showImagePopup, setShowImagePopup] = useState(false);
-  const [selectedImageIndex, setSelectedImageIndex] = useState(null);
-  const [slideTitle, setSlideTitle] = useState(DEFAULT_SLIDE_TITLE);
-  const [tempSlideTitle, setTempSlideTitle] = useState(DEFAULT_SLIDE_TITLE);
+  const [slideTitle, setSlideTitle] = useState(data?.name || DEFAULT_SLIDE_TITLE);
+  const [tempSlideTitle, setTempSlideTitle] = useState(data?.name || DEFAULT_SLIDE_TITLE);
   const [editingTitle, setEditingTitle] = useState(false);
+  const [slideImage, setSlideImage] = useState(null);
+  const [tempSlideImage, setTempSlideImage] = useState(null);
   const contentRef = useRef(null);
   const titleRef = useRef(null);
 
@@ -67,49 +67,96 @@ const ActivityGenerationScormDocumentTab = ({
     }
   };
 
-  // Cuando se hace click en una imagen en modo edición
-  const handleImageClick = (e) => {
-    if (editMode && e.target.tagName === "IMG") {
-      if (contentRef.current) {
-        const images = Array.from(contentRef.current.querySelectorAll("img"));
-        const idx = images.indexOf(e.target);
-        setSelectedImageIndex(idx);
-        setShowImagePopup(true);
-      }
-    }
-  };
-
-  // Cuando se sube una nueva imagen desde el modal
-  const handleImageUpload = (file) => {
+  // Handler para cambiar la imagen de la diapositiva
+  const handleSlideImageUpload = (file) => {
     const reader = new window.FileReader();
     reader.onload = (event) => {
-      if (
-        contentRef.current &&
-        selectedImageIndex !== null &&
-        selectedImageIndex >= 0
-      ) {
-        const images = Array.from(contentRef.current.querySelectorAll("img"));
-        const img = images[selectedImageIndex];
-        if (img) {
-          const width = img.width || img.style.width;
-          const height = img.height || img.style.height;
-          img.src = event.target.result;
-          if (width) img.width = width;
-          if (height) img.height = height;
-          setTempContent(contentRef.current.innerHTML);
-        }
-      }
+      setTempSlideImage(event.target.result);
       setShowImagePopup(false);
-      setSelectedImageIndex(null);
     };
     reader.readAsDataURL(file);
   };
 
-  // Subir imagen nueva
-  const handleImageUploadNew = () => {
+  // Handler para abrir el selector de imagen
+  const handleSelectImage = () => {
     setShowImagePopup(true);
-    setSelectedImageIndex(-1); // Indica nueva imagen
   };
+
+  // Handler para editar el título de la diapositiva
+  const handleTitleEdit = () => {
+    setEditingTitle(true);
+    setTempSlideTitle(slideTitle);
+    setTimeout(() => {
+      if (titleRef.current) {
+        titleRef.current.focus();
+        titleRef.current.select();
+      }
+    }, 0);
+  };
+
+  // Handler para guardar el título editado
+  const handleTitleSave = () => {
+    setSlideTitle(tempSlideTitle);
+    setEditingTitle(false);
+    // TODO: Llamar al backend para guardar el título cuando esté disponible
+    // handleSaveSlideTitle(tempSlideTitle);
+  };
+
+  // Handler para cancelar la edición del título
+  const handleTitleCancel = () => {
+    setTempSlideTitle(slideTitle);
+    setEditingTitle(false);
+  };
+
+  // Handler para guardar cambios de imagen (preparado para backend)
+  const handleSaveSlideImage = () => {
+    if (tempSlideImage) {
+      setSlideImage(tempSlideImage);
+      setTempSlideImage(null);
+      // TODO: Llamar al backend para guardar la imagen cuando esté disponible
+      // handleSaveImageToBackend(tempSlideImage);
+    }
+  };
+
+  // Handler para guardar cambios de contenido (preparado para backend)
+  const handleSaveSlideContent = () => {
+    if (contentRef.current) {
+      const html = contentRef.current.innerHTML;
+      setDocumentContent(html);
+      // TODO: Llamar al backend para guardar el contenido cuando esté disponible
+      // handleSaveContentToBackend(html);
+    }
+  };
+
+  // Initialize content editor only when component mounts or documentContent changes from outside
+  useEffect(() => {
+    if (contentRef.current && documentContent !== undefined) {
+      const currentContent = contentRef.current.innerHTML;
+      const newContent = documentContent || "";
+      // Only update if content is different and editor is not focused
+      if (
+        currentContent !== newContent &&
+        document.activeElement !== contentRef.current
+      ) {
+        contentRef.current.innerHTML = newContent;
+      }
+    }
+  }, [documentContent]);
+
+  // Initialize content on first render
+  useEffect(() => {
+    if (contentRef.current && !contentRef.current.innerHTML.trim()) {
+      contentRef.current.innerHTML = documentContent || "";
+    }
+  }, []);
+
+  // Update slide title when data changes
+  useEffect(() => {
+    if (data?.name && slideTitle === DEFAULT_SLIDE_TITLE) {
+      setSlideTitle(data.name);
+      setTempSlideTitle(data.name);
+    }
+  }, [data?.name]);
 
   // Cuando se da guardar, actualiza el contenido y sale de edición
   const handleSave = () => {
@@ -136,192 +183,180 @@ const ActivityGenerationScormDocumentTab = ({
 
   return (
     <div className={styles.documentTabWrapper}>
-      {/* Título de la Diapositiva */}
-      <div className={styles.titleSection}>
+      {/* Título de la diapositiva */}
+      <div className={styles.slideTitleSection}>
         <div className={styles.titleLabel}>Título de la Diapositiva</div>
         {editingTitle ? (
-          <input
-            ref={titleRef}
-            className={styles.titleInput}
-            value={tempSlideTitle}
-            onChange={(e) => setTempSlideTitle(e.target.value)}
-            placeholder="Introducción al Tema"
-          />
-        ) : (
-          <div className={styles.titleDisplay}>
-            {slideTitle}
-            <button
-              className={styles.editTitleBtn}
-              onClick={() => {
-                setTempSlideTitle(slideTitle);
-                setEditingTitle(true);
+          <div className={styles.titleEditContainer}>
+            <input
+              ref={titleRef}
+              type="text"
+              value={tempSlideTitle}
+              onChange={(e) => setTempSlideTitle(e.target.value)}
+              className={styles.titleInput}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleTitleSave();
+                } else if (e.key === "Escape") {
+                  handleTitleCancel();
+                }
               }}
-            >
+            />
+            <div className={styles.titleActions}>
+              <button className={styles.titleSaveBtn} onClick={handleTitleSave}>
+                <FontAwesomeIcon icon={faSave} />
+              </button>
+              <button
+                className={styles.titleCancelBtn}
+                onClick={handleTitleCancel}
+              >
+                <FontAwesomeIcon icon={faXmark} />
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className={styles.titleDisplayContainer}>
+            <input
+              type="text"
+              value={slideTitle}
+              className={styles.titleDisplayInput}
+              placeholder="Introducción al Tema"
+              readOnly
+            />
+            <button className={styles.titleEditBtn} onClick={handleTitleEdit}>
               <FontAwesomeIcon icon={faPen} />
             </button>
           </div>
         )}
       </div>
 
-      <div className={styles.contentContainer}>
-        {/* Imagen de la Diapositiva */}
+      {/* Contenido principal con layout de dos columnas */}
+      <div className={styles.mainContent}>
+        {/* Columna izquierda - Imagen */}
         <div className={styles.imageSection}>
-          <div className={styles.imageLabel}>Imagen de la Diapositiva</div>
-          <div className={styles.imageUploadArea}>
-            <div className={styles.imageIcon}>
-              <FontAwesomeIcon icon={faImage} />
-            </div>
-            <div className={styles.imageUploadText}>
-              <div className={styles.uploadTitle}>Subir Imagen</div>
-              <div className={styles.uploadSubtitle}>
-                Arrastra y suelta una imagen o haz clic para seleccionar
-              </div>
-              <button
-                className={styles.selectFileBtn}
-                onClick={handleImageUploadNew}
-              >
-                Seleccionar Archivo
-              </button>
-              <div className={styles.fileFormats}>JPG, PNG, GIF hasta 5MB</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Contenido de la Diapositiva */}
-        <div className={styles.contentSection}>
-          <div className={styles.contentLabel}>Contenido de la Diapositiva</div>
-          
-          {editMode && (
-            <div className={styles.toolbar}>
-              <button
-                className={styles.toolbarBtn}
-                onClick={() => formatText('bold')}
-                title="Negrita"
-              >
-                <FontAwesomeIcon icon={faBold} />
-              </button>
-              <button
-                className={styles.toolbarBtn}
-                onClick={() => formatText('italic')}
-                title="Cursiva"
-              >
-                <FontAwesomeIcon icon={faItalic} />
-              </button>
-              <button
-                className={styles.toolbarBtn}
-                onClick={() => formatText('underline')}
-                title="Subrayado"
-              >
-                <FontAwesomeIcon icon={faUnderline} />
-              </button>
-              <button
-                className={styles.toolbarBtn}
-                onClick={() => formatText('insertUnorderedList')}
-                title="Lista con viñetas"
-              >
-                <FontAwesomeIcon icon={faListUl} />
-              </button>
-              <button
-                className={styles.toolbarBtn}
-                onClick={() => formatText('insertOrderedList')}
-                title="Lista numerada"
-              >
-                <FontAwesomeIcon icon={faListOl} />
-              </button>
-              <button
-                className={styles.toolbarBtn}
-                onClick={() => {
-                  const url = prompt('Ingresa la URL del enlace:');
-                  if (url) formatText('createLink', url);
-                }}
-                title="Insertar enlace"
-              >
-                <FontAwesomeIcon icon={faLink} />
-              </button>
-            </div>
-          )}
-
-          <div className={styles.contentCard}>
-            {editMode ? (
-              <div
-                className={styles.contentTextarea}
-                ref={contentRef}
-                contentEditable
-                suppressContentEditableWarning
-                onClick={handleImageClick}
-                dangerouslySetInnerHTML={{
-                  __html:
-                    tempContent !== undefined && tempContent !== null
-                      ? tempContent
-                      : documentContent || DEFAULT_SLIDE_CONTENT,
-                }}
-              />
+          <h4 className={styles.sectionTitle}>Imagen de la Diapositiva</h4>
+          <div className={styles.imageContainer}>
+            {tempSlideImage || slideImage ? (
+              <>
+                <div className={styles.imagePreview}>
+                  <img
+                    src={tempSlideImage || slideImage}
+                    alt="Slide preview"
+                    className={styles.slideImagePreview}
+                  />
+                </div>
+                <button
+                  className={styles.selectImageBtn}
+                  onClick={handleSelectImage}
+                >
+                  Seleccionar Archivo
+                </button>
+                <p className={styles.imageFormats}>JPG, PNG, GIF hasta 5MB</p>
+              </>
             ) : (
-              <div
-                className={styles.contentDisplay}
-                dangerouslySetInnerHTML={{
-                  __html: isEmpty ? DEFAULT_SLIDE_CONTENT : documentContent,
-                }}
-              />
+              <div className={styles.imagePlaceholder}>
+                <FontAwesomeIcon
+                  icon={faImage}
+                  className={styles.placeholderIcon}
+                />
+                <span className={styles.placeholderText}>Subir Imagen</span>
+                <p className={styles.placeholderSubtext}>
+                  Arrastra y suelta una imagen o haz clic para seleccionar
+                </p>
+                <button
+                  className={styles.selectImageBtn}
+                  onClick={handleSelectImage}
+                >
+                  Seleccionar Archivo
+                </button>
+                <p className={styles.imageFormats}>JPG, PNG, GIF hasta 5MB</p>
+              </div>
             )}
           </div>
         </div>
-      </div>
 
-      {/* Botones de acción */}
-      <div className={styles.actionButtons}>
-        {!editMode && !editingTitle ? (
-          <button
-            className={styles.editBtn}
-            onClick={() => {
-              if (isEditDisabled) return;
-              setTempContent(documentContent);
-              setEditMode(true);
-            }}
-            type="button"
-            disabled={isEditDisabled}
-            style={{
-              opacity: isEditDisabled ? 0.5 : 1,
-              cursor: isEditDisabled ? "not-allowed" : "pointer",
-            }}
-          >
-            <FontAwesomeIcon icon={faPen} style={{ marginRight: 6 }} />
-            Editar
-          </button>
-        ) : (
-          <div className={styles.editActions}>
+        {/* Columna derecha - Contenido */}
+        <div className={styles.contentSection}>
+          <h4 className={styles.sectionTitle}>Contenido de la Diapositiva</h4>
+
+          {/* Barra de herramientas de formato */}
+          <div className={styles.toolbar}>
             <button
-              className={styles.saveBtn}
-              onClick={handleSave}
-              type="button"
-              disabled={!canSave}
-              style={{
-                opacity: !canSave ? 0.5 : 1,
-                cursor: !canSave ? "not-allowed" : "pointer",
-              }}
+              className={styles.toolbarBtn}
+              onClick={() => formatText("bold")}
+              title="Negrita"
             >
-              <FontAwesomeIcon icon={faSave} style={{ marginRight: 4 }} />
-              Guardar
+              <FontAwesomeIcon icon={faBold} />
             </button>
             <button
-              className={styles.cancelBtn}
-              onClick={handleCancel}
-              type="button"
+              className={styles.toolbarBtn}
+              onClick={() => formatText("italic")}
+              title="Cursiva"
             >
-              <FontAwesomeIcon icon={faXmark} style={{ marginRight: 4 }} />
-              Cancelar
+              <FontAwesomeIcon icon={faItalic} />
+            </button>
+            <button
+              className={styles.toolbarBtn}
+              onClick={() => formatText("underline")}
+              title="Subrayado"
+            >
+              <FontAwesomeIcon icon={faUnderline} />
+            </button>
+            <button
+              className={styles.toolbarBtn}
+              onClick={() => formatText("insertUnorderedList")}
+              title="Lista con viñetas"
+            >
+              <FontAwesomeIcon icon={faListUl} />
+            </button>
+            <button
+              className={styles.toolbarBtn}
+              onClick={() => formatText("insertOrderedList")}
+              title="Lista numerada"
+            >
+              <FontAwesomeIcon icon={faListOl} />
+            </button>
+            <button
+              className={styles.toolbarBtn}
+              onClick={() => {
+                const url = prompt("Ingresa la URL del enlace:");
+                if (url) formatText("createLink", url);
+              }}
+              title="Insertar enlace"
+            >
+              <FontAwesomeIcon icon={faLink} />
             </button>
           </div>
-        )}
+
+          {/* Área de contenido editable */}
+          <div className={styles.contentContainer}>
+            <div
+              className={styles.contentTextarea}
+              ref={contentRef}
+              contentEditable
+              suppressContentEditableWarning
+              onInput={(e) => {
+                const content = e.target.innerHTML;
+                setTempContent(content);
+              }}
+              onBlur={() => {
+                if (contentRef.current) {
+                  const content = contentRef.current.innerHTML;
+                  setTempContent(content);
+                  setDocumentContent(content);
+                }
+              }}
+            />
+          </div>
+        </div>
       </div>
 
       <UploadDocumentPopup
         isOpen={showImagePopup}
         onClose={() => {
           setShowImagePopup(false);
-          setSelectedImageIndex(null);
         }}
-        onUpload={handleImageUpload}
+        onUpload={handleSlideImageUpload}
         title="Subir imagen"
         message="Selecciona una imagen para la diapositiva"
       />

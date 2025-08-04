@@ -88,6 +88,39 @@ const ActivityGenerationAudio = ({
     fetchActivity();
   }, [activityId]);
 
+  // Poll audio status (similar to video polling)
+  const pollAudioStatus = async () => {
+    const interval = setInterval(async () => {
+      try {
+        const response = await getActivityAudio(activityId);
+        if (
+          response.data.audio &&
+          response.data.audio.filePath &&
+          response.data.token
+        ) {
+          clearInterval(interval);
+          setActivityAudio(response.data.audio);
+          setFileToken(response.data.token);
+          setAudioGenerated(true);
+          setScriptRegenerated(false);
+          setAudioLoading(false);
+          setModalLoading(false);
+          setActiveTab("audio");
+        }
+      } catch (error) {
+        clearInterval(interval);
+        setAudioLoading(false);
+        setModalLoading(false);
+        console.error("Error polling audio status:", error.message);
+        dispatch(
+          showFloatingError(
+            "El audio aún está generándose, inténtelo más tarde"
+          )
+        );
+      }
+    }, 5000); // Poll every 5 seconds
+  };
+
   // Cargar voces
   useEffect(() => {
     getVoiceOptions()
@@ -158,7 +191,7 @@ const ActivityGenerationAudio = ({
     setModalLoading(true);
     setAudioLoading(true);
     try {
-      // Llama a la generación y espera a que el audio esté listo (polling)
+      // Llama a la generación de audio
       const response = await generateActivityAudio({
         ActivityId: activityId,
         VoiceId: selectedVoice ? selectedVoice.value : null,
@@ -166,39 +199,12 @@ const ActivityGenerationAudio = ({
         Similarity_Boost: similarity / 100,
       });
 
-      // Polling para esperar a que el audio esté listo
-      let audioReady = false;
-      let pollCount = 0;
-      let audioData = null;
-      while (!audioReady && pollCount < 30) {
-        // Máximo 30 intentos (~2.5 minutos)
-        // Espera 5 segundos entre cada intento
-        // eslint-disable-next-line no-await-in-loop
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-        // eslint-disable-next-line no-await-in-loop
-        const pollResponse = await getActivityAudio(activityId);
-        if (
-          pollResponse.data.audio &&
-          pollResponse.data.audio.filePath &&
-          pollResponse.data.token
-        ) {
-          audioReady = true;
-          audioData = pollResponse.data.audio;
-          setFileToken(pollResponse.data.token);
-        }
-        pollCount++;
-      }
-      if (audioReady && audioData) {
-        setActivityAudio(audioData);
-        setAudioGenerated(true); // Mark audio as generated
-        setScriptRegenerated(false); // Reset script regeneration state
-      }
-      setActiveTab("audio");
+      // Start non-blocking polling
+      pollAudioStatus();
     } catch (error) {
-      dispatch(showFloatingError(t("errorGeneratingAudio")));
-    } finally {
       setAudioLoading(false);
       setModalLoading(false);
+      dispatch(showFloatingError(t("errorGeneratingAudio")));
     }
   };
 
@@ -219,39 +225,12 @@ const ActivityGenerationAudio = ({
         Similarity_Boost: similarity / 100,
       });
 
-      // Polling para esperar a que el audio esté listo (same as initial generation)
-      let audioReady = false;
-      let pollCount = 0;
-      let audioData = null;
-      while (!audioReady && pollCount < 30) {
-        // Máximo 30 intentos (~2.5 minutos)
-        // Espera 5 segundos entre cada intento
-        // eslint-disable-next-line no-await-in-loop
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-        // eslint-disable-next-line no-await-in-loop
-        const pollResponse = await getActivityAudio(activityId);
-        if (
-          pollResponse.data.audio &&
-          pollResponse.data.audio.filePath &&
-          pollResponse.data.token
-        ) {
-          audioReady = true;
-          audioData = pollResponse.data.audio;
-          setFileToken(pollResponse.data.token);
-        }
-        pollCount++;
-      }
-      if (audioReady && audioData) {
-        setActivityAudio(audioData);
-        setAudioGenerated(true); // Mark audio as generated
-        setScriptRegenerated(false); // Reset script regeneration state
-      }
-      setActiveTab("audio");
+      // Start non-blocking polling
+      pollAudioStatus();
     } catch (error) {
-      dispatch(showFloatingError(t("errorGeneratingAudio")));
-    } finally {
       setAudioLoading(false);
       setModalLoading(false);
+      dispatch(showFloatingError(t("errorGeneratingAudio")));
     }
   };
 
@@ -359,13 +338,13 @@ const ActivityGenerationAudio = ({
             {activeTab === "guion" && (
               <button
                 className={styles.generateBtn}
-                disabled={!selectedVoice || guionInput === DEFAULT_GUIÓN || (activityAudio && !scriptRegenerated)}
+                disabled={!selectedVoice || guionInput === DEFAULT_GUIÓN || (activityAudio?.filePath && !scriptRegenerated)}
                 style={{
-                  opacity: (!selectedVoice || guionInput === DEFAULT_GUIÓN || (activityAudio && !scriptRegenerated)) ? 0.3 : 1
+                  opacity: (!selectedVoice || guionInput === DEFAULT_GUIÓN || (activityAudio?.filePath && !scriptRegenerated)) ? 0.3 : 1
                 }}
-                onClick={(activityAudio && scriptRegenerated) ? handleRegenerateAudio : handleGenerateAudio}
+                onClick={(activityAudio?.filePath && scriptRegenerated) ? handleRegenerateAudio : handleGenerateAudio}
               >
-                {activityAudio ? "Regenerar" : "Generar"}{" "}
+                {activityAudio?.filePath ? "Regenerar" : "Generar"}{" "}
                 <FontAwesomeIcon
                   className={styles.sparkles}
                   icon={faWandSparkles}

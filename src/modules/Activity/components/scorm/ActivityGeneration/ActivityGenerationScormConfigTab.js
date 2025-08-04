@@ -20,16 +20,17 @@ const ActivityGenerationScormConfigTab = ({
     </div>
     
     <div className={styles.dataCard}>
+      <div className={styles.dataCardHeader}>Datos</div>
       <div className={styles.dataRow}>
         <div className={styles.dataCol}>
           <div className={styles.dataLabel}>Duración</div>
           <div className={styles.dataValue}>
-            {data.duration ? `${data.duration} minuto` : "1 minuto"}
+            {data.duration ? `${data.duration} minutos` : "-"}
           </div>
         </div>
         <div className={styles.dataCol}>
           <div className={styles.dataLabel}>Formato</div>
-          <div className={styles.dataValue}>Diapositiva SCORM</div>
+          <div className={styles.dataValue}>{data.contentType || "-"}</div>
         </div>
       </div>
     </div>
@@ -38,15 +39,25 @@ const ActivityGenerationScormConfigTab = ({
       <div className={styles.summaryCardHeader}>Resumen de contenido</div>
       <div className={styles.summaryListBox}>
         <ul className={styles.summaryList}>
-          {summary.map((item, idx) => (
-            <li key={idx} className={styles.summaryItem}>
+          {summary && summary.length > 0 ? (
+            summary.map((item, idx) => (
+              <li key={idx} className={styles.summaryItem}>
+                <FontAwesomeIcon
+                  icon={faCheckCircle}
+                  className={styles.checkIcon}
+                />
+                {item}
+              </li>
+            ))
+          ) : (
+            <li className={styles.summaryItem}>
               <FontAwesomeIcon
                 icon={faCheckCircle}
                 className={styles.checkIcon}
               />
-              {item}
+              Contenido será generado automáticamente
             </li>
-          ))}
+          )}
         </ul>
       </div>
     </div>

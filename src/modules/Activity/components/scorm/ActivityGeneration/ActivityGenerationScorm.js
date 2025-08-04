@@ -6,6 +6,8 @@ import {
   generateActivityDocument,
   regenerateActivityDocument,
   updateDocumentContent,
+  generateActivityScorm,
+  regenerateActivityScorm,
 } from "../../../services/activityService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -76,12 +78,10 @@ const ActivityGenerationScorm = ({
   const handleGenerateDocument = async () => {
     setModalLoading(true);
     try {
-      const response = await generateActivityDocument({
-        Prompt: configInstructions,
-        Duration: data.duration,
-        DocumentType: data.contentType,
+      const response = await generateActivityScorm({
         ActivityId: activityId,
-        IncludeImages: includeImages,
+        PromptInstructions: configInstructions,
+        GenerationType: "Internet",
       });
       await fetchActivity();
       setActiveTab("document");
@@ -96,9 +96,10 @@ const ActivityGenerationScorm = ({
   const handleRegenerateDocument = async () => {
     setModalLoading(true);
     try {
-      const response = await regenerateActivityDocument({
-        Prompt: configInstructions,
+      const response = await regenerateActivityScorm({
         ActivityId: activityId,
+        PromptInstructions: configInstructions,
+        GenerationType: "Internet",
       });
       await fetchActivity();
       setActiveTab("document");

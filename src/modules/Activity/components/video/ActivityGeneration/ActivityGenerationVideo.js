@@ -463,6 +463,37 @@ const ActivityGenerationVideo = ({
           return; // Si hay error (404), no cambiar de pestaña
         }
       }
+      
+      // Fetch activity data when entering video tab to get latest video info
+      try {
+        const response = await getActivityVideo(activityId);
+        setData(response.data.activity);
+        if (response.data.video) {
+          setActivityVideo(response.data.video);
+          setGuionInput(response.data.video.content);
+          // If video exists, set appropriate initial states
+          if (response.data.video.videoUrl && response.data.video.videoUrl !== "rendering") {
+            // Video is already generated, so enable regeneration if script allows it
+            setVideoGenerated(true);
+            setScriptRegenerated(false); // Initially false, will be set to true when script is modified
+          }
+          if (response.data.video.videoUrl == "rendering") {
+            const videoId = response.data.video.videoId;
+            const creatorApp =
+              typeof videoId === "string" && (videoId.match(/-/g) || []).length > 2
+                ? "videogen"
+                : "elai";
+            setVideoCreatorApp(creatorApp);
+            pollVideoStatus(creatorApp);
+          }
+        }
+        if (response.data.token) {
+          setFileToken(response.data.token);
+        }
+      } catch (error) {
+        console.error("Error fetching activity for video tab:", error);
+        // Don't show error message here as it might be normal if no video exists yet
+      }
     }
 
     // Si estamos en guion/avatar selection y vamos a la izquierda, limpiar selección
@@ -608,14 +639,14 @@ const ActivityGenerationVideo = ({
                 </button>
               ) : (
                 <button
-                  onClick={(activityVideo && scriptRegenerated) ? handleRegenerateVideoGuionTab : handleGenerateVideoGuionTab}
+                  onClick={(activityVideo?.videoUrl && activityVideo.videoUrl !== "rendering" && scriptRegenerated) ? handleRegenerateVideoGuionTab : handleGenerateVideoGuionTab}
                   className={styles.generateBtn}
-                  disabled={!avatarVoice || guionInput === DEFAULT_GUIÓN || (activityVideo && !scriptRegenerated)}
+                  disabled={!avatarVoice || guionInput === DEFAULT_GUIÓN || (activityVideo?.videoUrl && activityVideo.videoUrl !== "rendering" && !scriptRegenerated)}
                   style={{
-                    opacity: (!avatarVoice || guionInput === DEFAULT_GUIÓN || (activityVideo && !scriptRegenerated)) ? 0.3 : 1
+                    opacity: (!avatarVoice || guionInput === DEFAULT_GUIÓN || (activityVideo?.videoUrl && activityVideo.videoUrl !== "rendering" && !scriptRegenerated)) ? 0.3 : 1
                   }}
                 >
-                  {activityVideo ? "Regenerar" : "Generar"}{" "}
+                  {(activityVideo?.videoUrl && activityVideo.videoUrl !== "rendering") ? "Regenerar" : "Generar"}{" "}
                   <FontAwesomeIcon
                     className={styles.sparkles}
                     icon={faWandSparkles}
@@ -628,17 +659,17 @@ const ActivityGenerationVideo = ({
                 <button
                   className={styles.generateBtn}
                   disabled={
-                    !avatarVoice || !selectedAvatar || avatarGenerateLoading || (activityVideo && !scriptRegenerated)
+                    !avatarVoice || !selectedAvatar || avatarGenerateLoading || (activityVideo?.videoUrl && activityVideo.videoUrl !== "rendering" && !scriptRegenerated)
                   }
                   style={{
                     opacity:
-                      !avatarVoice || !selectedAvatar || avatarGenerateLoading || (activityVideo && !scriptRegenerated)
+                      !avatarVoice || !selectedAvatar || avatarGenerateLoading || (activityVideo?.videoUrl && activityVideo.videoUrl !== "rendering" && !scriptRegenerated)
                         ? 0.3
                         : 1,
                   }}
-                  onClick={(activityVideo && scriptRegenerated) ? handleRegenerateVideoAvatarScreen : handleGenerateVideoAvatarScreen}
+                  onClick={(activityVideo?.videoUrl && activityVideo.videoUrl !== "rendering" && scriptRegenerated) ? handleRegenerateVideoAvatarScreen : handleGenerateVideoAvatarScreen}
                 >
-                  {avatarGenerateLoading ? (activityVideo ? "Regenerando..." : "Generando...") : (activityVideo ? "Regenerar" : "Generar")}{" "}
+                  {avatarGenerateLoading ? ((activityVideo?.videoUrl && activityVideo.videoUrl !== "rendering") ? "Regenerando..." : "Generando...") : ((activityVideo?.videoUrl && activityVideo.videoUrl !== "rendering") ? "Regenerar" : "Generar")}{" "}
                   <FontAwesomeIcon
                     className={styles.sparkles}
                     icon={faWandSparkles}
