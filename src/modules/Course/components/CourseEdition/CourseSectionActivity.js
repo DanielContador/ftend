@@ -27,6 +27,7 @@ import {
 } from "../../../Activity/services/activityService";
 import EvaluationGeneration from "./EvaluationGeneration";
 import EvaluationEdition from "./EvaluationEdition";
+import CourseExportManager from "../../../FileDownloadManager/components/CourseExportManager";
 
 // Mapea el formato del backend a los iconos y colores igual que en CourseEdition
 const iconByType = {
@@ -220,6 +221,28 @@ const CourseSectionActivity = ({
       }
     }
     return false;
+  };
+
+  // Get the first activity that has exportable content
+  const getFirstExportableActivity = () => {
+    if (!selectedModule || !selectedModule.learning_objects) {
+      return null;
+    }
+    
+    return selectedModule.learning_objects.find(activity => {
+      return downloadableStatus[activity.id] === true;
+    });
+  };
+
+  // Check if there's any exportable content in the module
+  const hasExportableContent = () => {
+    if (!selectedModule || !selectedModule.learning_objects) {
+      return false;
+    }
+    
+    return selectedModule.learning_objects.some(activity => {
+      return downloadableStatus[activity.id] === true;
+    });
   };
 
   useEffect(() => {
@@ -784,10 +807,19 @@ const CourseSectionActivity = ({
             </>
           )}
           {selectedTab === "exportar" && (
-            <div style={{ padding: "2rem", color: "#888" }}>
-              <h3>Exportar</h3>
-              <p>Aquí irá la funcionalidad para exportar el curso.</p>
-            </div>
+            hasExportableContent() ? (
+              <CourseExportManager 
+                courseId={courseId}
+                activityId={getFirstExportableActivity()?.id || null}
+                fileType={getFirstExportableActivity()?.format || null}
+                courseName={courseStructure?.name || 'Curso'}
+              />
+            ) : (
+              <div style={{ padding: "2rem", textAlign: "center", color: "#6b7280" }}>
+                <h3>No hay contenido para exportar</h3>
+                <p>Genera contenido en las actividades para poder exportar el curso.</p>
+              </div>
+            )
           )}
         </main>
       </div>
