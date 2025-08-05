@@ -53,7 +53,7 @@ const ResetPasswordForm = ({ onSubmit, loading, error }) => {
   if (success) {
     return (
       <div className={styles.container}>
-        <ResetPasswordSuccessBrand onHomeClick={() => router.push("/login")} />
+        <ResetPasswordSuccessBrand onHomeClick={() => router.push("/welcome")} />
       </div>
     );
   }

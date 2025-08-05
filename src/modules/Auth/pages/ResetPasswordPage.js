@@ -15,8 +15,8 @@ const ChangePasswordPage = () => {
       // El token puede venir por query param, ajusta según tu backend
       const token = router.query.token;
       await passwordService.resetPassword(password, token);
-      // Redirige o muestra mensaje de éxito según tu flujo
-      router.push("/login");
+      // Don't redirect here - let ResetPasswordForm handle the success state
+      // The form will show ResetPasswordSuccessBrand and handle navigation
     } catch (e) {
       setError(e.message || "Error al cambiar la contraseña.");
     } finally {
