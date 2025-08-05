@@ -29,8 +29,8 @@ class FileDownloadService extends BaseService {
     }
   };
 
-  downloadFile = (activityId, filetype) => {
-    const endpoint = `${this.baseUrl}/download/${filetype}/file/${activityId}`;
+  downloadCourseScorm = (courseId) => {
+    const endpoint = `${this.baseUrl}/descargar-scorm/${courseId}`;
     return this.#downloadBinaryFile(endpoint);
   };
 

@@ -107,15 +107,7 @@ const CourseExportManager = ({
           mimeType = "application/zip";
           break;
         case "scorm":
-          if (!activityId || !fileType) {
-            throw new Error(
-              "Activity ID and file type are required for SCORM export"
-            );
-          }
-          response = await fileDownloadService.downloadFile(
-            activityId,
-            fileType
-          );
+          response = await fileDownloadService.downloadCourseScorm(courseId);
           filename = generateFilename(
             archiveName,
             `${courseName || "activity"}_scorm.zip`,
