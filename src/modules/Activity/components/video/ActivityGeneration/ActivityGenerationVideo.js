@@ -450,18 +450,14 @@ const ActivityGenerationVideo = ({
   // Manejar el cambio de tab y limpiar selección si es necesario
   const handleTabClick = async (tabKey) => {
     if (tabKey === "video") {
+      // Check if video is currently being generated or regenerated
       if (videoLoading || avatarGenerateLoading) {
-        try {
-          // Realiza la misma llamada que el poll para verificar el estado real
-          await retrieveActivityVideoStatus(activityId, videoCreatorApp);
-        } catch (error) {
-          dispatch(
-            showFloatingError(
-              "El video aún está generándose, inténtelo más tarde"
-            )
-          );
-          return; // Si hay error (404), no cambiar de pestaña
-        }
+        dispatch(
+          showFloatingError(
+            "El video aún está generándose, inténtelo más tarde"
+          )
+        );
+        return; // Don't allow tab change during generation
       }
       
       // Fetch activity data when entering video tab to get latest video info
@@ -471,20 +467,22 @@ const ActivityGenerationVideo = ({
         if (response.data.video) {
           setActivityVideo(response.data.video);
           setGuionInput(response.data.video.content);
-          // If video exists, set appropriate initial states
+          
+          // Check if video is in rendering state (being generated/regenerated)
+          if (response.data.video.videoUrl === "rendering") {
+            dispatch(
+              showFloatingError(
+                "El video aún está generándose, inténtelo más tarde"
+              )
+            );
+            return; // Don't allow tab change if video is rendering
+          }
+          
+          // If video exists and is ready, set appropriate initial states
           if (response.data.video.videoUrl && response.data.video.videoUrl !== "rendering") {
             // Video is already generated, so enable regeneration if script allows it
             setVideoGenerated(true);
             setScriptRegenerated(false); // Initially false, will be set to true when script is modified
-          }
-          if (response.data.video.videoUrl == "rendering") {
-            const videoId = response.data.video.videoId;
-            const creatorApp =
-              typeof videoId === "string" && (videoId.match(/-/g) || []).length > 2
-                ? "videogen"
-                : "elai";
-            setVideoCreatorApp(creatorApp);
-            pollVideoStatus(creatorApp);
           }
         }
         if (response.data.token) {
@@ -493,6 +491,7 @@ const ActivityGenerationVideo = ({
       } catch (error) {
         console.error("Error fetching activity for video tab:", error);
         // Don't show error message here as it might be normal if no video exists yet
+        // Allow access to video tab even if there's no video (first time access)
       }
     }
 
