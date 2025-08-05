@@ -51,19 +51,15 @@ const EditCoursePage = () => {
       showSection === "CourseSectionActivity" &&
       selectedTab === "contenido"
     ) {
-      if (isEvaluationAvailable) {
-        // Trigger evaluation view instead of switching tabs
-        setTriggerEvaluationView(true);
-        // Reset the trigger after a brief moment to allow for re-triggering
-        setTimeout(() => setTriggerEvaluationView(false), 100);
-      } else {
-        handleError("No hay evaluación en este módulo para poder continuar.");
-      }
+      // Navigate to exportar tab
+      setSelectedTab("exportar");
     }
   };
   const handleBack = () => {
     if (showSection === "CourseSectionActivity") {
       if (selectedTab === "evaluacion") {
+        setSelectedTab("contenido");
+      } else if (selectedTab === "exportar") {
         setSelectedTab("contenido");
       } else {
         setIndex(0);
