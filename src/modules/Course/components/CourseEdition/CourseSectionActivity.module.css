@@ -239,7 +239,7 @@
   background: #a78bfa;
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 16px;
   font-weight: 600;
   font-size: 1.01rem;
   padding: 7px 18px 7px 14px;
@@ -259,7 +259,8 @@
 .iconPDF,
 .iconAudio,
 .iconPPT,
-.iconSCORM {
+.iconSCORM,
+.iconEvaluation {
   border-radius: 50%;
   width: 25px !important;
   height: 25px !important;
@@ -297,6 +298,11 @@
 .iconSCORM {
   background: #f0fdf4;
   color: #16a34a;
+}
+
+.iconEvaluation {
+  background: #fff7ed;
+  color: #ea580c;
 }
 
 .resourceCardBody {

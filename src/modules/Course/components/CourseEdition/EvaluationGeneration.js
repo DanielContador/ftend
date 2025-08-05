@@ -25,7 +25,7 @@ const EvaluationGeneration = ({ onGenerate, moduleEvaluation, onBack }) => {
       ActivityId: moduleEvaluation?.id,
       Prompt: evaluationContent || "",
       Multiple_Choise: true,
-      Cant_Answers: 5, // Fixed at 5 options per question as per CourseEvaluation
+      Cant_Questions: questionCount, // Use the actual question count from input
       // Additional parameters that might be useful
       QuestionCount: questionCount,
       MinPassingScore: minPassingScore,
@@ -54,8 +54,8 @@ const EvaluationGeneration = ({ onGenerate, moduleEvaluation, onBack }) => {
     }
   };
 
-  // Check if the generate button should be enabled
-  const isGenerateButtonEnabled = evaluationContent.trim().length > 0;
+  // Allow generate button to be clicked even without prompt content
+  const isGenerateButtonEnabled = true;
 
   return (
     <div className={styles.container}>
@@ -123,15 +123,13 @@ const EvaluationGeneration = ({ onGenerate, moduleEvaluation, onBack }) => {
           <button
             className={styles.generateButton}
             onClick={handleGenerate}
-            disabled={!isGenerateButtonEnabled || isGenerating}
+            disabled={isGenerating}
           >
             <FontAwesomeIcon icon={faWandMagicSparkles} />
             {isGenerating ? "Generando..." : "Generar con IA"}
           </button>
         </div>
       </div>
-
-
     </div>
   );
 };

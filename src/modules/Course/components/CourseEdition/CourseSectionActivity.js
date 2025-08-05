@@ -18,6 +18,7 @@ import {
   faHeadphones,
   faFilePowerpoint,
   faDesktop,
+  faClipboardCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   getActivityPPT,
@@ -36,6 +37,12 @@ const iconByType = {
   Audio: <FontAwesomeIcon className={styles.iconAudio} icon={faHeadphones} />,
   PPT: <FontAwesomeIcon className={styles.iconPPT} icon={faFilePowerpoint} />,
   SCORM: <FontAwesomeIcon className={styles.iconSCORM} icon={faDesktop} />,
+  Evaluacion_diagnostica: (
+    <FontAwesomeIcon
+      className={styles.iconEvaluation}
+      icon={faClipboardCheck}
+    />
+  ),
 };
 
 const tabs = [
@@ -169,7 +176,7 @@ const CourseSectionActivity = ({
         ActivityId: moduleEvaluation.id,
         Prompt: evaluationConfig.Prompt || "",
         Multiple_Choise: evaluationConfig.Multiple_Choise,
-        Cant_Answers: evaluationConfig.Cant_Answers,
+        Cant_Questions: evaluationConfig.Cant_Questions,
         QuestionCount: evaluationConfig.QuestionCount,
         MinPassingScore: evaluationConfig.MinPassingScore,
       };
@@ -228,8 +235,8 @@ const CourseSectionActivity = ({
     if (!selectedModule || !selectedModule.learning_objects) {
       return null;
     }
-    
-    return selectedModule.learning_objects.find(activity => {
+
+    return selectedModule.learning_objects.find((activity) => {
       return downloadableStatus[activity.id] === true;
     });
   };
@@ -239,8 +246,8 @@ const CourseSectionActivity = ({
     if (!selectedModule || !selectedModule.learning_objects) {
       return false;
     }
-    
-    return selectedModule.learning_objects.some(activity => {
+
+    return selectedModule.learning_objects.some((activity) => {
       return downloadableStatus[activity.id] === true;
     });
   };
@@ -806,21 +813,29 @@ const CourseSectionActivity = ({
               )}
             </>
           )}
-          {selectedTab === "exportar" && (
-            hasExportableContent() ? (
-              <CourseExportManager 
+          {selectedTab === "exportar" &&
+            (hasExportableContent() ? (
+              <CourseExportManager
                 courseId={courseId}
                 activityId={getFirstExportableActivity()?.id || null}
                 fileType={getFirstExportableActivity()?.format || null}
-                courseName={courseStructure?.name || 'Curso'}
+                courseName={courseStructure?.name || "Curso"}
               />
             ) : (
-              <div style={{ padding: "2rem", textAlign: "center", color: "#6b7280" }}>
+              <div
+                style={{
+                  padding: "2rem",
+                  textAlign: "center",
+                  color: "#6b7280",
+                }}
+              >
                 <h3>No hay contenido para exportar</h3>
-                <p>Genera contenido en las actividades para poder exportar el curso.</p>
+                <p>
+                  Genera contenido en las actividades para poder exportar el
+                  curso.
+                </p>
               </div>
-            )
-          )}
+            ))}
         </main>
       </div>
     </div>

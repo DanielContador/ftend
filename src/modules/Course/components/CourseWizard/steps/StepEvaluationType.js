@@ -8,9 +8,9 @@ const options = [
 ];
 
 const keyToLabel = {
-  diagnostico: "Evaluación con diagnóstico",
-  modulo: "Evaluación por módulo",
-  final: "Evaluación final",
+  diagnostico: "Evaluacion_diagnostico",
+  modulo: "Evaluacion_modulo",
+  final: "Evaluacion_final",
 };
 
 export const StepEvaluationType = ({
