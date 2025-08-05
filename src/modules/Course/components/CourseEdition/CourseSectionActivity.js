@@ -18,7 +18,7 @@ import {
   faHeadphones,
   faFilePowerpoint,
   faDesktop,
-  faClipboardCheck,
+  faBook,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   getActivityPPT,
@@ -37,12 +37,21 @@ const iconByType = {
   Audio: <FontAwesomeIcon className={styles.iconAudio} icon={faHeadphones} />,
   PPT: <FontAwesomeIcon className={styles.iconPPT} icon={faFilePowerpoint} />,
   SCORM: <FontAwesomeIcon className={styles.iconSCORM} icon={faDesktop} />,
-  Evaluacion_diagnostica: (
-    <FontAwesomeIcon
-      className={styles.iconEvaluation}
-      icon={faClipboardCheck}
-    />
-  ),
+};
+
+// Function to get the appropriate icon for any format
+const getIconForFormat = (format) => {
+  // Check if format contains "evaluacion" (case insensitive)
+  if (format && format.toLowerCase().includes("evaluacion")) {
+    return <FontAwesomeIcon className={styles.iconEvaluation} icon={faBook} />;
+  }
+
+  // Return specific icon if found, otherwise default PPT icon
+  return (
+    iconByType[format] || (
+      <FontAwesomeIcon className={styles.iconPPT} icon={faFilePowerpoint} />
+    )
+  );
 };
 
 const tabs = [
@@ -552,12 +561,7 @@ const CourseSectionActivity = ({
                           >
                             <div className="d-flex">
                               <div className="mt-4">
-                                {iconByType[res.format] || (
-                                  <FontAwesomeIcon
-                                    className={styles.iconPPT}
-                                    icon={faFilePowerpoint}
-                                  />
-                                )}
+                                {getIconForFormat(res.format)}
                               </div>
                               <div className="w-100">
                                 <div className={styles.resourceCardHeader}>

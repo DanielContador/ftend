@@ -34,21 +34,18 @@ const CourseExportManager = ({
       description:
         "Archivo de respaldo nativo de Moodle, listo para importación directa.",
       icon: faGraduationCap,
-      color: "#FF6B35",
     },
     {
       id: "scorm",
       title: "SCORM (.zip)",
       description: "Paquete compatible con SCORM 1.2/2004 para cualquier LMS.",
       icon: faDesktop,
-      color: "#7C3AED",
     },
     {
       id: "independent",
       title: "Independent ZIP",
       description: "ZIP personalizado con recursos individuales.",
       icon: faFileZipper,
-      color: "#10B981",
     },
   ];
 
@@ -94,20 +91,20 @@ const CourseExportManager = ({
         case "moodle":
           response = await fileDownloadService.downloadCourseMBZ(courseId);
           filename = generateFilename(
-            archiveName, 
-            `${courseName || 'course'}_moodle.mbz`, 
-            '.mbz'
+            archiveName,
+            `${courseName || "course"}_moodle.mbz`,
+            ".mbz"
           );
-          mimeType = 'application/zip';
+          mimeType = "application/zip";
           break;
         case "independent":
           response = await fileDownloadService.downloadCourseZip(courseId);
           filename = generateFilename(
-            archiveName, 
-            `${courseName || 'course'}_independent.zip`, 
-            '.zip'
+            archiveName,
+            `${courseName || "course"}_independent.zip`,
+            ".zip"
           );
-          mimeType = 'application/zip';
+          mimeType = "application/zip";
           break;
         case "scorm":
           if (!activityId || !fileType) {
@@ -120,11 +117,11 @@ const CourseExportManager = ({
             fileType
           );
           filename = generateFilename(
-            archiveName, 
-            `${courseName || 'activity'}_scorm.zip`, 
-            '.zip'
+            archiveName,
+            `${courseName || "activity"}_scorm.zip`,
+            ".zip"
           );
-          mimeType = 'application/zip';
+          mimeType = "application/zip";
           break;
         default:
           throw new Error("Invalid export format selected");
@@ -134,7 +131,7 @@ const CourseExportManager = ({
       if (response) {
         const blob = new Blob([response], { type: mimeType });
         const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
+        const link = document.createElement("a");
         link.href = url;
         link.download = filename;
         document.body.appendChild(link);
@@ -193,10 +190,7 @@ const CourseExportManager = ({
                 }`}
                 onClick={() => setSelectedFormat(format.id)}
               >
-                <div
-                  className={styles.formatIcon}
-                  style={{ color: format.color }}
-                >
+                <div className={styles.formatIcon}>
                   <FontAwesomeIcon icon={format.icon} />
                 </div>
                 <div className={styles.formatContent}>
@@ -237,7 +231,7 @@ const CourseExportManager = ({
       </div>
 
       <div className={styles.actions}>
-        <button className={styles.previewBtn} onClick={handlePreview}>
+        <button style={{ visibility: "hidden" }}>
           <FontAwesomeIcon icon={faEye} />
           Preview antes de exportar
         </button>
