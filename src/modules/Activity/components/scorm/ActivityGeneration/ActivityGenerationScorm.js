@@ -7,6 +7,8 @@ import {
   regenerateActivityDocument,
   updateDocumentContent,
   getScormByActivityId,
+  generateActivityScorm,
+  regenerateActivityScorm,
 } from "../../../services/activityService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -74,7 +76,7 @@ const ActivityGenerationScorm = ({
             config: scormData.config,
           });
           setDocumentContent(scormData.content || "");
-          
+
           // Para SCORM, usamos el imagePath como token si existe
           if (scormData.imagePath) {
             setFileToken(scormData.imagePath);
@@ -101,12 +103,10 @@ const ActivityGenerationScorm = ({
   const handleGenerateDocument = async () => {
     setModalLoading(true);
     try {
-      const response = await generateActivityDocument({
-        Prompt: configInstructions,
-        Duration: data.duration,
-        DocumentType: data.contentType,
+      const response = await generateActivityScorm({
         ActivityId: activityId,
-        IncludeImages: includeImages,
+        PromptInstructions: configInstructions,
+        GenerationType: "Internet",
       });
       await fetchActivity();
       setActiveTab("document");
@@ -121,9 +121,10 @@ const ActivityGenerationScorm = ({
   const handleRegenerateDocument = async () => {
     setModalLoading(true);
     try {
-      const response = await regenerateActivityDocument({
-        Prompt: configInstructions,
+      const response = await regenerateActivityScorm({
         ActivityId: activityId,
+        PromptInstructions: configInstructions,
+        GenerationType: "Internet",
       });
       await fetchActivity();
       setActiveTab("document");
@@ -142,7 +143,8 @@ const ActivityGenerationScorm = ({
       // Estructura de datos para SCORM según el ejemplo proporcionado
       const dataToSend = {
         Title: activityDocument.title || data.title || "Título SCORM",
-        ImageDescription: activityDocument.imageDescription || "Descripción de imagen",
+        ImageDescription:
+          activityDocument.imageDescription || "Descripción de imagen",
         Content: content,
       };
 
