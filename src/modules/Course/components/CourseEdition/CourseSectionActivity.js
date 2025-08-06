@@ -140,6 +140,15 @@ const CourseSectionActivity = ({
     lo.format.toLowerCase().includes("evaluacion")
   );
 
+  // Effect para resetear la vista de evaluación cuando se cambia de módulo
+  // y el nuevo módulo no tiene sección de evaluación
+  useEffect(() => {
+    if (selectedModuleId && !moduleEvaluation) {
+      // Si el módulo seleccionado no tiene evaluación, salir de la vista de evaluación
+      setShowEvaluationView(false);
+    }
+  }, [selectedModuleId, moduleEvaluation]);
+
   const handleAddQuizAnswersWrapper = (quizAnswerData) => {
     if (moduleEvaluation?.id) {
       onAddQuizAnswers(quizAnswerData, moduleEvaluation.id);

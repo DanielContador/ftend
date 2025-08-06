@@ -9,6 +9,18 @@ import styles from "./EvaluationGeneration.module.css";
 const EvaluationGeneration = ({ onGenerate, moduleEvaluation, onBack }) => {
   // Use real values from moduleEvaluation instead of hardcoded values
   console.log("EvaluationGeneration", moduleEvaluation);
+  
+  // Early return if moduleEvaluation is undefined to prevent errors
+  if (!moduleEvaluation) {
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <p>No se encontró información de evaluación para este módulo.</p>
+        <button onClick={onBack} style={{ marginTop: '1rem', padding: '0.5rem 1rem' }}>
+          Volver
+        </button>
+      </div>
+    );
+  }
   const [questionCount, setQuestionCount] = useState(
     moduleEvaluation?.estimated_time || 30
   );
@@ -68,8 +80,8 @@ const EvaluationGeneration = ({ onGenerate, moduleEvaluation, onBack }) => {
 
       {/* Main Title */}
       <div className={styles.header}>
-        <h1 className={styles.title}>{moduleEvaluation.object_title}</h1>
-        <p className={styles.subtitle}>{moduleEvaluation.learning_goal}</p>
+        <h1 className={styles.title}>{moduleEvaluation?.object_title || 'Evaluación'}</h1>
+        <p className={styles.subtitle}>{moduleEvaluation?.learning_goal || ''}</p>
       </div>
 
       {/* Configuration Section */}
@@ -82,7 +94,17 @@ const EvaluationGeneration = ({ onGenerate, moduleEvaluation, onBack }) => {
               type="number"
               className={styles.numberInput}
               value={questionCount}
-              onChange={(e) => setQuestionCount(parseInt(e.target.value) || 0)}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value === '') {
+                  setQuestionCount('');
+                } else {
+                  const numValue = parseInt(value);
+                  if (!isNaN(numValue)) {
+                    setQuestionCount(numValue);
+                  }
+                }
+              }}
               min="1"
               max="100"
             />

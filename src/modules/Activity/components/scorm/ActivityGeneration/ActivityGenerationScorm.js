@@ -78,11 +78,7 @@ const ActivityGenerationScorm = ({
           });
           setDocumentContent(textImage.content || "");
 
-          // Configurar token para descarga de archivos (similar a ActivityGenerationDocument)
-          // TODO: El backend debería devolver un token JWT en la respuesta
-          const defaultToken =
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaWxlSWQiOiIxODEiLCJleHAiOjE3NTQ1NDg3NDV9.0S3opIbGY1SKXDqxE7GXjBAfPNQK7m95l0m16d7Hi5c";
-          setFileToken(scormResponse.data.token || defaultToken);
+          setFileToken(scormResponse.data.token);
         } else {
           // Si no hay datos textImage, inicializar con datos vacíos
           setActivityDocument(null);
