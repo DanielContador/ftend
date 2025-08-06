@@ -31,6 +31,7 @@ const ActivityGenerationScormDocumentTab = ({
   fileToken,
   data,
   activityId,
+  fetchActivity,
 }) => {
   const [showImagePopup, setShowImagePopup] = useState(false);
   const [slideTitle, setSlideTitle] = useState(activityDocument?.title || data?.title || DEFAULT_SLIDE_TITLE);
@@ -112,11 +113,15 @@ const ActivityGenerationScormDocumentTab = ({
   // Handler para guardar el título editado
   const handleTitleSave = async () => {
     try {
-      await updateScormByActivityId(activityId, {
+      await updateScormByActivityId(activityDocument.id, {
         Title: tempSlideTitle,
       });
       setSlideTitle(tempSlideTitle);
       setEditingTitle(false);
+      // Refrescar datos del backend para mantener sincronización
+      if (fetchActivity) {
+        await fetchActivity();
+      }
     } catch (error) {
       console.error("Error saving title:", error);
       // Revertir cambios en caso de error

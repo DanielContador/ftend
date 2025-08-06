@@ -65,8 +65,10 @@ const ActivityGenerationScorm = ({
       // Llamar a getScormByActivityId para obtener datos del tab de documento
       try {
         const scormResponse = await getScormByActivityId(activityId);
+        console.log("scormResponse:", scormResponse);
         if (scormResponse.success && scormResponse.data) {
           const scormData = scormResponse.data;
+          console.log("scormData:", scormData);
           setActivityDocument({
             id: scormData.id,
             content: scormData.content,
@@ -147,15 +149,15 @@ const ActivityGenerationScorm = ({
           activityDocument.imageDescription || "Descripción de imagen",
         Content: content,
       };
-
-      await updateScormByActivityId(activityId, dataToSend);
+      console.log("activityDocument", activityDocument);
+      await updateScormByActivityId(activityDocument.id, dataToSend);
       await fetchActivity(); // Recargar datos para reflejar los cambios
       setDocumentContent(content);
-      setEditMode(false);
     } catch (error) {
       dispatch(showFloatingError(t("errorUpdatingDocumentContent")));
     } finally {
       setModalLoading(false);
+      setEditMode(false);
     }
   };
 
@@ -243,6 +245,7 @@ const ActivityGenerationScorm = ({
               fileToken={fileToken}
               data={data}
               activityId={activityId}
+              fetchActivity={fetchActivity}
             />
           )}
         </div>
