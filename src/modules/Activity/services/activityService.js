@@ -145,10 +145,21 @@ export const regenerateActivityScorm = async (data) => {
 
 export const getScormByActivityId = async (activityId) => {
   const jwt = getCookie("authToken"); // Retrieve the authToken
-  return await rGet(`v1/textimage/activity/${activityId}`, jwt);
+  return await rGet(`activity/textimage/${activityId}`, jwt);
 };
 
 export const updateScormByActivityId = async (activityId, data) => {
   const jwt = getCookie("authToken"); // Retrieve the authToken
   return await rPut(`v1/textimage/${activityId}`, data, jwt);
+};
+
+export const uploadScormImage = async (activityId, uploadImage) => {
+  const jwt = getCookie("authToken"); // Retrieve the authToken
+  
+  // Create FormData for file upload
+  const formData = new FormData();
+  formData.append('activityId', activityId);
+  formData.append('uploadImage', uploadImage);
+  
+  return await rPost("v1/textimage/uploadImage", formData, jwt);
 };

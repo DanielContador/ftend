@@ -55,43 +55,46 @@ const ActivityGenerationScorm = ({
   const fetchActivity = async () => {
     setModalLoading(true);
     try {
-      // Llamar a getActivityDocument para obtener datos del tab de configuración
-      const activityResponse = await getActivityDocument(activityId);
-      setData(activityResponse.data.activity);
-      if (activityResponse.data.token) {
-        setFileToken(activityResponse.data.token);
-      }
+      // Llamar a getScormByActivityId para obtener tanto datos de actividad como textImage
+      const scormResponse = await getScormByActivityId(activityId);
+      console.log("scormResponse:", scormResponse);
 
-      // Llamar a getScormByActivityId para obtener datos del tab de documento
-      try {
-        const scormResponse = await getScormByActivityId(activityId);
-        console.log("scormResponse:", scormResponse);
-        if (scormResponse.success && scormResponse.data) {
-          const scormData = scormResponse.data;
-          console.log("scormData:", scormData);
+      if (scormResponse.success && scormResponse.data) {
+        const { activity, textImage } = scormResponse.data;
+
+        // Configurar datos de la actividad para el tab de configuración
+        setData(activity);
+
+        // Configurar datos del documento SCORM para el tab de documento
+        if (textImage) {
           setActivityDocument({
-            id: scormData.id,
-            content: scormData.content,
-            title: scormData.title,
-            imagePath: scormData.imagePath,
-            imageDescription: scormData.imageDescription,
-            config: scormData.config,
+            id: textImage.id,
+            activityId: textImage.activityId,
+            content: textImage.content,
+            title: textImage.title,
+            imagePath: textImage.imagePath,
+            imageDescription: textImage.imageDescription,
+            config: textImage.config,
           });
-          setDocumentContent(scormData.content || "");
+          setDocumentContent(textImage.content || "");
 
-          // Para SCORM, usamos el imagePath como token si existe
-          if (scormData.imagePath) {
-            setFileToken(scormData.imagePath);
-          }
+          // Configurar token para descarga de archivos (similar a ActivityGenerationDocument)
+          // TODO: El backend debería devolver un token JWT en la respuesta
+          const defaultToken =
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaWxlSWQiOiIxODEiLCJleHAiOjE3NTQ1NDg3NDV9.0S3opIbGY1SKXDqxE7GXjBAfPNQK7m95l0m16d7Hi5c";
+          setFileToken(scormResponse.data.token || defaultToken);
+        } else {
+          // Si no hay datos textImage, inicializar con datos vacíos
+          setActivityDocument(null);
+          setDocumentContent("");
         }
-      } catch (scormError) {
-        console.log("No SCORM data found, this might be a new activity");
-        // Si no hay datos SCORM, inicializar con datos vacíos
-        setActivityDocument(null);
-        setDocumentContent("");
       }
     } catch (error) {
+      console.log("Error fetching SCORM data:", error);
       dispatch(showFloatingError(t("errorFetchingActivity")));
+      // Inicializar con datos vacíos en caso de error
+      setActivityDocument(null);
+      setDocumentContent("");
     } finally {
       setModalLoading(false);
     }

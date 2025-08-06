@@ -15,7 +15,10 @@ import {
   faLink,
 } from "@fortawesome/free-solid-svg-icons";
 import UploadDocumentPopup from "../../../../../shared/components/UploadDocumentPopup";
-import { updateScormByActivityId } from "../../../services/activityService";
+import {
+  updateScormByActivityId,
+  uploadScormImage,
+} from "../../../services/activityService";
 
 const DEFAULT_SLIDE_TITLE = "Introducción al Tema";
 
@@ -34,11 +37,16 @@ const ActivityGenerationScormDocumentTab = ({
   fetchActivity,
 }) => {
   const [showImagePopup, setShowImagePopup] = useState(false);
-  const [slideTitle, setSlideTitle] = useState(activityDocument?.title || data?.title || DEFAULT_SLIDE_TITLE);
-  const [tempSlideTitle, setTempSlideTitle] = useState(activityDocument?.title || data?.title || DEFAULT_SLIDE_TITLE);
+  const [slideTitle, setSlideTitle] = useState(
+    activityDocument?.title || data?.title || DEFAULT_SLIDE_TITLE
+  );
+  const [tempSlideTitle, setTempSlideTitle] = useState(
+    activityDocument?.title || data?.title || DEFAULT_SLIDE_TITLE
+  );
   const [editingTitle, setEditingTitle] = useState(false);
   const [editingContent, setEditingContent] = useState(false);
-  const [tempDocumentContent, setTempDocumentContent] = useState(documentContent);
+  const [tempDocumentContent, setTempDocumentContent] =
+    useState(documentContent);
   const [slideImage, setSlideImage] = useState(null);
   const [tempSlideImage, setTempSlideImage] = useState(null);
   const contentRef = useRef(null);
@@ -46,7 +54,8 @@ const ActivityGenerationScormDocumentTab = ({
 
   // Actualizar título y contenido cuando lleguen los datos del backend
   useEffect(() => {
-    const newTitle = activityDocument?.title || data?.title || DEFAULT_SLIDE_TITLE;
+    const newTitle =
+      activityDocument?.title || data?.title || DEFAULT_SLIDE_TITLE;
     setSlideTitle(newTitle);
     setTempSlideTitle(newTitle);
   }, [activityDocument?.title, data?.title]);
@@ -54,6 +63,24 @@ const ActivityGenerationScormDocumentTab = ({
   useEffect(() => {
     setTempDocumentContent(documentContent);
   }, [documentContent]);
+
+  // Actualizar imagen cuando lleguen los datos del backend
+  useEffect(() => {
+    if (
+      activityDocument?.imagePath &&
+      fileToken &&
+      activityDocument?.activityId
+    ) {
+      // Usar el endpoint de descarga con token como downloadUrl
+      const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/v1/download/textimage/file/${activityDocument.activityId}?token=${fileToken}`;
+      console.log("Activity ID:", activityDocument.activityId);
+      console.log("File token:", fileToken);
+      console.log("Image URL:", imageUrl);
+      setSlideImage(imageUrl);
+    } else {
+      setSlideImage(null);
+    }
+  }, [activityDocument?.imagePath, fileToken, activityDocument?.activityId]);
 
   // URL de descarga del documento SCORM generado
   const downloadUrl =
@@ -84,13 +111,26 @@ const ActivityGenerationScormDocumentTab = ({
   };
 
   // Handler para cambiar la imagen de la diapositiva
-  const handleSlideImageUpload = (file) => {
-    const reader = new window.FileReader();
-    reader.onload = (event) => {
-      setTempSlideImage(event.target.result);
+  const handleSlideImageUpload = async (file) => {
+    try {
       setShowImagePopup(false);
-    };
-    reader.readAsDataURL(file);
+      console.log("Uploading image for activityId:", activityId);
+
+      // Subir imagen al backend
+      const response = await uploadScormImage(activityId, file);
+
+      if (response.success && response.data) {
+        console.log("Image uploaded successfully:", response.data.imagePath);
+
+        // Refrescar datos del backend para obtener la nueva imagen
+        if (fetchActivity) {
+          await fetchActivity();
+        }
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      // Aquí podrías mostrar un mensaje de error al usuario
+    }
   };
 
   // Handler para abrir el selector de imagen
@@ -142,7 +182,7 @@ const ActivityGenerationScormDocumentTab = ({
     setTimeout(() => {
       if (contentRef.current) {
         // Set the initial content in the div
-        contentRef.current.innerHTML = documentContent || '';
+        contentRef.current.innerHTML = documentContent || "";
         contentRef.current.focus();
       }
     }, 0);
@@ -350,7 +390,9 @@ const ActivityGenerationScormDocumentTab = ({
           <div className={styles.toolbarContainer}>
             <div className={styles.toolbar}>
               <button
-                className={`${styles.toolbarBtn} ${!editingContent ? styles.toolbarBtnDisabled : ''}`}
+                className={`${styles.toolbarBtn} ${
+                  !editingContent ? styles.toolbarBtnDisabled : ""
+                }`}
                 onClick={() => editingContent && formatText("bold")}
                 title="Negrita"
                 disabled={!editingContent}
@@ -358,7 +400,9 @@ const ActivityGenerationScormDocumentTab = ({
                 <FontAwesomeIcon icon={faBold} />
               </button>
               <button
-                className={`${styles.toolbarBtn} ${!editingContent ? styles.toolbarBtnDisabled : ''}`}
+                className={`${styles.toolbarBtn} ${
+                  !editingContent ? styles.toolbarBtnDisabled : ""
+                }`}
                 onClick={() => editingContent && formatText("italic")}
                 title="Cursiva"
                 disabled={!editingContent}
@@ -366,7 +410,9 @@ const ActivityGenerationScormDocumentTab = ({
                 <FontAwesomeIcon icon={faItalic} />
               </button>
               <button
-                className={`${styles.toolbarBtn} ${!editingContent ? styles.toolbarBtnDisabled : ''}`}
+                className={`${styles.toolbarBtn} ${
+                  !editingContent ? styles.toolbarBtnDisabled : ""
+                }`}
                 onClick={() => editingContent && formatText("underline")}
                 title="Subrayado"
                 disabled={!editingContent}
@@ -374,23 +420,33 @@ const ActivityGenerationScormDocumentTab = ({
                 <FontAwesomeIcon icon={faUnderline} />
               </button>
               <button
-                className={`${styles.toolbarBtn} ${!editingContent ? styles.toolbarBtnDisabled : ''}`}
-                onClick={() => editingContent && formatText("insertUnorderedList")}
+                className={`${styles.toolbarBtn} ${
+                  !editingContent ? styles.toolbarBtnDisabled : ""
+                }`}
+                onClick={() =>
+                  editingContent && formatText("insertUnorderedList")
+                }
                 title="Lista con viñetas"
                 disabled={!editingContent}
               >
                 <FontAwesomeIcon icon={faListUl} />
               </button>
               <button
-                className={`${styles.toolbarBtn} ${!editingContent ? styles.toolbarBtnDisabled : ''}`}
-                onClick={() => editingContent && formatText("insertOrderedList")}
+                className={`${styles.toolbarBtn} ${
+                  !editingContent ? styles.toolbarBtnDisabled : ""
+                }`}
+                onClick={() =>
+                  editingContent && formatText("insertOrderedList")
+                }
                 title="Lista numerada"
                 disabled={!editingContent}
               >
                 <FontAwesomeIcon icon={faListOl} />
               </button>
               <button
-                className={`${styles.toolbarBtn} ${!editingContent ? styles.toolbarBtnDisabled : ''}`}
+                className={`${styles.toolbarBtn} ${
+                  !editingContent ? styles.toolbarBtnDisabled : ""
+                }`}
                 onClick={() => {
                   if (editingContent) {
                     const url = prompt("Ingresa la URL del enlace:");
@@ -462,10 +518,12 @@ const ActivityGenerationScormDocumentTab = ({
                 }
               }}
               style={{
-                backgroundColor: editingContent ? '#fff' : '#f9f9f9',
-                cursor: editingContent ? 'text' : 'default',
-                border: editingContent ? '2px solid #7c3aed' : '1px solid #e5e7eb',
-                pointerEvents: editingContent ? 'auto' : 'none'
+                backgroundColor: editingContent ? "#fff" : "#f9f9f9",
+                cursor: editingContent ? "text" : "default",
+                border: editingContent
+                  ? "2px solid #7c3aed"
+                  : "1px solid #e5e7eb",
+                pointerEvents: editingContent ? "auto" : "none",
               }}
             />
           </div>
