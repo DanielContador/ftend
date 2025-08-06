@@ -18,26 +18,36 @@ export const StepCourseMaterialType = ({
   const [selected, setSelected] = useState(
     flow?.courseMaterialType?.value ?? null
   );
-  // Opciones base
+  // Configurar opciones según el tipo de publicación
+  const isScorm = flow?.publishType?.value === "scorm";
+  
+  // Opciones base (sin PPT cuando es SCORM)
   const baseOptions = [
     { key: "videos", label: "Vídeos" },
-    { key: "ppt", label: "PPT" },
+    ...(isScorm ? [] : [{ key: "ppt", label: "PPT" }]), // Solo incluir PPT si no es SCORM
     { key: "audios", label: "Audios" },
   ];
 
-  // Opción condicional para la cuarta opción
-  const lastOption =
-    flow?.publishType?.value === "scorm"
-      ? {
+  // Opciones adicionales según el tipo
+  const additionalOptions = isScorm
+    ? [
+        {
           key: "scormslide",
           label: "Diapositiva con Texto de Scorm",
-        }
-      : {
+        },
+        {
           key: "archivos",
           label: "Archivos de texto (word, pdf, txt)",
-        };
+        },
+      ]
+    : [
+        {
+          key: "archivos",
+          label: "Archivos de texto (word, pdf, txt)",
+        },
+      ];
 
-  const options = [...baseOptions, lastOption];
+  const options = [...baseOptions, ...additionalOptions];
 
   const handleSelect = (type) => {
     if (selected && selected.includes(type)) {

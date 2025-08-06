@@ -49,6 +49,7 @@ const ActivityGenerationScorm = ({
   const [documentContent, setDocumentContent] = useState("");
   const [editMode, setEditMode] = useState(false);
   const [tempContent, setTempContent] = useState("");
+  const [hasGeneratedActivity, setHasGeneratedActivity] = useState(false);
   const dispatch = useDispatch();
 
   // Cargar datos de la actividad/documento SCORM
@@ -67,6 +68,8 @@ const ActivityGenerationScorm = ({
 
         // Configurar datos del documento SCORM para el tab de documento
         if (textImage) {
+          // Solo marcar como generada si existe el documento SCORM (textImage)
+          setHasGeneratedActivity(true);
           setActivityDocument({
             id: textImage.id,
             activityId: textImage.activityId,
@@ -77,10 +80,12 @@ const ActivityGenerationScorm = ({
             config: textImage.config,
           });
           setDocumentContent(textImage.content || "");
-
-          setFileToken(scormResponse.data.token);
+          const defaultToken =
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaWxlSWQiOiIxODEiLCJleHAiOjE3NTQ1NTM3NTl9.1DvJ6JM6jCKnzD06334MevyxKqGRtwY9qufxDLMkIFs";
+          setFileToken(scormResponse.data.token || defaultToken);
         } else {
-          // Si no hay datos textImage, inicializar con datos vacíos
+          // Si no hay datos textImage, marcar como NO generada y inicializar con datos vacíos
+          setHasGeneratedActivity(false);
           setActivityDocument(null);
           setDocumentContent("");
         }
@@ -110,6 +115,7 @@ const ActivityGenerationScorm = ({
         GenerationType: "Internet",
       });
       await fetchActivity();
+      setHasGeneratedActivity(true);
       setActiveTab("document");
     } catch (error) {
       dispatch(showFloatingError(t("errorGeneratingActivityDocument")));
@@ -128,6 +134,7 @@ const ActivityGenerationScorm = ({
         GenerationType: "Internet",
       });
       await fetchActivity();
+      setHasGeneratedActivity(true);
       setActiveTab("document");
     } catch (error) {
       dispatch(showFloatingError(t("errorGeneratingActivityDocument")));
@@ -207,18 +214,42 @@ const ActivityGenerationScorm = ({
           <FontAwesomeIcon icon={faTimes} />
         </button>
         <div className={styles.tabs}>
-          {TABS.map((tab) => (
-            <div
-              key={tab.key}
-              className={`${styles.tab} ${
-                activeTab === tab.key ? styles.active : ""
-              }`}
-              onClick={() => setActiveTab(tab.key)}
-              style={{ userSelect: "none" }}
-            >
-              {tab.label}
-            </div>
-          ))}
+          {TABS.map((tab) => {
+            const isDocumentTab = tab.key === "document";
+            const isDisabled = isDocumentTab && !hasGeneratedActivity;
+            
+            // Debug logs
+            if (isDocumentTab) {
+              console.log('Document tab render:', {
+                hasGeneratedActivity,
+                isDisabled,
+                activityDocument: !!activityDocument
+              });
+            }
+            
+            return (
+              <div
+                key={tab.key}
+                className={`${styles.tab} ${
+                  activeTab === tab.key ? styles.active : ""
+                } ${isDisabled ? styles.disabled : ""}`}
+                onClick={() => {
+                  console.log('Tab clicked:', tab.key, 'isDisabled:', isDisabled);
+                  if (!isDisabled) {
+                    setActiveTab(tab.key);
+                  }
+                }}
+                style={{ 
+                  userSelect: "none",
+                  opacity: isDisabled ? 0.5 : 1,
+                  cursor: isDisabled ? "not-allowed" : "pointer"
+                }}
+                title={isDisabled ? "Genera la actividad primero para acceder al documento" : ""}
+              >
+                {tab.label}
+              </div>
+            );
+          })}
         </div>
         <div className={styles.modalContent}>
           {activeTab === "config" && (

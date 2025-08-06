@@ -49,6 +49,7 @@ const ActivityGenerationScormDocumentTab = ({
     useState(documentContent);
   const [slideImage, setSlideImage] = useState(null);
   const [tempSlideImage, setTempSlideImage] = useState(null);
+  const [isDragOver, setIsDragOver] = useState(false);
   const contentRef = useRef(null);
   const titleRef = useRef(null);
 
@@ -73,9 +74,6 @@ const ActivityGenerationScormDocumentTab = ({
     ) {
       // Usar el endpoint de descarga con token como downloadUrl
       const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/v1/download/textimage/file/${activityDocument.activityId}?token=${fileToken}`;
-      console.log("Activity ID:", activityDocument.activityId);
-      console.log("File token:", fileToken);
-      console.log("Image URL:", imageUrl);
       setSlideImage(imageUrl);
     } else {
       setSlideImage(null);
@@ -113,19 +111,30 @@ const ActivityGenerationScormDocumentTab = ({
   // Handler para cambiar la imagen de la diapositiva
   const handleSlideImageUpload = async (file) => {
     try {
+      console.log("handleSlideImageUpload called with file:", file.name);
+      console.log("activityId:", activityId);
+      console.log("fetchActivity function available:", !!fetchActivity);
+
       setShowImagePopup(false);
-      console.log("Uploading image for activityId:", activityId);
 
       // Subir imagen al backend
+      console.log("Calling uploadScormImage...");
       const response = await uploadScormImage(activityId, file);
+      console.log("uploadScormImage response:", response);
 
       if (response.success && response.data) {
         console.log("Image uploaded successfully:", response.data.imagePath);
 
         // Refrescar datos del backend para obtener la nueva imagen
         if (fetchActivity) {
+          console.log("Calling fetchActivity to refresh data...");
           await fetchActivity();
+          console.log("fetchActivity completed");
+        } else {
+          console.warn("fetchActivity function not available");
         }
+      } else {
+        console.error("Upload failed or no data in response:", response);
       }
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -136,6 +145,44 @@ const ActivityGenerationScormDocumentTab = ({
   // Handler para abrir el selector de imagen
   const handleSelectImage = () => {
     setShowImagePopup(true);
+  };
+
+  // Handlers para drag and drop
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+
+    const files = e.dataTransfer.files;
+
+    if (files && files.length > 0) {
+      const file = files[0];
+
+      // Verificar que sea una imagen
+      if (file.type.startsWith("image/")) {
+        handleSlideImageUpload(file);
+      } else {
+        console.error(
+          "El archivo debe ser una imagen. Tipo recibido:",
+          file.type
+        );
+        // Aquí podrías mostrar un mensaje de error al usuario
+      }
+    } else {
+      console.log("No files found in drop event");
+    }
   };
 
   // Handler para editar el título de la diapositiva
@@ -340,7 +387,16 @@ const ActivityGenerationScormDocumentTab = ({
         {/* Columna izquierda - Imagen */}
         <div className={styles.imageSection}>
           <h4 className={styles.sectionTitle}>Imagen de la Diapositiva</h4>
-          <div className={styles.imageContainer}>
+          <div
+            className={styles.imageContainer}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            style={{
+              border: isDragOver ? "2px dashed #7c3aed" : undefined,
+              backgroundColor: isDragOver ? "#f3f4f6" : undefined,
+            }}
+          >
             {tempSlideImage || slideImage ? (
               <>
                 <div className={styles.imagePreview}>
@@ -359,7 +415,15 @@ const ActivityGenerationScormDocumentTab = ({
                 <p className={styles.imageFormats}>JPG, PNG, GIF hasta 5MB</p>
               </>
             ) : (
-              <div className={styles.imagePlaceholder}>
+              <div
+                className={`${styles.imagePlaceholder} ${
+                  isDragOver ? styles.dragOver : ""
+                }`}
+                style={{
+                  borderColor: isDragOver ? "#7c3aed" : undefined,
+                  backgroundColor: isDragOver ? "#f8fafc" : undefined,
+                }}
+              >
                 <FontAwesomeIcon
                   icon={faImage}
                   className={styles.placeholderIcon}
