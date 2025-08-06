@@ -25,6 +25,7 @@ import {
   getActivityVideo,
   getActivityAudio,
   getActivityDocument,
+  getScormByActivityId,
 } from "../../../Activity/services/activityService";
 import EvaluationGeneration from "./EvaluationGeneration";
 import EvaluationEdition from "./EvaluationEdition";
@@ -37,6 +38,9 @@ const iconByType = {
   Audio: <FontAwesomeIcon className={styles.iconAudio} icon={faHeadphones} />,
   PPT: <FontAwesomeIcon className={styles.iconPPT} icon={faFilePowerpoint} />,
   SCORM: <FontAwesomeIcon className={styles.iconSCORM} icon={faDesktop} />,
+  Diapositiva_Scorm: (
+    <FontAwesomeIcon className={styles.iconPPT} icon={faDesktop} />
+  ),
 };
 
 // Function to get the appropriate icon for any format
@@ -84,6 +88,20 @@ const serviceMap = {
   SCORM: {
     get: getActivityDocument, // Using document service for now as requested
     checker: (data) => data.documents && data.documents.length > 0,
+    urlPath: "scorm",
+  },
+  Diapositiva_Scorm: {
+    get: getScormByActivityId,
+    checker: (data) => {
+      // Para SCORM, verificar que existe textImage y que tiene contenido
+      return (
+        data &&
+        data.textImage &&
+        (data.textImage.content ||
+          data.textImage.imagePath ||
+          data.textImage.id)
+      );
+    },
     urlPath: "scorm",
   },
 };
