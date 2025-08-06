@@ -142,3 +142,13 @@ export const regenerateActivityScorm = async (data) => {
   const jwt = getCookie("authToken"); // Retrieve the authToken
   return await rPost("v1/textimage/regenerate", data, jwt);
 };
+
+export const getScormByActivityId = async (activityId) => {
+  const jwt = getCookie("authToken"); // Retrieve the authToken
+  return await rGet(`v1/textimage/activity/${activityId}`, jwt);
+};
+
+export const updateScormByActivityId = async (activityId, data) => {
+  const jwt = getCookie("authToken"); // Retrieve the authToken
+  return await rPut(`v1/textimage/${activityId}`, data, jwt);
+};

@@ -15,6 +15,7 @@ import {
   faLink,
 } from "@fortawesome/free-solid-svg-icons";
 import UploadDocumentPopup from "../../../../../shared/components/UploadDocumentPopup";
+import { updateScormByActivityId } from "../../../services/activityService";
 
 const DEFAULT_SLIDE_TITLE = "Introducción al Tema";
 
@@ -29,15 +30,29 @@ const ActivityGenerationScormDocumentTab = ({
   activityDocument,
   fileToken,
   data,
+  activityId,
 }) => {
   const [showImagePopup, setShowImagePopup] = useState(false);
-  const [slideTitle, setSlideTitle] = useState(data?.name || DEFAULT_SLIDE_TITLE);
-  const [tempSlideTitle, setTempSlideTitle] = useState(data?.name || DEFAULT_SLIDE_TITLE);
+  const [slideTitle, setSlideTitle] = useState(activityDocument?.title || data?.title || DEFAULT_SLIDE_TITLE);
+  const [tempSlideTitle, setTempSlideTitle] = useState(activityDocument?.title || data?.title || DEFAULT_SLIDE_TITLE);
   const [editingTitle, setEditingTitle] = useState(false);
+  const [editingContent, setEditingContent] = useState(false);
+  const [tempDocumentContent, setTempDocumentContent] = useState(documentContent);
   const [slideImage, setSlideImage] = useState(null);
   const [tempSlideImage, setTempSlideImage] = useState(null);
   const contentRef = useRef(null);
   const titleRef = useRef(null);
+
+  // Actualizar título y contenido cuando lleguen los datos del backend
+  useEffect(() => {
+    const newTitle = activityDocument?.title || data?.title || DEFAULT_SLIDE_TITLE;
+    setSlideTitle(newTitle);
+    setTempSlideTitle(newTitle);
+  }, [activityDocument?.title, data?.title]);
+
+  useEffect(() => {
+    setTempDocumentContent(documentContent);
+  }, [documentContent]);
 
   // URL de descarga del documento SCORM generado
   const downloadUrl =
@@ -95,17 +110,56 @@ const ActivityGenerationScormDocumentTab = ({
   };
 
   // Handler para guardar el título editado
-  const handleTitleSave = () => {
-    setSlideTitle(tempSlideTitle);
-    setEditingTitle(false);
-    // TODO: Llamar al backend para guardar el título cuando esté disponible
-    // handleSaveSlideTitle(tempSlideTitle);
+  const handleTitleSave = async () => {
+    try {
+      await updateScormByActivityId(activityId, {
+        Title: tempSlideTitle,
+      });
+      setSlideTitle(tempSlideTitle);
+      setEditingTitle(false);
+    } catch (error) {
+      console.error("Error saving title:", error);
+      // Revertir cambios en caso de error
+      setTempSlideTitle(slideTitle);
+    }
   };
 
   // Handler para cancelar la edición del título
   const handleTitleCancel = () => {
     setTempSlideTitle(slideTitle);
     setEditingTitle(false);
+  };
+
+  // Handler para iniciar edición del contenido
+  const handleContentEdit = () => {
+    setEditingContent(true);
+    setTempDocumentContent(documentContent);
+    setTimeout(() => {
+      if (contentRef.current) {
+        contentRef.current.focus();
+      }
+    }, 0);
+  };
+
+  // Handler para guardar el contenido editado
+  const handleContentSave = async () => {
+    try {
+      await updateScormByActivityId(activityId, {
+        Content: tempDocumentContent,
+      });
+      setDocumentContent(tempDocumentContent);
+      setEditingContent(false);
+    } catch (error) {
+      console.error("Error saving content:", error);
+      // Revertir cambios en caso de error
+      setTempDocumentContent(documentContent);
+    }
+  };
+
+  // Handler para cancelar la edición del contenido
+  const handleContentCancel = () => {
+    setTempDocumentContent(documentContent);
+    setEditingContent(false);
   };
 
   // Handler para guardar cambios de imagen (preparado para backend)
@@ -277,10 +331,31 @@ const ActivityGenerationScormDocumentTab = ({
 
         {/* Columna derecha - Contenido */}
         <div className={styles.contentSection}>
-          <h4 className={styles.sectionTitle}>Contenido de la Diapositiva</h4>
+          <div className={styles.contentHeader}>
+            <h4 className={styles.sectionTitle}>Contenido de la Diapositiva</h4>
+            {!editingContent && (
+              <button className={styles.contentEditBtn} onClick={handleContentEdit}>
+                <FontAwesomeIcon icon={faPen} />
+              </button>
+            )}
+          </div>
 
-          {/* Barra de herramientas de formato */}
-          <div className={styles.toolbar}>
+          {editingContent && (
+            <div className={styles.contentActions}>
+              <button className={styles.contentSaveBtn} onClick={handleContentSave}>
+                <FontAwesomeIcon icon={faSave} />
+                Guardar
+              </button>
+              <button className={styles.contentCancelBtn} onClick={handleContentCancel}>
+                <FontAwesomeIcon icon={faXmark} />
+                Cancelar
+              </button>
+            </div>
+          )}
+
+          {/* Barra de herramientas de formato - solo visible en modo edición */}
+          {editingContent && (
+            <div className={styles.toolbar}>
             <button
               className={styles.toolbarBtn}
               onClick={() => formatText("bold")}
@@ -326,25 +401,27 @@ const ActivityGenerationScormDocumentTab = ({
             >
               <FontAwesomeIcon icon={faLink} />
             </button>
-          </div>
+            </div>
+          )}
 
           {/* Área de contenido editable */}
           <div className={styles.contentContainer}>
             <div
               className={styles.contentTextarea}
               ref={contentRef}
-              contentEditable
+              contentEditable={editingContent}
               suppressContentEditableWarning
+              dangerouslySetInnerHTML={{ __html: editingContent ? tempDocumentContent : documentContent }}
               onInput={(e) => {
-                const content = e.target.innerHTML;
-                setTempContent(content);
-              }}
-              onBlur={() => {
-                if (contentRef.current) {
-                  const content = contentRef.current.innerHTML;
-                  setTempContent(content);
-                  setDocumentContent(content);
+                if (editingContent) {
+                  const content = e.target.innerHTML;
+                  setTempDocumentContent(content);
                 }
+              }}
+              style={{
+                backgroundColor: editingContent ? '#fff' : '#f9f9f9',
+                cursor: editingContent ? 'text' : 'default',
+                border: editingContent ? '2px solid #7c3aed' : '1px solid #e5e7eb'
               }}
             />
           </div>

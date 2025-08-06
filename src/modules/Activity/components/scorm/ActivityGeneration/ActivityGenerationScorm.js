@@ -6,8 +6,7 @@ import {
   generateActivityDocument,
   regenerateActivityDocument,
   updateDocumentContent,
-  generateActivityScorm,
-  regenerateActivityScorm,
+  getScormByActivityId,
 } from "../../../services/activityService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -54,14 +53,38 @@ const ActivityGenerationScorm = ({
   const fetchActivity = async () => {
     setModalLoading(true);
     try {
-      const response = await getActivityDocument(activityId);
-      setData(response.data.activity);
-      if (response.data.documents && response.data.documents.length > 0) {
-        setActivityDocument(response.data.documents[0]);
-        setDocumentContent(response.data.documents[0].content);
+      // Llamar a getActivityDocument para obtener datos del tab de configuración
+      const activityResponse = await getActivityDocument(activityId);
+      setData(activityResponse.data.activity);
+      if (activityResponse.data.token) {
+        setFileToken(activityResponse.data.token);
       }
-      if (response.data.token) {
-        setFileToken(response.data.token);
+
+      // Llamar a getScormByActivityId para obtener datos del tab de documento
+      try {
+        const scormResponse = await getScormByActivityId(activityId);
+        if (scormResponse.success && scormResponse.data) {
+          const scormData = scormResponse.data;
+          setActivityDocument({
+            id: scormData.id,
+            content: scormData.content,
+            title: scormData.title,
+            imagePath: scormData.imagePath,
+            imageDescription: scormData.imageDescription,
+            config: scormData.config,
+          });
+          setDocumentContent(scormData.content || "");
+          
+          // Para SCORM, usamos el imagePath como token si existe
+          if (scormData.imagePath) {
+            setFileToken(scormData.imagePath);
+          }
+        }
+      } catch (scormError) {
+        console.log("No SCORM data found, this might be a new activity");
+        // Si no hay datos SCORM, inicializar con datos vacíos
+        setActivityDocument(null);
+        setDocumentContent("");
       }
     } catch (error) {
       dispatch(showFloatingError(t("errorFetchingActivity")));
@@ -78,10 +101,12 @@ const ActivityGenerationScorm = ({
   const handleGenerateDocument = async () => {
     setModalLoading(true);
     try {
-      const response = await generateActivityScorm({
+      const response = await generateActivityDocument({
+        Prompt: configInstructions,
+        Duration: data.duration,
+        DocumentType: data.contentType,
         ActivityId: activityId,
-        PromptInstructions: configInstructions,
-        GenerationType: "Internet",
+        IncludeImages: includeImages,
       });
       await fetchActivity();
       setActiveTab("document");
@@ -96,10 +121,9 @@ const ActivityGenerationScorm = ({
   const handleRegenerateDocument = async () => {
     setModalLoading(true);
     try {
-      const response = await regenerateActivityScorm({
+      const response = await regenerateActivityDocument({
+        Prompt: configInstructions,
         ActivityId: activityId,
-        PromptInstructions: configInstructions,
-        GenerationType: "Internet",
       });
       await fetchActivity();
       setActiveTab("document");
@@ -112,26 +136,17 @@ const ActivityGenerationScorm = ({
 
   // Guardar documento SCORM editado
   const handleSaveDocument = async (content) => {
-    if (!activityDocument || !activityDocument.id) return;
+    if (!activityDocument) return;
     setModalLoading(true);
     try {
-      // Solo envía las propiedades requeridas y que existan, para evitar nulls innecesarios
+      // Estructura de datos para SCORM según el ejemplo proporcionado
       const dataToSend = {
+        Title: activityDocument.title || data.title || "Título SCORM",
+        ImageDescription: activityDocument.imageDescription || "Descripción de imagen",
         Content: content,
       };
-      if (activityDocument.filePath)
-        dataToSend.FilePath = activityDocument.filePath;
-      if (activityDocument.fileType)
-        dataToSend.FileType = activityDocument.fileType;
-      if (activityDocument.prompt) dataToSend.Prompt = activityDocument.prompt;
-      if (activityDocument.duration)
-        dataToSend.Duration = activityDocument.duration;
-      if (typeof activityDocument.includeImages !== "undefined")
-        dataToSend.IncludeImages = activityDocument.includeImages;
-      if (typeof activityDocument.cantPages !== "undefined")
-        dataToSend.CantPages = activityDocument.cantPages;
 
-      await updateDocumentContent(activityDocument.id, dataToSend);
+      await updateScormByActivityId(activityId, dataToSend);
       await fetchActivity(); // Recargar datos para reflejar los cambios
       setDocumentContent(content);
       setEditMode(false);
@@ -225,6 +240,7 @@ const ActivityGenerationScorm = ({
               activityDocument={activityDocument}
               fileToken={fileToken}
               data={data}
+              activityId={activityId}
             />
           )}
         </div>
