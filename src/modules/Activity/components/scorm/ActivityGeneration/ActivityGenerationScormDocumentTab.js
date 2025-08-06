@@ -141,6 +141,8 @@ const ActivityGenerationScormDocumentTab = ({
     setTempDocumentContent(documentContent);
     setTimeout(() => {
       if (contentRef.current) {
+        // Set the initial content in the div
+        contentRef.current.innerHTML = documentContent || '';
         contentRef.current.focus();
       }
     }, 0);
@@ -344,119 +346,128 @@ const ActivityGenerationScormDocumentTab = ({
             <h4 className={styles.sectionTitle}>Contenido de la Diapositiva</h4>
           </div>
 
-          {/* Botones de acción - encima de la caja de texto */}
-          {!editingContent ? (
-            <button
-              className={styles.editContentBtn}
-              onClick={handleContentEdit}
-              type="button"
-              disabled={!documentContent || documentContent.trim() === ""}
-            >
-              <FontAwesomeIcon icon={faPen} style={{ marginRight: 6 }} />
-              Editar
-            </button>
-          ) : (
-            <div className={styles.editContentActions}>
-              <button
-                className={styles.saveContentBtn}
-                onClick={handleContentSave}
-                type="button"
-              >
-                <FontAwesomeIcon icon={faSave} style={{ marginRight: 4 }} />
-                Guardar
-              </button>
-              <button
-                className={styles.cancelContentBtn}
-                onClick={handleContentCancel}
-                type="button"
-              >
-                <FontAwesomeIcon icon={faXmark} style={{ marginRight: 4 }} />
-                Cancelar
-              </button>
-            </div>
-          )}
-
-          {/* Barra de herramientas de formato - solo visible en modo edición */}
-          {editingContent && (
+          {/* Barra de herramientas de formato - siempre visible */}
+          <div className={styles.toolbarContainer}>
             <div className={styles.toolbar}>
-            <button
-              className={styles.toolbarBtn}
-              onClick={() => formatText("bold")}
-              title="Negrita"
-            >
-              <FontAwesomeIcon icon={faBold} />
-            </button>
-            <button
-              className={styles.toolbarBtn}
-              onClick={() => formatText("italic")}
-              title="Cursiva"
-            >
-              <FontAwesomeIcon icon={faItalic} />
-            </button>
-            <button
-              className={styles.toolbarBtn}
-              onClick={() => formatText("underline")}
-              title="Subrayado"
-            >
-              <FontAwesomeIcon icon={faUnderline} />
-            </button>
-            <button
-              className={styles.toolbarBtn}
-              onClick={() => formatText("insertUnorderedList")}
-              title="Lista con viñetas"
-            >
-              <FontAwesomeIcon icon={faListUl} />
-            </button>
-            <button
-              className={styles.toolbarBtn}
-              onClick={() => formatText("insertOrderedList")}
-              title="Lista numerada"
-            >
-              <FontAwesomeIcon icon={faListOl} />
-            </button>
-            <button
-              className={styles.toolbarBtn}
-              onClick={() => {
-                const url = prompt("Ingresa la URL del enlace:");
-                if (url) formatText("createLink", url);
-              }}
-              title="Insertar enlace"
-            >
-              <FontAwesomeIcon icon={faLink} />
-            </button>
+              <button
+                className={`${styles.toolbarBtn} ${!editingContent ? styles.toolbarBtnDisabled : ''}`}
+                onClick={() => editingContent && formatText("bold")}
+                title="Negrita"
+                disabled={!editingContent}
+              >
+                <FontAwesomeIcon icon={faBold} />
+              </button>
+              <button
+                className={`${styles.toolbarBtn} ${!editingContent ? styles.toolbarBtnDisabled : ''}`}
+                onClick={() => editingContent && formatText("italic")}
+                title="Cursiva"
+                disabled={!editingContent}
+              >
+                <FontAwesomeIcon icon={faItalic} />
+              </button>
+              <button
+                className={`${styles.toolbarBtn} ${!editingContent ? styles.toolbarBtnDisabled : ''}`}
+                onClick={() => editingContent && formatText("underline")}
+                title="Subrayado"
+                disabled={!editingContent}
+              >
+                <FontAwesomeIcon icon={faUnderline} />
+              </button>
+              <button
+                className={`${styles.toolbarBtn} ${!editingContent ? styles.toolbarBtnDisabled : ''}`}
+                onClick={() => editingContent && formatText("insertUnorderedList")}
+                title="Lista con viñetas"
+                disabled={!editingContent}
+              >
+                <FontAwesomeIcon icon={faListUl} />
+              </button>
+              <button
+                className={`${styles.toolbarBtn} ${!editingContent ? styles.toolbarBtnDisabled : ''}`}
+                onClick={() => editingContent && formatText("insertOrderedList")}
+                title="Lista numerada"
+                disabled={!editingContent}
+              >
+                <FontAwesomeIcon icon={faListOl} />
+              </button>
+              <button
+                className={`${styles.toolbarBtn} ${!editingContent ? styles.toolbarBtnDisabled : ''}`}
+                onClick={() => {
+                  if (editingContent) {
+                    const url = prompt("Ingresa la URL del enlace:");
+                    if (url) formatText("createLink", url);
+                  }
+                }}
+                title="Insertar enlace"
+                disabled={!editingContent}
+              >
+                <FontAwesomeIcon icon={faLink} />
+              </button>
             </div>
-          )}
 
-          {/* Área de contenido editable */}
+            {/* Botones de acción - a la derecha de la toolbar */}
+            {!editingContent ? (
+              <button
+                className={styles.editContentBtn}
+                onClick={handleContentEdit}
+                type="button"
+                disabled={!documentContent || documentContent.trim() === ""}
+              >
+                <FontAwesomeIcon icon={faPen} style={{ marginRight: 6 }} />
+                Editar
+              </button>
+            ) : (
+              <div className={styles.editContentActions}>
+                <button
+                  className={styles.saveContentBtn}
+                  onClick={handleContentSave}
+                  type="button"
+                >
+                  <FontAwesomeIcon icon={faSave} style={{ marginRight: 4 }} />
+                  Guardar
+                </button>
+                <button
+                  className={styles.cancelContentBtn}
+                  onClick={handleContentCancel}
+                  type="button"
+                >
+                  <FontAwesomeIcon icon={faXmark} style={{ marginRight: 4 }} />
+                  Cancelar
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Área de contenido editable - siempre en modo editable pero deshabilitado hasta hacer clic en Editar */}
           <div className={styles.contentContainer}>
-            {editingContent ? (
-              <div
-                className={styles.contentTextarea}
-                ref={contentRef}
-                contentEditable={true}
-                suppressContentEditableWarning
-                dangerouslySetInnerHTML={{ __html: tempDocumentContent }}
-                onInput={(e) => {
+            <div
+              className={styles.contentTextarea}
+              ref={contentRef}
+              contentEditable={editingContent}
+              suppressContentEditableWarning
+              onInput={(e) => {
+                if (editingContent) {
                   const content = e.target.innerHTML;
                   setTempDocumentContent(content);
-                }}
-                style={{
-                  backgroundColor: '#fff',
-                  cursor: 'text',
-                  border: '2px solid #7c3aed'
-                }}
-              />
-            ) : (
-              <div
-                className={styles.contentTextDisplay}
-                dangerouslySetInnerHTML={{ __html: documentContent }}
-                style={{
-                  backgroundColor: '#f9f9f9',
-                  cursor: 'default',
-                  border: '1px solid #e5e7eb'
-                }}
-              />
-            )}
+                }
+              }}
+              onBlur={(e) => {
+                if (editingContent) {
+                  const content = e.target.innerHTML;
+                  setTempDocumentContent(content);
+                }
+              }}
+              onClick={(e) => {
+                if (!editingContent) {
+                  e.preventDefault();
+                }
+              }}
+              style={{
+                backgroundColor: editingContent ? '#fff' : '#f9f9f9',
+                cursor: editingContent ? 'text' : 'default',
+                border: editingContent ? '2px solid #7c3aed' : '1px solid #e5e7eb',
+                pointerEvents: editingContent ? 'auto' : 'none'
+              }}
+            />
           </div>
         </div>
       </div>

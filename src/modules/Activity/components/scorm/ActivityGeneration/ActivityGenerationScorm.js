@@ -290,7 +290,7 @@ const ActivityGenerationScorm = ({
                   cursor: isFinishDisabled ? "not-allowed" : "pointer",
                 }}
               >
-                Guardar y continuar
+                Finalizar
               </button>
             )}
           </>

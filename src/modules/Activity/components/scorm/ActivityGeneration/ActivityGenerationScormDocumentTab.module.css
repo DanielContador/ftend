@@ -304,11 +304,18 @@
   color: #374151;
 }
 
+/* Toolbar container - holds toolbar and action buttons */
+.toolbarContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
 /* Toolbar */
 .toolbar {
   display: flex;
   gap: 4px;
-  margin-bottom: 12px;
   padding: 8px;
   background: #f8f9fa;
   border: 1px solid #e5e7eb;
@@ -329,6 +336,15 @@
 .toolbarBtn:hover {
   background: #e5e7eb;
   color: #374151;
+}
+
+.toolbarBtnDisabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.toolbarBtnDisabled:hover {
+  background: #f3f4f6;
 }
 
 /* Content container */
@@ -393,7 +409,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 16px;
+  margin-top: 8px;
+  margin-bottom: 8px;
   margin-left: auto;
   width: auto;
   align-self: flex-end;
@@ -413,7 +430,8 @@
 .editContentActions {
   display: flex;
   gap: 8px;
-  margin-top: 16px;
+  margin-top: 8px;
+  margin-bottom: 8px;
   margin-left: auto;
   width: auto;
   align-self: flex-end;
