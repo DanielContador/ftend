@@ -149,11 +149,15 @@ const ActivityGenerationScormDocumentTab = ({
   // Handler para guardar el contenido editado
   const handleContentSave = async () => {
     try {
-      await updateScormByActivityId(activityId, {
+      await updateScormByActivityId(activityDocument.id, {
         Content: tempDocumentContent,
       });
       setDocumentContent(tempDocumentContent);
       setEditingContent(false);
+      // Refrescar datos del backend para mantener sincronización
+      if (fetchActivity) {
+        await fetchActivity();
+      }
     } catch (error) {
       console.error("Error saving content:", error);
       // Revertir cambios en caso de error
@@ -338,21 +342,35 @@ const ActivityGenerationScormDocumentTab = ({
         <div className={styles.contentSection}>
           <div className={styles.contentHeader}>
             <h4 className={styles.sectionTitle}>Contenido de la Diapositiva</h4>
-            {!editingContent && (
-              <button className={styles.contentEditBtn} onClick={handleContentEdit}>
-                <FontAwesomeIcon icon={faPen} />
-              </button>
-            )}
           </div>
 
-          {editingContent && (
-            <div className={styles.contentActions}>
-              <button className={styles.contentSaveBtn} onClick={handleContentSave}>
-                <FontAwesomeIcon icon={faSave} />
+          {/* Botones de acción - encima de la caja de texto */}
+          {!editingContent ? (
+            <button
+              className={styles.editContentBtn}
+              onClick={handleContentEdit}
+              type="button"
+              disabled={!documentContent || documentContent.trim() === ""}
+            >
+              <FontAwesomeIcon icon={faPen} style={{ marginRight: 6 }} />
+              Editar
+            </button>
+          ) : (
+            <div className={styles.editContentActions}>
+              <button
+                className={styles.saveContentBtn}
+                onClick={handleContentSave}
+                type="button"
+              >
+                <FontAwesomeIcon icon={faSave} style={{ marginRight: 4 }} />
                 Guardar
               </button>
-              <button className={styles.contentCancelBtn} onClick={handleContentCancel}>
-                <FontAwesomeIcon icon={faXmark} />
+              <button
+                className={styles.cancelContentBtn}
+                onClick={handleContentCancel}
+                type="button"
+              >
+                <FontAwesomeIcon icon={faXmark} style={{ marginRight: 4 }} />
                 Cancelar
               </button>
             </div>
@@ -411,24 +429,34 @@ const ActivityGenerationScormDocumentTab = ({
 
           {/* Área de contenido editable */}
           <div className={styles.contentContainer}>
-            <div
-              className={styles.contentTextarea}
-              ref={contentRef}
-              contentEditable={editingContent}
-              suppressContentEditableWarning
-              dangerouslySetInnerHTML={{ __html: editingContent ? tempDocumentContent : documentContent }}
-              onInput={(e) => {
-                if (editingContent) {
+            {editingContent ? (
+              <div
+                className={styles.contentTextarea}
+                ref={contentRef}
+                contentEditable={true}
+                suppressContentEditableWarning
+                dangerouslySetInnerHTML={{ __html: tempDocumentContent }}
+                onInput={(e) => {
                   const content = e.target.innerHTML;
                   setTempDocumentContent(content);
-                }
-              }}
-              style={{
-                backgroundColor: editingContent ? '#fff' : '#f9f9f9',
-                cursor: editingContent ? 'text' : 'default',
-                border: editingContent ? '2px solid #7c3aed' : '1px solid #e5e7eb'
-              }}
-            />
+                }}
+                style={{
+                  backgroundColor: '#fff',
+                  cursor: 'text',
+                  border: '2px solid #7c3aed'
+                }}
+              />
+            ) : (
+              <div
+                className={styles.contentTextDisplay}
+                dangerouslySetInnerHTML={{ __html: documentContent }}
+                style={{
+                  backgroundColor: '#f9f9f9',
+                  cursor: 'default',
+                  border: '1px solid #e5e7eb'
+                }}
+              />
+            )}
           </div>
         </div>
       </div>
