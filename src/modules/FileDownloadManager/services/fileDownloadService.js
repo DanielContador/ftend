@@ -9,7 +9,7 @@ class FileDownloadService extends BaseService {
     super(fileDownloadModuleUrl);
   }
 
-  // Binary file download method - needed because BaseService methods process JSON, not binary data
+  // Binary file download method (GET) - needed because BaseService methods process JSON, not binary data
   #downloadBinaryFile = async (partialUrl) => {
     try {
       const jwt = this.#getAuthToken();
@@ -26,13 +26,30 @@ class FileDownloadService extends BaseService {
     }
   };
 
+  // Binary file download method (POST) - for endpoints that require POST requests
+  #downloadBinaryFilePost = async (partialUrl, data = {}) => {
+    try {
+      const jwt = this.#getAuthToken();
+      const API_URL = process.env.NEXT_PUBLIC_API_URL;
+      const config = {
+        responseType: "arraybuffer", // Critical: this preserves binary data
+        headers: jwt ? { Authorization: `Bearer ${jwt}` } : {},
+      };
+      const response = await axios.post(`${API_URL}/${this.baseUrl}${partialUrl}`, data, config);
+      return response.data;
+    } catch (error) {
+      console.error("Download error:", error);
+      throw error;
+    }
+  };
+
   // Get auth token - following BaseService pattern
   #getAuthToken = () => {
     return getCookie("authToken");
   };
 
-  downloadCourseScorm = (courseId) => {
-    return this.#downloadBinaryFile(`/packageScorm/${courseId}`);
+  downloadCourseScorm = (courseId, data = {}) => {
+    return this.#downloadBinaryFilePost(`/packageScorm/${courseId}`, data);
   };
 
   downloadCourseZip = (courseId) => {
