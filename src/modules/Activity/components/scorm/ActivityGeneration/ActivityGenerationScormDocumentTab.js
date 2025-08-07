@@ -67,13 +67,22 @@ const ActivityGenerationScormDocumentTab = ({
 
   // Actualizar imagen cuando lleguen los datos del backend
   useEffect(() => {
+    console.log("Image useEffect triggered:", {
+      imagePath: activityDocument?.imagePath,
+      activityId: activityDocument?.activityId
+    });
+    
     if (
       activityDocument?.imagePath &&
       activityDocument?.activityId
     ) {
-      const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/files/download/textimage/file/${activityDocument.activityId}`;
+      // Agregar timestamp para evitar cache del navegador
+      const timestamp = new Date().getTime();
+      const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/files/download/textimage/file/${activityDocument.activityId}?t=${timestamp}`;
+      console.log("Setting new image URL:", imageUrl);
       setSlideImage(imageUrl);
     } else {
+      console.log("No image data available, setting slideImage to null");
       setSlideImage(null);
     }
   }, [activityDocument?.imagePath, activityDocument?.activityId]);
@@ -102,6 +111,7 @@ const ActivityGenerationScormDocumentTab = ({
       console.log("handleSlideImageUpload called with file:", file.name);
       console.log("activityId:", activityId);
       console.log("fetchActivity function available:", !!fetchActivity);
+      console.log("Current activityDocument before upload:", activityDocument);
 
       setShowImagePopup(false);
 
@@ -111,7 +121,8 @@ const ActivityGenerationScormDocumentTab = ({
       console.log("uploadScormImage response:", response);
 
       if (response.success && response.data) {
-        console.log("Image uploaded successfully:", response.data.imagePath);
+        console.log("Image uploaded successfully:", response.data);
+        console.log("Response imagePath:", response.data.imagePath);
 
         // Refrescar datos del backend para obtener la nueva imagen
         if (fetchActivity) {
@@ -123,9 +134,15 @@ const ActivityGenerationScormDocumentTab = ({
         }
       } else {
         console.error("Upload failed or no data in response:", response);
+        console.error("Response details:", {
+          success: response.success,
+          data: response.data,
+          error: response.error
+        });
       }
     } catch (error) {
       console.error("Error uploading image:", error);
+      console.error("Error details:", error.message, error.stack);
       // Aquí podrías mostrar un mensaje de error al usuario
     }
   };
@@ -438,81 +455,8 @@ const ActivityGenerationScormDocumentTab = ({
             <h4 className={styles.sectionTitle}>Contenido de la Diapositiva</h4>
           </div>
 
-          {/* Barra de herramientas de formato - siempre visible */}
-          <div className={styles.toolbarContainer}>
-            <div className={styles.toolbar}>
-              <button
-                className={`${styles.toolbarBtn} ${
-                  !editingContent ? styles.toolbarBtnDisabled : ""
-                }`}
-                onClick={() => editingContent && formatText("bold")}
-                title="Negrita"
-                disabled={!editingContent}
-              >
-                <FontAwesomeIcon icon={faBold} />
-              </button>
-              <button
-                className={`${styles.toolbarBtn} ${
-                  !editingContent ? styles.toolbarBtnDisabled : ""
-                }`}
-                onClick={() => editingContent && formatText("italic")}
-                title="Cursiva"
-                disabled={!editingContent}
-              >
-                <FontAwesomeIcon icon={faItalic} />
-              </button>
-              <button
-                className={`${styles.toolbarBtn} ${
-                  !editingContent ? styles.toolbarBtnDisabled : ""
-                }`}
-                onClick={() => editingContent && formatText("underline")}
-                title="Subrayado"
-                disabled={!editingContent}
-              >
-                <FontAwesomeIcon icon={faUnderline} />
-              </button>
-              <button
-                className={`${styles.toolbarBtn} ${
-                  !editingContent ? styles.toolbarBtnDisabled : ""
-                }`}
-                onClick={() =>
-                  editingContent && formatText("insertUnorderedList")
-                }
-                title="Lista con viñetas"
-                disabled={!editingContent}
-              >
-                <FontAwesomeIcon icon={faListUl} />
-              </button>
-              <button
-                className={`${styles.toolbarBtn} ${
-                  !editingContent ? styles.toolbarBtnDisabled : ""
-                }`}
-                onClick={() =>
-                  editingContent && formatText("insertOrderedList")
-                }
-                title="Lista numerada"
-                disabled={!editingContent}
-              >
-                <FontAwesomeIcon icon={faListOl} />
-              </button>
-              <button
-                className={`${styles.toolbarBtn} ${
-                  !editingContent ? styles.toolbarBtnDisabled : ""
-                }`}
-                onClick={() => {
-                  if (editingContent) {
-                    const url = prompt("Ingresa la URL del enlace:");
-                    if (url) formatText("createLink", url);
-                  }
-                }}
-                title="Insertar enlace"
-                disabled={!editingContent}
-              >
-                <FontAwesomeIcon icon={faLink} />
-              </button>
-            </div>
-
-            {/* Botones de acción - a la derecha de la toolbar */}
+          {/* Botones de acción - sin toolbar */}
+          <div className={styles.contentActions}>
             {!editingContent ? (
               <button
                 className={styles.editContentBtn}

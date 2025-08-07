@@ -57,10 +57,11 @@ const ActivityGenerationScorm = ({
     try {
       // Llamar a getScormByActivityId para obtener tanto datos de actividad como textImage
       const scormResponse = await getScormByActivityId(activityId);
-      console.log("scormResponse:", scormResponse);
+      console.log("fetchActivity - scormResponse:", scormResponse);
 
       if (scormResponse.success && scormResponse.data) {
         const { activity, textImage } = scormResponse.data;
+        console.log("fetchActivity - textImage data:", textImage);
 
         // Configurar datos de la actividad para el tab de configuración
         setData(activity);
@@ -69,7 +70,7 @@ const ActivityGenerationScorm = ({
         if (textImage) {
           // Solo marcar como generada si existe el documento SCORM (textImage)
           setHasGeneratedActivity(true);
-          setActivityDocument({
+          const newActivityDocument = {
             id: textImage.id,
             activityId: textImage.activityId,
             content: textImage.content,
@@ -77,14 +78,19 @@ const ActivityGenerationScorm = ({
             imagePath: textImage.imagePath,
             imageDescription: textImage.imageDescription,
             config: textImage.config,
-          });
+          };
+          console.log("fetchActivity - setting new activityDocument:", newActivityDocument);
+          setActivityDocument(newActivityDocument);
           setDocumentContent(textImage.content || "");
         } else {
           // Si no hay datos textImage, marcar como NO generada y inicializar con datos vacíos
+          console.log("fetchActivity - no textImage data, setting to null");
           setHasGeneratedActivity(false);
           setActivityDocument(null);
           setDocumentContent("");
         }
+      } else {
+        console.log("fetchActivity - response not successful or no data:", scormResponse);
       }
     } catch (error) {
       console.log("Error fetching SCORM data:", error);
