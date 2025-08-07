@@ -25,6 +25,7 @@ import {
   getActivityVideo,
   getActivityAudio,
   getActivityDocument,
+  getScormByActivityId,
 } from "../../../Activity/services/activityService";
 import EvaluationGeneration from "./EvaluationGeneration";
 import EvaluationEdition from "./EvaluationEdition";
@@ -133,6 +134,7 @@ const CourseSectionActivity = ({
   const [videoModalData, setVideoModalData] = useState(null);
   const [videoModalKey, setVideoModalKey] = useState(0); // <--- nuevo estado para forzar reinicio
   const [downloadableStatus, setDownloadableStatus] = useState({});
+  const [generatedActivitiesStatus, setGeneratedActivitiesStatus] = useState({});
 
   // Estado para mostrar la vista de evaluación dentro del tab de contenido
   const [showEvaluationView, setShowEvaluationView] = useState(false);
@@ -263,14 +265,56 @@ const CourseSectionActivity = ({
     });
   };
 
-  // Check if there's any exportable content in the module
+  // Get the first activity that has generated content (including Diapositiva_Scorm)
+  const getFirstGeneratedActivity = () => {
+    if (!modules || modules.length === 0) {
+      return null;
+    }
+
+    // Check all modules for the first generated activity
+    for (const module of modules) {
+      if (!module.learning_objects) continue;
+      
+      const generatedActivity = module.learning_objects.find((activity) => {
+        // For Diapositiva_Scorm, check if it has generated content
+        if (activity.format === 'Diapositiva_Scorm') {
+          return generatedActivitiesStatus[activity.id] === true;
+        }
+        
+        // For other formats, check downloadable status
+        return downloadableStatus[activity.id] === true;
+      });
+      
+      if (generatedActivity) {
+        return generatedActivity;
+      }
+    }
+    
+    return null;
+  };
+
+  // Check if there's any exportable content in any module
   const hasExportableContent = () => {
-    if (!selectedModule || !selectedModule.learning_objects) {
+    if (!modules || modules.length === 0) {
       return false;
     }
 
-    return selectedModule.learning_objects.some((activity) => {
-      return downloadableStatus[activity.id] === true;
+    // Check all modules for any generated activity
+    return modules.some((module) => {
+      if (!module.learning_objects) {
+        return false;
+      }
+      
+      return module.learning_objects.some((activity) => {
+        // For Diapositiva_Scorm, we need to check if it has generated content
+        // This will be checked via the generatedActivitiesStatus state
+        if (activity.format === 'Diapositiva_Scorm') {
+          return generatedActivitiesStatus[activity.id] === true;
+        }
+        
+        // For other formats, check downloadable status
+        return downloadableStatus[activity.id] === true;
+      });
     });
   };
 
@@ -345,6 +389,54 @@ const CourseSectionActivity = ({
 
     checkAllActivitiesDownloadStatus();
   }, [selectedModule]);
+
+  useEffect(() => {
+    const checkAllActivitiesGenerationStatus = async () => {
+      if (!modules || modules.length === 0) {
+        return;
+      }
+
+      const allActivities = modules.flatMap(module => 
+        module.learning_objects || []
+      );
+
+      const statusPromises = allActivities.map(async (activity) => {
+        try {
+          if (activity.format === 'Diapositiva_Scorm') {
+            // For Diapositiva_Scorm, check if textImage exists
+            const response = await getScormByActivityId(activity.id);
+            return {
+              id: activity.id,
+              isGenerated: response.success && response.data?.textImage !== null,
+            };
+          } else {
+            // For other formats, use the existing service map logic
+            const serviceConfig = serviceMap[activity.format];
+            if (!serviceConfig) {
+              return { id: activity.id, isGenerated: false };
+            }
+            const response = await serviceConfig.get(activity.id);
+            return {
+              id: activity.id,
+              isGenerated: serviceConfig.checker(response.data),
+            };
+          }
+        } catch (error) {
+          return { id: activity.id, isGenerated: false };
+        }
+      });
+
+      const statuses = await Promise.all(statusPromises);
+      const newStatus = statuses.reduce((acc, current) => {
+        acc[current.id] = current.isGenerated;
+        return acc;
+      }, {});
+
+      setGeneratedActivitiesStatus(newStatus);
+    };
+
+    checkAllActivitiesGenerationStatus();
+  }, [modules]);
 
   const handleCardToggle = (resourceId) => {
     setExpandedResource((prev) => (prev === resourceId ? null : resourceId));
@@ -669,8 +761,8 @@ const CourseSectionActivity = ({
                                     )}
                                   </div>
                                   <div className={styles.resourceCardActions}>
-                                    {/* Hide download button for Diapositiva_Scorm since they are not downloadable */}
-                                    {res.format !== 'Diapositiva_Scorm' && (
+                                    {/* Hide download button for Diapositiva_Scorm and evaluation activities since they are not downloadable */}
+                                    {res.format !== 'Diapositiva_Scorm' && !res.format.toLowerCase().includes('evaluacion') && (
                                       <button
                                         className={`${styles.downloadBtn} ${
                                           !downloadableStatus[res.id]
@@ -842,8 +934,8 @@ const CourseSectionActivity = ({
             (hasExportableContent() ? (
               <CourseExportManager
                 courseId={courseId}
-                activityId={getFirstExportableActivity()?.id || null}
-                fileType={getFirstExportableActivity()?.format || null}
+                activityId={getFirstGeneratedActivity()?.id || null}
+                fileType={getFirstGeneratedActivity()?.format || null}
                 courseName={courseStructure?.name || "Curso"}
               />
             ) : (

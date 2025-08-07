@@ -21,7 +21,7 @@ const CourseExportManager = ({
   const { t } = useTranslation();
   console.log(fileType);
   // Set default format based on fileType
-  const defaultFormat = fileType === "scorm" ? "scorm" : "moodle";
+  const defaultFormat = fileType === "Diapositiva_Scorm" ? "scorm" : "moodle";
   const [selectedFormat, setSelectedFormat] = useState(defaultFormat);
   const [archiveName, setArchiveName] = useState("");
   const [isExporting, setIsExporting] = useState(false);
@@ -51,7 +51,7 @@ const CourseExportManager = ({
 
   // Filter formats based on fileType
   const exportFormats =
-    fileType === "scorm"
+    fileType === "Diapositiva_Scorm"
       ? allExportFormats.filter((format) => format.id === "scorm")
       : allExportFormats.filter((format) => format.id !== "scorm");
 
