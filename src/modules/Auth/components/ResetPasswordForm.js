@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import styles from "./ResetPasswordForm.module.css";
 import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
+import { showFloatingError } from "../../../shared/store/rootActions";
 import ResetPasswordSuccessBrand from "./ResetPasswordSuccessBrand";
 
 const passwordRules = [
@@ -19,6 +21,7 @@ const ResetPasswordForm = ({ onSubmit, loading, error }) => {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const validate = () => {
     if (!password || !confirm) return "Ambos campos son obligatorios.";
@@ -41,10 +44,44 @@ const ResetPasswordForm = ({ onSubmit, loading, error }) => {
     }
     setSubmitting(true);
     try {
-      await onSubmit?.(password);
+      const response = await onSubmit?.(password);
+      console.log("Success response:", response);
+      // Success case - if we reach here without throwing, it's successful
       setSuccess(true);
     } catch (e) {
-      setFieldError(e?.message || "Error al cambiar la contraseña.");
+      // Handle all errors (including 500 status with backend error data)
+      console.error("Reset password error:", e);
+
+      // Check if it's a backend error response (axios error with response data)
+      if (e.response && e.response.data) {
+        const errorData = e.response.data;
+        console.log("Backend error data:", errorData);
+        
+        if (errorData.errorMessage === "Invalid or expired token") {
+          // Show floating error for expired token and redirect
+          dispatch(
+            showFloatingError(
+              "Este enlace ha expirado. Por favor, solicita uno nuevo para continuar con el cambio de contraseña."
+            )
+          );
+          // Redirect to welcome page after a short delay
+          setTimeout(() => {
+            router.push("/welcome");
+          }, 2000);
+          return; // Exit early to avoid setting field error
+        } else {
+          // Show other backend errors as field errors
+          setFieldError(
+            errorData.errorMessage || "Error al cambiar la contraseña."
+          );
+          return; // Exit early to avoid setting generic error
+        }
+      }
+      
+      // Network or other unexpected errors (only if no backend error data)
+      setFieldError(
+        e?.message || "Error de conexión. Por favor, intenta nuevamente."
+      );
     } finally {
       setSubmitting(false);
     }
@@ -53,7 +90,9 @@ const ResetPasswordForm = ({ onSubmit, loading, error }) => {
   if (success) {
     return (
       <div className={styles.container}>
-        <ResetPasswordSuccessBrand onHomeClick={() => router.push("/welcome")} />
+        <ResetPasswordSuccessBrand
+          onHomeClick={() => router.push("/welcome")}
+        />
       </div>
     );
   }

@@ -14,11 +14,15 @@ const ChangePasswordPage = () => {
     try {
       // El token puede venir por query param, ajusta según tu backend
       const token = router.query.token;
-      await passwordService.resetPassword(password, token);
+      const response = await passwordService.resetPassword(password, token);
       // Don't redirect here - let ResetPasswordForm handle the success state
       // The form will show ResetPasswordSuccessBrand and handle navigation
+      return response; // Return successful response
     } catch (e) {
+      console.error("ResetPasswordPage error:", e);
       setError(e.message || "Error al cambiar la contraseña.");
+      // Re-throw the error so ResetPasswordForm can handle it properly
+      throw e;
     } finally {
       setLoading(false);
     }
