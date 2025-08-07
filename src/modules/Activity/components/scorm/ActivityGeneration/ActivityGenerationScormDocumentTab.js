@@ -69,29 +69,17 @@ const ActivityGenerationScormDocumentTab = ({
   useEffect(() => {
     if (
       activityDocument?.imagePath &&
-      fileToken &&
       activityDocument?.activityId
     ) {
-      // Usar el endpoint de descarga con token como downloadUrl
-      const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/v1/download/textimage/file/${activityDocument.activityId}?token=${fileToken}`;
+      const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/files/download/textimage/file/${activityDocument.activityId}`;
       setSlideImage(imageUrl);
     } else {
       setSlideImage(null);
     }
-  }, [activityDocument?.imagePath, fileToken, activityDocument?.activityId]);
-
-  // URL de descarga del documento SCORM generado
-  const downloadUrl =
-    activityDocument && fileToken
-      ? `${process.env.NEXT_PUBLIC_API_URL}/v1/download/${data.contentType}/file/${activityDocument.activityId}?token=${fileToken}`
-      : "";
-
-  const isDownloadDisabled = !activityDocument || !fileToken;
+  }, [activityDocument?.imagePath, activityDocument?.activityId]);
 
   // Mostrar contenido por defecto si no hay documento generado
   const isEmpty = !documentContent || documentContent.trim() === "";
-
-  const isEditDisabled = isEmpty;
 
   // Si no hay activityDocument o no tiene id, deshabilita el botón de guardar
   const canSave =
