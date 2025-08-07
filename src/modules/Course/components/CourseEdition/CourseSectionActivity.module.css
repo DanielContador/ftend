@@ -303,6 +303,7 @@
 .iconEvaluation {
   background: #f3f0fd;
   color: #7c3aed;
+  border-radius: 0 !important; /* Remove rounded border to prevent icon cutoff */
 }
 
 .resourceCardBody {

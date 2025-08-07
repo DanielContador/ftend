@@ -25,7 +25,6 @@ import {
   getActivityVideo,
   getActivityAudio,
   getActivityDocument,
-  getScormByActivityId,
 } from "../../../Activity/services/activityService";
 import EvaluationGeneration from "./EvaluationGeneration";
 import EvaluationEdition from "./EvaluationEdition";
@@ -90,20 +89,7 @@ const serviceMap = {
     checker: (data) => data.documents && data.documents.length > 0,
     urlPath: "scorm",
   },
-  Diapositiva_Scorm: {
-    get: getScormByActivityId,
-    checker: (data) => {
-      // Para SCORM, verificar que existe textImage y que tiene contenido
-      return (
-        data &&
-        data.textImage &&
-        (data.textImage.content ||
-          data.textImage.imagePath ||
-          data.textImage.id)
-      );
-    },
-    urlPath: "scorm",
-  },
+  // Diapositiva_Scorm is not downloadable, so it's not included in serviceMap
 };
 
 const CourseSectionActivity = ({
@@ -327,6 +313,11 @@ const CourseSectionActivity = ({
 
       const statusPromises = selectedModule.learning_objects.map(
         async (activity) => {
+          // Diapositiva_Scorm activities are not downloadable
+          if (activity.format === 'Diapositiva_Scorm') {
+            return { id: activity.id, isDownloadable: false };
+          }
+          
           const serviceConfig = serviceMap[activity.format];
           if (!serviceConfig) {
             return { id: activity.id, isDownloadable: false };
@@ -678,27 +669,30 @@ const CourseSectionActivity = ({
                                     )}
                                   </div>
                                   <div className={styles.resourceCardActions}>
-                                    <button
-                                      className={`${styles.downloadBtn} ${
-                                        !downloadableStatus[res.id]
-                                          ? styles.disabled
-                                          : ""
-                                      }`}
-                                      title={
-                                        downloadableStatus[res.id]
-                                          ? "Descargar"
-                                          : "No hay contenido para descargar"
-                                      }
-                                      disabled={!downloadableStatus[res.id]}
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        if (downloadableStatus[res.id]) {
-                                          handleDownload(res);
+                                    {/* Hide download button for Diapositiva_Scorm since they are not downloadable */}
+                                    {res.format !== 'Diapositiva_Scorm' && (
+                                      <button
+                                        className={`${styles.downloadBtn} ${
+                                          !downloadableStatus[res.id]
+                                            ? styles.disabled
+                                            : ""
+                                        }`}
+                                        title={
+                                          downloadableStatus[res.id]
+                                            ? "Descargar"
+                                            : "No hay contenido para descargar"
                                         }
-                                      }}
-                                    >
-                                      <FontAwesomeIcon icon={faDownload} />
-                                    </button>
+                                        disabled={!downloadableStatus[res.id]}
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          if (downloadableStatus[res.id]) {
+                                            handleDownload(res);
+                                          }
+                                        }}
+                                      >
+                                        <FontAwesomeIcon icon={faDownload} />
+                                      </button>
+                                    )}
                                     <button
                                       className={styles.generateBtn}
                                       onClick={(e) => {
