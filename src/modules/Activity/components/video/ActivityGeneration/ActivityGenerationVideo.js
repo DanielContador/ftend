@@ -72,6 +72,14 @@ const ActivityGenerationVideo = ({
     setModalLoading(true);
     try {
       const response = await getActivityVideo(activityId);
+      
+      // Check for API response errors
+      if (response.status === 'error' || response.success === false) {
+        const errorMessage = response.message || response.errorMessage || "Error al obtener la actividad";
+        dispatch(showFloatingError(errorMessage));
+        return;
+      }
+      
       setData(response.data.activity);
       console.log("Activity data:", response.data.activity);
       if (response.data.video) {
@@ -98,7 +106,8 @@ const ActivityGenerationVideo = ({
       }
     } catch (error) {
       console.error("Error fetching activity:", error);
-      dispatch(showFloatingError(t("errorFetchingActivity")));
+      const errorMessage = error?.response?.data?.message || error?.response?.data?.errorMessage || t("errorFetchingActivity");
+      dispatch(showFloatingError(errorMessage));
     } finally {
       setModalLoading(false);
     }
@@ -115,6 +124,7 @@ const ActivityGenerationVideo = ({
           activityId,
           videoCreatorApp
         );
+        
         if (response.data.content?.status === "ready") {
           clearInterval(interval);
           setActivityVideo((prev) => ({
@@ -125,28 +135,23 @@ const ActivityGenerationVideo = ({
           setAvatarGenerateLoading(false);
           setModalLoading(false);
           setActiveTab("video");
-        } else if (response.data.content.status === "failed" || response.data.content.status === "cancelled") {
+        } else if (response.data.content.status === "failed" || response.data.content.status === "cancelled" || response.data.content.status === "error" || response.status === 'error' || response.success === false) {
           clearInterval(interval);
           setVideoLoading(false);
           setAvatarGenerateLoading(false);
           setModalLoading(false);
-          dispatch(
-          showFloatingError(
-            "No se pudo generar el video, hubo un problema en su generacion"
-          )
-        );
+          const errorMessage = response.message || response.errorMessage || "No se pudo generar el video, hubo un problema en su generacion";
+          dispatch(showFloatingError(errorMessage));
         }
+        // Continue polling for "rendering" status - no action needed, just keep polling
       } catch (error) {
         clearInterval(interval);
         setVideoLoading(false);
         setAvatarGenerateLoading(false);
         setModalLoading(false);
         console.error("Error polling video status:", error.message);
-        dispatch(
-          showFloatingError(
-            "El video aún está generándose, inténtelo más tarde"
-          )
-        );
+        const errorMessage = error?.response?.data?.message || error?.response?.data?.errorMessage || "Error al verificar el estado del video";
+        dispatch(showFloatingError(errorMessage));
       }
     }, 5000); // Poll every 5 seconds
   };
@@ -159,14 +164,23 @@ const ActivityGenerationVideo = ({
         PromptInstructions: configGuionInput,
         ActivityId: activityId,
       };
-      await generateVideoScript(data);
+      const response = await generateVideoScript(data);
+      
+      // Check for API response errors
+      if (response.status === 'error' || response.success === false) {
+        const errorMessage = response.message || response.errorMessage || "Error al generar el guión";
+        dispatch(showFloatingError(errorMessage));
+        return;
+      }
+      
       await fetchActivity();
       setScriptRegenerated(true); // Mark script as regenerated
       // Only reset videoGenerated if no video exists yet
       setActiveTab("guion"); // <-- Cambia automáticamente al tab de guion
     } catch (error) {
       console.error("Error generating script:", error);
-      dispatch(showFloatingError(t("errorGeneratingActivityScript")));
+      const errorMessage = error?.response?.data?.message || error?.response?.data?.errorMessage || t("errorGeneratingActivityScript");
+      dispatch(showFloatingError(errorMessage));
     } finally {
       setModalLoading(false);
     }
@@ -180,14 +194,23 @@ const ActivityGenerationVideo = ({
         PromptInstructions: configGuionInput,
         ActivityId: activityId,
       };
-      await regenerateVideoScript(data);
+      const response = await regenerateVideoScript(data);
+      
+      // Check for API response errors
+      if (response.status === 'error' || response.success === false) {
+        const errorMessage = response.message || response.errorMessage || "Error al regenerar el guión";
+        dispatch(showFloatingError(errorMessage));
+        return;
+      }
+      
       await fetchActivity();
       setScriptRegenerated(true); // Mark script as regenerated
       // Only reset videoGenerated if no video exists yet
       setActiveTab("guion"); // <-- Cambia automáticamente al tab de guion
     } catch (error) {
       console.error("Error regenerating script:", error);
-      dispatch(showFloatingError(t("errorGeneratingActivityScript")));
+      const errorMessage = error?.response?.data?.message || error?.response?.data?.errorMessage || t("errorGeneratingActivityScript");
+      dispatch(showFloatingError(errorMessage));
     } finally {
       setModalLoading(false);
     }
@@ -273,6 +296,16 @@ const ActivityGenerationVideo = ({
               : null,
         };
         const response = await generateElaiActivityVideo(data);
+        
+        // Check for API response errors
+        if (response.status === 'error' || response.success === false) {
+          const errorMessage = response.message || response.errorMessage || "Error al generar el video";
+          dispatch(showFloatingError(errorMessage));
+          setAvatarGenerateLoading(false);
+          setModalLoading(false);
+          return;
+        }
+        
         dispatch(showFloatingSuccess("El video se está generando correctamente"));
         setVideoCreatorApp("elai");
         setActivityVideo((prev) => ({ ...prev, videoUrl: response.data.content }));
@@ -281,19 +314,17 @@ const ActivityGenerationVideo = ({
         pollVideoStatus("elai");
       } catch (error) {
         console.error("Error generating video:", error);
-        if (
-          error?.response?.data?.errorMessage?.includes(
-            "already has generated content"
-          )
-        ) {
-          dispatch(showFloatingError("Ya existe un video generado"));
-        } else {
-          dispatch(
-          showFloatingError(
-            "No se pudo generar el video, hubo un problema en su generacion"
-          )
-        );
+        let errorMessage = "No se pudo generar el video, hubo un problema en su generacion";
+        
+        if (error?.response?.data?.errorMessage?.includes("already has generated content")) {
+          errorMessage = "Ya existe un video generado";
+        } else if (error?.response?.data?.message) {
+          errorMessage = error.response.data.message;
+        } else if (error?.response?.data?.errorMessage) {
+          errorMessage = error.response.data.errorMessage;
         }
+        
+        dispatch(showFloatingError(errorMessage));
         setAvatarGenerateLoading(false);
         setModalLoading(false);
       }
@@ -321,6 +352,15 @@ const ActivityGenerationVideo = ({
           BackgroundMusic: true,
         };
         const response = await generateVideogenActivityVideo(data);
+        
+        // Check for API response errors
+        if (response.status === 'error' || response.success === false) {
+          const errorMessage = response.message || response.errorMessage || "Error al generar el video";
+          dispatch(showFloatingError(errorMessage));
+          setModalLoading(false);
+          return;
+        }
+        
         dispatch(showFloatingSuccess("El video se está generando correctamente"));
         setVideoCreatorApp("videogen");
         setActivityVideo((prev) => ({ ...prev, videoUrl: response.data.content }));
@@ -329,19 +369,17 @@ const ActivityGenerationVideo = ({
         pollVideoStatus("videogen");
       } catch (error) {
         console.error("Error generating scene video:", error);
-        if (
-          error?.response?.data?.errorMessage?.includes(
-            "already has generated content"
-          )
-        ) {
-          dispatch(showFloatingError("Ya existe un video generado"));
-        } else {
-          dispatch(
-          showFloatingError(
-            "No se pudo generar el video, hubo un problema en su generacion"
-          )
-        );
+        let errorMessage = "No se pudo generar el video, hubo un problema en su generacion";
+        
+        if (error?.response?.data?.errorMessage?.includes("already has generated content")) {
+          errorMessage = "Ya existe un video generado";
+        } else if (error?.response?.data?.message) {
+          errorMessage = error.response.data.message;
+        } else if (error?.response?.data?.errorMessage) {
+          errorMessage = error.response.data.errorMessage;
         }
+        
+        dispatch(showFloatingError(errorMessage));
         setModalLoading(false);
       }
     }
@@ -369,6 +407,16 @@ const ActivityGenerationVideo = ({
               : null,
         };
         const response = await generateElaiActivityVideo(data);
+        
+        // Check for API response errors
+        if (response.status === 'error' || response.success === false) {
+          const errorMessage = response.message || response.errorMessage || "Error al regenerar el video";
+          dispatch(showFloatingError(errorMessage));
+          setAvatarGenerateLoading(false);
+          setModalLoading(false);
+          return;
+        }
+        
         dispatch(showFloatingSuccess("El video se está regenerando correctamente"));
         setVideoCreatorApp("elai");
         // Reset video state for regeneration - set video URL to response content like initial generation
@@ -379,12 +427,8 @@ const ActivityGenerationVideo = ({
         pollVideoStatus("elai");
       } catch (error) {
         console.error("Error regenerating video:", error);
-        dispatch(
-          showFloatingError(
-            "No se pudo regenerar el video, hubo un problema en su regeneración"
-          )
-        );
-      } finally {
+        const errorMessage = error?.response?.data?.message || error?.response?.data?.errorMessage || "No se pudo regenerar el video, hubo un problema en su regeneración";
+        dispatch(showFloatingError(errorMessage));
         setAvatarGenerateLoading(false);
         setModalLoading(false);
       }
@@ -412,6 +456,15 @@ const ActivityGenerationVideo = ({
           BackgroundMusic: true,
         };
         const response = await generateVideogenActivityVideo(data);
+        
+        // Check for API response errors
+        if (response.status === 'error' || response.success === false) {
+          const errorMessage = response.message || response.errorMessage || "Error al regenerar el video";
+          dispatch(showFloatingError(errorMessage));
+          setModalLoading(false);
+          return;
+        }
+        
         dispatch(showFloatingSuccess("El video se está regenerando correctamente"));
         setVideoCreatorApp("videogen");
         // Reset video state for regeneration - set video URL to response content like initial generation
@@ -422,20 +475,17 @@ const ActivityGenerationVideo = ({
         pollVideoStatus("videogen");
       } catch (error) {
         console.error("Error regenerating scene video:", error);
-        if (
-          error?.response?.data?.errorMessage?.includes(
-            "already has generated content"
-          )
-        ) {
-          dispatch(showFloatingError("Ya existe un video generado"));
-        } else {
-          dispatch(
-          showFloatingError(
-            "No se pudo regenerar el video, hubo un problema en su regeneración"
-          )
-        );
+        let errorMessage = "No se pudo regenerar el video, hubo un problema en su regeneración";
+        
+        if (error?.response?.data?.errorMessage?.includes("already has generated content")) {
+          errorMessage = "Ya existe un video generado";
+        } else if (error?.response?.data?.message) {
+          errorMessage = error.response.data.message;
+        } else if (error?.response?.data?.errorMessage) {
+          errorMessage = error.response.data.errorMessage;
         }
-      } finally {
+        
+        dispatch(showFloatingError(errorMessage));
         setModalLoading(false);
       }
     }
