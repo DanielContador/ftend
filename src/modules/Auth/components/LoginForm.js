@@ -3,12 +3,11 @@ import { useAuth } from "../../../shared/utils/authProvider";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
 import styles from "./LoginForm.module.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import { useDispatch } from "react-redux";
 import { showFloatingError } from "../../../shared/store/rootActions";
 import login from "../../../../public/login.png";
+import eye from "../../../../public/eye.png";
 
 const LoginForm = ({ onLogin, loading, error }) => {
   const { t } = useTranslation();
@@ -104,7 +103,7 @@ const LoginForm = ({ onLogin, loading, error }) => {
                   className={styles.eyeIcon}
                   title="Mostrar/ocultar contraseña"
                 >
-                  <FontAwesomeIcon icon={faEye} />
+                    <Image src={eye} alt="eye icon" width={23} height={15} />
                 </span>
               </div>
               {fieldErrors.password && (
