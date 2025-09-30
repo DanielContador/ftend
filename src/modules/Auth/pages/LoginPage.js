@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { showFloatingError } from "../../../shared/store/rootActions";
+import styles from "../../../shared/layouts/loginlayout/LoginLayout.module.css";
 
 const LoginPage = () => {
   const { initSession } = useAuth();
@@ -63,7 +64,22 @@ const LoginPage = () => {
     }
   };
 
-  return <LoginForm onLogin={handleLogin} loading={loading} />;
+  return (
+    <>
+      <div className={styles.welcomeSection}>
+        <h1 className={styles.welcomeTitle}>
+          ¡Bienvenido de vuelta a MentorIA!
+        </h1>
+        <p className={styles.welcomeText}>
+          Inicia sesión y transforma tus ideas en experiencias de aprendizaje con la ayuda de la inteligencia artificial.
+        </p>
+      </div>
+
+      <div className={styles.formSection}>
+        <LoginForm onLogin={handleLogin} loading={loading} />
+      </div>
+    </>
+  );
 };
 
 export default LoginPage;

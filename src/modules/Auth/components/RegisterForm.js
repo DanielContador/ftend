@@ -2,26 +2,21 @@ import React, { useState, useEffect } from "react";
 import styles from "./RegisterForm.module.css";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faEye as faEyeSolid,
-  faCircleInfo,
-} from "@fortawesome/free-solid-svg-icons";
-import { faEye as faEyeRegular } from "@fortawesome/free-regular-svg-icons";
+import { faEye, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch } from "react-redux";
 import {
   showFloatingError,
   showFloatingSuccess,
 } from "../../../shared/store/rootActions";
-
+import registro from "../../../../public/registro.svg";
+import Image from "next/image";
 const RegisterForm = ({ onRegister, loading, error }) => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [acceptTerms, setAcceptTerms] = useState(false);
-  const [news, setNews] = useState("yes");
+  const [receiveNews, setReceiveNews] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
   const dispatch = useDispatch();
   const router = useRouter();
@@ -56,11 +51,6 @@ const RegisterForm = ({ onRegister, loading, error }) => {
       } else if (!/[0-9]/.test(password)) {
         errors.password = "La contraseña debe tener al menos un número.";
       }
-    }
-    if (!confirmPassword) {
-      errors.confirmPassword = "Debes confirmar la contraseña.";
-    } else if (password !== confirmPassword) {
-      errors.confirmPassword = "Las contraseñas no coinciden.";
     }
     if (!acceptTerms) {
       errors.acceptTerms = "Debes aceptar los términos y condiciones.";
@@ -133,183 +123,127 @@ const RegisterForm = ({ onRegister, loading, error }) => {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.cardContainer}>
       {/* FloatingError y FloatingSuccess globales se muestran desde _app.js */}
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <h2 className={styles.title}>Registro de usuario</h2>
-        <div className={styles.inputGroup}>
-          <label className={styles.label}>Nombre completo</label>
-          <input
-            type="text"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            required
-            className={styles.input}
-          />
-          {fieldErrors.fullName && (
-            <div style={{ color: "#ff3b3b", fontSize: "0.95em" }}>
-              {fieldErrors.fullName}
-            </div>
-          )}
-        </div>
-        <div className={styles.inputGroup}>
-          <label className={styles.label}>Correo electrónico</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className={styles.input}
-          />
-          {fieldErrors.email && (
-            <div style={{ color: "#ff3b3b", fontSize: "0.95em" }}>
-              {fieldErrors.email}
-            </div>
-          )}
-        </div>
-        <div className={styles.inputGroupSmall}>
-          <label className={styles.label}>
-            Contraseña
-            <span
-              title="Mínimo 8 caracteres, 1 mayúscula, 1 número"
-              className={styles.infoIcon}
-              style={{ marginLeft: 6 }}
-            >
-              <FontAwesomeIcon
-                icon={faCircleInfo}
-                style={{ width: "1rem", color: "#888" }}
+      <form onSubmit={handleSubmit} className={styles.form} noValidate>
+        <div className={styles.contentUp}>
+          <div className={styles.titleSection}>
+            
+
+                        <Image
+                          src={registro}
+                          alt="registro icon"
+                          width={35}
+                          height={35}
+                        />
+            <h2 className={styles.title}>Registro</h2>
+          </div>
+
+          <div className={styles.inputsSection}>
+            <div className={styles.inputGroup}>
+              <label className={styles.label}>Nombre completo*</label>
+              <input
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                required
+                className={`${styles.input} ${
+                  fieldErrors.fullName ? styles.inputError : ""
+                }`}
+                placeholder="Ingresa nombre completo"
               />
-            </span>
-          </label>
-          <div className={styles.inputPasswordWrapper}>
-            <input
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className={styles.input}
-            />
-            <span
-              onClick={() => setShowPassword(!showPassword)}
-              className={styles.eyeIcon}
-              style={{ cursor: "pointer" }}
-            >
-              {showPassword ? (
-                <FontAwesomeIcon icon={faEyeRegular} />
-              ) : (
-                <FontAwesomeIcon icon={faEyeSolid} />
+              {fieldErrors.fullName && (
+                <div className={styles.fieldError}>{fieldErrors.fullName}</div>
               )}
-            </span>
-          </div>
-          <div className={styles.passwordHint}>
-            Mínimo 8 caracteres, 1 mayúscula, 1 número
-          </div>
-          {fieldErrors.password && (
-            <div style={{ color: "#ff3b3b", fontSize: "0.95em" }}>
-              {fieldErrors.password}
             </div>
-          )}
-        </div>
-        <div className={styles.inputGroup}>
-          <label className={styles.label}>Confirmar contraseña</label>
-          <div className={styles.inputPasswordWrapper}>
-            <input
-              type={showConfirmPassword ? "text" : "password"}
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              className={styles.input}
-            />
-            <span
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className={styles.eyeIcon}
-              style={{ cursor: "pointer" }}
-            >
-              {showConfirmPassword ? (
-                <FontAwesomeIcon icon={faEyeRegular} />
-              ) : (
-                <FontAwesomeIcon icon={faEyeSolid} />
+
+            <div className={styles.inputGroup}>
+              <label className={styles.label}>Correo electrónico*</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className={`${styles.input} ${
+                  fieldErrors.email ? styles.inputError : ""
+                }`}
+                placeholder="Ingresa usuario o correo"
+              />
+              {fieldErrors.email && (
+                <div className={styles.fieldError}>{fieldErrors.email}</div>
               )}
-            </span>
-          </div>
-          {fieldErrors.confirmPassword && (
-            <div style={{ color: "#ff3b3b", fontSize: "0.95em" }}>
-              {fieldErrors.confirmPassword}
             </div>
-          )}
-        </div>
-        <div className={styles.termsRow}>
-          <input
-            type="checkbox"
-            checked={acceptTerms}
-            onChange={(e) => setAcceptTerms(e.target.checked)}
-            required
-            className={styles.checkbox}
-          />
-          <span>
-            Acepto los{" "}
-            <a href="#" className={styles.termsLink}>
-              términos y condiciones
-            </a>
-          </span>
-        </div>
-        {fieldErrors.acceptTerms && (
-          <div
-            style={{
-              color: "#ff3b3b",
-              fontSize: "0.95em",
-              marginBottom: 8,
-            }}
-          >
-            {fieldErrors.acceptTerms}
+
+            <div className={styles.passwordSection}>
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>Contraseña*</label>
+                <div className={styles.inputPasswordWrapper}>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className={`${styles.input} ${
+                      fieldErrors.password ? styles.inputError : ""
+                    }`}
+                    placeholder="Ingresa contraseña"
+                  />
+                  <span
+                    onClick={() => setShowPassword(!showPassword)}
+                    className={styles.eyeIcon}
+                    title="Mostrar/ocultar contraseña"
+                  >
+                    <FontAwesomeIcon icon={faEye} />
+                  </span>
+                </div>
+                {fieldErrors.password && (
+                  <div className={styles.fieldError}>{fieldErrors.password}</div>
+                )}
+              </div>
+              <p className={styles.passwordHint}>
+                Mínimo 8 caracteres, 1 mayúscula, 1 número.
+              </p>
+            </div>
+
+            <div className={styles.checkboxGroup}>
+              <div className={styles.checkboxRow}>
+                <input
+                  type="checkbox"
+                  id="acceptTerms"
+                  checked={acceptTerms}
+                  onChange={(e) => setAcceptTerms(e.target.checked)}
+                  className={styles.checkbox}
+                />
+                <label htmlFor="acceptTerms" className={styles.checkboxLabel}>
+                  Acepto los{" "}
+                  <a href="#" className={styles.termsLink}>
+                    Términos y condiciones
+                  </a>
+                </label>
+              </div>
+              {fieldErrors.acceptTerms && (
+                <div className={styles.fieldError}>{fieldErrors.acceptTerms}</div>
+              )}
+            </div>
+
+            <div className={styles.checkboxRow}>
+              <input
+                type="checkbox"
+                id="receiveNews"
+                checked={receiveNews}
+                onChange={(e) => setReceiveNews(e.target.checked)}
+                className={styles.checkbox}
+              />
+              <label htmlFor="receiveNews" className={styles.checkboxLabel}>
+                Quiero recibir novedades y ofertas
+              </label>
+            </div>
           </div>
-        )}
-        <div className={styles.newsGroup}>
-          <div className={styles.label}>
-            ¿Deseas recibir noticias y actualizaciones?
-          </div>
-          <div className={styles.newsOptions}>
-            <label
-              className={`${styles.newsOption} ${
-                news === "yes" ? styles.newsOptionActive : ""
-              }`}
-              style={{
-                background: news === "yes" ? "#6C2BD7" : "#f3f3f3",
-                color: news === "yes" ? "#fff" : "#222",
-              }}
-              onClick={() => setNews("yes")}
-            >
-              Sí
-            </label>
-            <label
-              className={`${styles.newsOption} ${
-                news === "no" ? styles.newsOptionActive : ""
-              }`}
-              style={{
-                background: news === "no" ? "#6C2BD7" : "#f3f3f3",
-                color: news === "no" ? "#fff" : "#222",
-              }}
-              onClick={() => setNews("no")}
-            >
-              No
-            </label>
-          </div>
         </div>
+
         <button type="submit" className={styles.submitBtn} disabled={loading}>
-          {loading ? "Registrando..." : "Crear cuenta"}
+          {loading ? "Registrando..." : "Registrarme"}
         </button>
-        <div className={styles.loginLink}>
-          <a
-            href="#"
-            className={styles.termsLink}
-            onClick={(e) => {
-              e.preventDefault();
-              router.push("/login");
-            }}
-          >
-            ¿Ya tienes una cuenta? Inicia sesión
-          </a>
-        </div>
       </form>
     </div>
   );

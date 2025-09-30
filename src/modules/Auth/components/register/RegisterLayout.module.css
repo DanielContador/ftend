@@ -1,0 +1,188 @@
+.pageContainer {
+  position: relative;
+  display: flex;
+  min-height: 100vh;
+  background: #fff;
+  overflow: hidden;
+}
+
+/* Decorative gradient circles */
+.circle1 {
+  position: absolute;
+  left: 566px;
+  top: 739px;
+  width: 416px;
+  height: 416px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(119, 80, 242, 0.3) 0%, rgba(119, 80, 242, 0.05) 50%, transparent 100%);
+  filter: blur(80px);
+  z-index: 0;
+}
+
+.circle2 {
+  position: absolute;
+  left: 1133px;
+  top: 430px;
+  width: 416px;
+  height: 416px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(225, 80, 242, 0.3) 0%, rgba(225, 80, 242, 0.05) 50%, transparent 100%);
+  filter: blur(80px);
+  z-index: 0;
+}
+
+.circle3 {
+  position: absolute;
+  left: 874px;
+  top: -228px;
+  width: 416px;
+  height: 416px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(119, 80, 242, 0.3) 0%, rgba(119, 80, 242, 0.05) 50%, transparent 100%);
+  filter: blur(80px);
+  z-index: 0;
+}
+
+/* Left section with gradient background */
+.leftSection {
+  position: relative;
+  width: 902px;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Header styles */
+.header {
+  padding: 50px 0;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 10;
+  margin-top:-1.4rem;
+}
+
+.nav {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+}
+
+.navLink {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 26px;
+  color: #ffffff;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.navLink:hover {
+  opacity: 0.8;
+}
+
+.navLinkActive {
+  font-weight: 600;
+}
+
+/* Welcome section */
+.welcomeSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  position: relative;
+  z-index: 10;
+  margin-top: -100px;
+}
+
+.welcomeTitle {
+  font-family: 'Manrope', sans-serif;
+  font-size: 48px;
+  font-weight: 800;
+  line-height: 1;
+  color: #ffffff;
+  text-align: center;
+  margin: 0 0 20px 0;
+}
+
+.logoContainer {
+  width: 500px;
+  height: 434px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Right section */
+.rightSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+  z-index: 1;
+}
+
+.formContainer {
+  position: relative;
+  z-index: 10;
+}
+
+.stepIndicator {
+  position: absolute;
+  bottom: 100px;
+  font-family: 'Inter', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.2;
+  background: linear-gradient(180deg, #7750f2 0%, #1a237e 50%, #e150f2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-align: center;
+  margin: 0;
+}
+
+/* Responsive design */
+@media (max-width: 1400px) {
+  .leftSection {
+    width: 50%;
+  }
+}
+
+@media (max-width: 900px) {
+  .pageContainer {
+    flex-direction: column;
+  }
+
+  .leftSection {
+    width: 100%;
+    min-height: 40vh;
+  }
+
+  .rightSection {
+    min-height: 60vh;
+  }
+
+  .welcomeTitle {
+    font-size: 36px;
+  }
+
+  .logoContainer {
+    width: 300px;
+    height: 260px;
+  }
+
+  .nav {
+    display: none;
+  }
+}
